@@ -1,337 +1,192 @@
 ## **Алгоритмы**
 
-### FizzBuzz <a name="simplefizzbuzz"></a>  
+### FizzBuzz <a name="fizzbuzz"></a>  
 
-Почему нужно просить выполнить столь простое задание? Вот подробности — «[FizzBuzz, или почему программисты не умеют программировать](https://habr.com/ru/post/298134/)», если вкратце, то, к сожалению, можно сказать, что и профильное образование, и профильный опыт не уберегают от потери базовых навыков программирования.  
+Напишите программу, которая выводит на экран числа от 1 до 100. Вместо чисел, кратных трем, программа должна выводить слово «Fizz», а вместо чисел, кратных пяти — слово «Buzz». Если число кратно и 3, и 5, то программа должна выводить слово «FizzBuzz».
 
-Задание: Напишите программу, которая выводит на экран числа от 1 до 100. При этом вместо чисел, кратных трем, программа должна выводить слово «Fizz», а вместо чисел, кратных пяти — слово «Buzz». Если число кратно и 3, и 5, то программа должна выводить слово «FizzBuzz».  
 
-Самый простой вариант:  
-```csharp
-const int Max = 100;
+```python
+n: int = 100
 
-for (var i = 1; i <= Max; i++)
-{
-   if ((i % 3 == 0) && (i % 5 == 0))
-   {
-      Console.WriteLine("FizzBuzz");
-   }
-   else if (i % 3 == 0)
-   {
-      Console.WriteLine("Fizz");
-   }
-   else if (i % 5 == 0)
-   {
-      Console.WriteLine("Buzz");
-   }
-   else
-   {
-      Console.WriteLine(i);
-   }
-}
+for i in range(1, n + 1):
+    if i % 15 == 0:
+        print("FizzBuzz", end=" ")
+    elif i % 5 == 0:
+        print("Buzz", end=" ")
+    elif i % 3 == 0:
+        print("Fizz", end=" ")
+    else:
+        print(i, end=" ")
 ```
 
-или чуточку улучшенный вариант:  
-
-```csharp
-const int Max = 100;
-
-for (var i = 1; i <= Max; i++)
-{
-   if (i % 3 == 0)
-   {
-      if (i % 5 == 0)
-      {
-         Console.WriteLine("FizzBuzz");
-      }
-      else
-      {
-         Console.WriteLine("Fizz");
-      }
-   }
-   else if (i % 5 == 0)
-   {
-      Console.WriteLine("Buzz");
-   }
-   else
-   {
-      Console.WriteLine(i);
-   }
-}
-```
-
-Больше подробностей про оптимизацию задачи FizzBuzz — «[FizzBuzz по-сениорски](https://habr.com/ru/post/540136/)».  
+    1 2 Fizz 4 Buzz Fizz 7 8 Fizz Buzz 11 Fizz 13 14 FizzBuzz 16 17 Fizz 19 Buzz Fizz 22 23 Fizz Buzz 26 Fizz 28 29 FizzBuzz 31 32 Fizz 34 Buzz Fizz 37 38 Fizz Buzz 41 Fizz 43 44 FizzBuzz 46 47 Fizz 49 Buzz Fizz 52 53 Fizz Buzz 56 Fizz 58 59 FizzBuzz 61 62 Fizz 64 Buzz Fizz 67 68 Fizz Buzz 71 Fizz 73 74 FizzBuzz 76 77 Fizz 79 Buzz Fizz 82 83 Fizz Buzz 86 Fizz 88 89 FizzBuzz 91 92 Fizz 94 Buzz Fizz 97 98 Fizz Buzz 
 
 ### Пузырьковая сортировка (BubbleSort) <a name="bubblesort"></a>
 
-Простейший алгоритм, состоит из повторяющихся проходов по сортируемому массиву. В процессе каждого прохода элементы мвссива сравниваются попарно; элементы, не удовлетворяющие условию сортировки, меняются местами.
+Простейший алгоритм, состоит из повторяющихся проходов по сортируемому массиву. В процессе каждого прохода элементы массива сравниваются попарно; элементы, не удовлетворяющие условию сортировки, меняются местами.
 
-```cs
-internal static class Bubble
-{
-   internal static int[] Sort(int[] randomArray)
-   {
-      var arr = (int[])randomArray.Clone();
-      var len = arr.Length;
 
-      for (var i = 0; i < len - 1; i++)
-      {
-         for (var j = 0; j < len - i - 1; j++)
-         {
-            if (arr[j] > arr[j + 1])
-            {
-               (arr[j], arr[j + 1]) = (arr[j + 1], arr[j]);
-            }
-         }
-      }
+```python
+def bubblesort(arr):
+    for i in range(len(arr)):
+        for j in range(len(arr) - 1):
+            if arr[j] > arr[j+1]:
+                arr[j], arr[j+1] = arr[j+1], arr[j]
 
-      return arr;
-   }
-}
+    return arr
+
+arr: list = [28, 64, 2, 1, 13, 0]
+print(bubblesort(arr))
 ```
 
+    [0, 1, 2, 13, 28, 64]
+    
 
 
-### Быстрая сортировка (QuickSort) <a name="basicquicksort"></a>  
+### Быстрая сортировка (QuickSort) <a name="quicksort"></a>  
 
 Идея алгоритма следующая:  
 1. Выбирается опорный элемент, это в первом приближении может быть любой из элементов массива, например, из середины массива.
 2. Все элементы массива сравниваются с опорным и переставляются так, чтобы образовать новый массив, состоящий из двух последовательных сегментов - элементы меньшие опорного, равные опорному + большие опорного.
 3. Если длина сегментов больше 1, то рекурсивно выполнить сортировку и для них тоже.
 
-```cs
-internal static class Quick
-{
-   internal static int[] Sort(int[] randomArray)
-   {
-      var arr = (int[])randomArray.Clone();
 
-      QuickSort(arr, 0, arr.Length - 1);
+```python
+def quicksort(arr):
+    less = []
+    equal = []
+    greater = []
 
-      return arr;
-   }
+    if len(arr) > 1:
+        pivot = arr[0]
+        for x in arr:
+            if x < pivot:
+                less.append(x)
+            elif x == pivot:
+                equal.append(x)
+            elif x > pivot:
+                greater.append(x)
+        return quicksort(less) + equal + quicksort(greater)
+    else:
+        return arr
 
-   private static int[] QuickSort(int[] a, int i, int j)
-   {
-      if (i < j)
-      {
-         int q = Partition(a, i, j);
-         a = QuickSort(a, i, q);
-         a = QuickSort(a, q + 1, j);
-      }
-      return a;
-   }
-
-   private static int Partition(int[] a, int p, int r)
-   {
-      int x = a[p];
-      int i = p - 1;
-      int j = r + 1;
-      while (true)
-      {
-         do
-         {
-            j--;
-         }
-         while (a[j] > x);
-         do
-         {
-            i++;
-         }
-         while (a[i] < x);
-         if (i < j)
-         {
-            int tmp = a[i];
-            a[i] = a[j];
-            a[j] = tmp;
-         }
-         else
-         {
-            return j;
-         }
-      }
-   }
-}
+arr: list = [28, 64, 2, 1, 13, 0]
+print(quicksort(arr))
 ```
 
+    [0, 1, 2, 13, 28, 64]
+    
 
 
-### Сортировка слиянием (MergeSort) <a name="basicmergesort"></a>  
+### Сортировка слиянием (MergeSort) <a name="mergesort"></a>  
 
 Ключевым моментом сортировки слиянием является (как ни странно :) слияние двух массивов. При слиянии массивы сравниваются поэлементо и меньший элемент записывается в результирующий массив; после того, как достигнут конец одного из массивов, в результирующий массив переписывается "хвост" оставшегося массива.  
 Совместно со слиянием двух массивов используется рекурсивное разбиение сортируемого массива на сегменты меньшего размера.
 
-```cs
-internal static class Merge
-{
-   internal static int[] Sort(int[] randomArray)
-   {
-      var sortedArray = (int[])randomArray.Clone();
 
-      MergeSort(sortedArray);
+```python
+def mergesort(arr):
+    if len(arr) < 2:
+        return arr
 
-      return sortedArray;
-   }
+    result, mid = [], int(len(arr)//2)
 
-   private static void MergeSort(int[] array)
-   {
-      var length = array.Length;
+    y = mergesort(arr[:mid])
+    z = mergesort(arr[mid:])
 
-      if (length <= 1)
-      {
-         return;
-      }
+    while (len(y) > 0) and (len(z) > 0):
+       if y[0] > z[0]:
+        result.append(z.pop(0))   
+       else:
+        result.append(y.pop(0))
 
-      var leftSize = length / 2;
-      var rightSize = length - leftSize;
-      var leftArray = new int[leftSize];
-      var rightArray = new int[rightSize];
+    return result + y + z
 
-      Array.Copy(array, 0, leftArray, 0, leftSize);
-      Array.Copy(array, leftSize, rightArray, 0, rightSize);
-
-      MergeSort(leftArray);
-      MergeSort(rightArray);
-
-      Merges(array, leftArray, rightArray);
-   }
-
-   private static void Merges(int[] array, int[] leftArray, int[] rightArray)
-   {
-      int leftIndex = 0, rightIndex = 0, targetIndex = 0;
-
-      var remaining = leftArray.Length + rightArray.Length;
-
-      while (remaining > 0)
-      {
-         if (leftIndex >= leftArray.Length)
-            array[targetIndex] = rightArray[rightIndex++];
-         else if (rightIndex >= rightArray.Length)
-            array[targetIndex] = leftArray[leftIndex++];
-         else if (leftArray[leftIndex].CompareTo(rightArray[rightIndex]) < 0)
-            array[targetIndex] = leftArray[leftIndex++];
-         else
-            array[targetIndex] = rightArray[rightIndex++];
-
-         targetIndex++;
-         remaining--;
-      }
-   }
-}
-
+arr: list = [28, 64, 2, 1, 13, 0]
+print(mergesort(arr))
 ```
 
+    [0, 1, 2, 13, 28, 64]
+    
 
 
-### Пирамидальная сортировка (HeapSort) <a name="basicheapsort"></a>  
+### Пирамидальная сортировка (HeapSort) <a name="heapsort"></a>  
 
-Сначала превращаем массив в двоичное дерево за О(n) операций.
+Превращаем массив в двоичное дерево за О(n) операций.  
 Раз за разом преобразуя дерево, получим отсортированный массив.
 
 
-```cs
-internal static class Heap
-{
-   internal static int[] Sort(int[] randomArray)
-   {
-      var sortedArray = (int[])randomArray.Clone();
+```python
+def heap_sort():     
+    end = len(arr)   
+    start = end // 2 - 1
+    for i in range(start, -1, -1):   
+        heapify(end, i)   
+    for i in range(end-1, 0, -1):   
+        swap(i, 0)   
+        heapify(i, 0)
 
-      int n = sortedArray.Length;
+def heapify(end,i):   
+    l = 2 * i + 1  
+    r = 2 * (i + 1)   
+    max = i   
+    if l < end and arr[i] < arr[l]:   
+        max = l   
+    if r < end and arr[max] < arr[r]:   
+        max = r   
+    if max != i:   
+        swap(i, max)   
+        heapify(end, max) 
 
-      // Build heap (rearrange array)
-      for (int i = n / 2 - 1; i >= 0; i--)
-         heapify(sortedArray, n, i);
+def swap(i, j):                    
+    arr[i], arr[j] = arr[j], arr[i] 
 
-      // One by one extract an element from heap
-      for (int i = n - 1; i > 0; i--)
-      {
-         // Move current root to end
-         int temp = sortedArray[0];
-         sortedArray[0] = sortedArray[i];
-         sortedArray[i] = temp;
-
-         // call max heapify on the reduced heap
-         heapify(sortedArray, i, 0);
-      }
-
-      return sortedArray;
-   }
-
-   private static void heapify(int[] arr, int n, int i)
-   {
-      int largest = i; // Initialize largest as root
-      int l = 2 * i + 1; // left = 2*i + 1
-      int r = 2 * i + 2; // right = 2*i + 2
-
-      // If left child is larger than root
-      if (l < n && arr[l] > arr[largest])
-         largest = l;
-
-      // If right child is larger than largest so far
-      if (r < n && arr[r] > arr[largest])
-         largest = r;
-
-      // If largest is not root
-      if (largest != i)
-      {
-         int swap = arr[i];
-         arr[i] = arr[largest];
-         arr[largest] = swap;
-
-         // Recursively heapify the affected sub-tree
-         heapify(arr, n, largest);
-      }
-   }
-}
+arr: list = [28, 64, 2, 1, 13, 0]
+heap_sort()
+print(arr)
 ```
 
+    [0, 1, 2, 13, 28, 64]
+    
 
 
-### Сортировка вставками (InsertionSort) <a name="basicinsertionsort"></a>  
+### Сортировка вставками (InsertionSort) <a name="insertionsort"></a>  
 
 Каждый новый элемент заносится в выходную последовательность "индивидуально", т. е. каждый раз для добавления нового элемента приходится сдвигать часть массива. Алгоритм медленный, для ускорения вставки можно использовать бинарный поиск.
 
-```cs
-internal static class Insertion
-{
-   internal static int[] Sort(int[] randomArray)
-   {
-      var sortedArray = (int[])randomArray.Clone();
 
-      int n = sortedArray.Length;
-      for (int i = 1; i < n; ++i)
-      {
-         int key = sortedArray[i];
-         int j = i - 1;
+```python
+def insertionsort(arr):
+    for index in range(1, len(arr)):
 
-         // Move elements of arr[0..i-1],
-         // that are greater than key,
-         // to one position ahead of
-         // their current position
-         while (j >= 0 && sortedArray[j] > key)
-         {
-            sortedArray[j + 1] = sortedArray[j];
-            j = j - 1;
-         }
-         sortedArray[j + 1] = key;
-      }
+        currentvalue = arr[index]
+        position = index
 
-      return sortedArray;
-   }
-}
+        while position > 0 and arr[position - 1] > currentvalue:
+            arr[position] = arr[position - 1]
+            position = position - 1
+
+        arr[position] = currentvalue
+
+
+arr: list = [28, 64, 2, 1, 13, 0]
+insertionsort(arr)
+print(arr)
 ```
 
+    [0, 1, 2, 13, 28, 64]
+    
 
 
 ### Timsort <a name="basictimsort"></a>  
 
-Комбинированный алгоритм сортировки, сочетающий сортировку вставками и сортировку слиянием. Стандарт для Python, Java, Swift
+Комбинированный алгоритм сортировки, сочетающий сортировку вставками и сортировку слиянием. Стандарт для Python, Java, Swift.
 
 
 
 ### Introsort <a name="basicintrosort"></a>  
 
-Комбинированный алгоритм сортировки, использует быструю сортировку, плюс, при превышении глубины рекурсии некоторой величины (например, логарифма от числа сортируемых элементов), переключается на пирамидальную сортировку.
+Комбинированный алгоритм сортировки, использует быструю сортировку, плюс, при превышении глубины рекурсии некоторой величины (например, логарифма от числа сортируемых элементов), переключается на пирамидальную сортировку. Стандарт для .NET.
 
 
 
@@ -339,34 +194,24 @@ internal static class Insertion
 
 Сортирует только сущности, которые можно разбить на "разряды", имеющие разный вес. Это могут быть, например, целые числа или строки. Соответсвенно, элементы сортируются поразрядно, начиная с разряда, имеющего максимальный вес.
 
-```cs
-internal static class Radix
-{
-   internal static int[] Sort(int[] randomArray)
-   {
-      var sortedArray = (int[])randomArray.Clone();
 
-      int i, j;
-      int[] tmp = new int[sortedArray.Length];
-      for (int shift = 31; shift > -1; --shift)
-      {
-         j = 0;
-         for (i = 0; i < sortedArray.Length; ++i)
-         {
-            bool move = (sortedArray[i] << shift) >= 0;
-            if (shift == 0 ? !move : move)
-               sortedArray[i - j] = sortedArray[i];
-            else
-               tmp[j++] = sortedArray[i];
-         }
-         Array.Copy(tmp, 0, sortedArray, sortedArray.Length - j, j);
-      }
+```python
+def radixsort(arr: list):
+    n = len(str(max(arr)))
 
-      return sortedArray;
-   }
-}
+    for k in range(n):
+        bucket_list=[[] for i in range(10)]
+        for i in arr:
+            bucket_list[i // (10**k) % 10].append(i)
+        arr = sum(bucket_list, [])  # Flattening a list of lists to a list
+    return arr
+
+arr: list = [28, 64, 2, 1, 13, 0]
+print(radixsort(arr))
 ```
 
+    [0, 1, 2, 13, 28, 64]
+    
 
 
 ### Таблица сравнения методов сортировки <a name="basicsortingcomparisontable"></a>  
@@ -415,16 +260,91 @@ table th:nth-of-type(8) {
 
 
 
+```python
+def linear_search(arr, x):
+    for i in range(len(arr)):
+        if arr[i] == x:
+            return i
+
+    return None
+
+arr: list = [28, 64, 2, 1, 13, 0]
+print(linear_search(arr, 64))
+```
+
+    1
+    
+
+
 ### Бинарный поиск <a name="basicbinarysearch"></a>  
 
-Берется значение из середины отсортрованного массива и сравнивается с искомой величиной. В завистмости от сравнения дальнейший рекурсивный поиск продолжается в середине либо левого, либо правого подмассива.
+Работает только с отсортированными массивами. Берется значение из середины массива и сравнивается с искомой величиной. В зависимости от сравнения дальнейший рекурсивный поиск продолжается в середине либо левого, либо правого подмассива.
 
 
+```python
+def binary_search(arr, x):
+    left, right = 0, len(arr) - 1
 
-### Поиск в глубину (DFS) <a name="basicdfs"></a>  
+    while left <= right:
+        middle = (left + right) // 2
+
+        if arr[middle] == x:
+            return middle
+
+        if arr[middle] < x:
+            left = middle + 1
+        elif arr[middle] > x:
+            right = middle - 1
+
+arr: list = [0, 24, 64, 222, 1300, 2048]
+print(binary_search(arr, 64))
+```
+
+    2
+    
+
+
+### Поиск в глубину (DFS) <a name="dfs"></a>  
 
 Метод обхода графа. Depth-first search (DFS) можно чуть точнее перевести как "поиск в первую очередь в глубину". Соответственно, рекурсивный алгоритм поиска идет «вглубь» графа, насколько это возможно. Есть нерекурсивные варианты алгоритма, разгружающие стек вызовов.
 
+
+<img src="graph_for_dfs.jpg" style="height:467px">
+
+
+```python
+# Using a Python dictionary to act as an adjacency list
+graph = {
+  '5' : ['3','7'],
+  '3' : ['2', '4'],
+  '7' : ['8'],
+  '2' : [],
+  '4' : ['8'],
+  '8' : []
+}
+
+visited = set() # Set to keep track of visited nodes of graph
+
+def dfs(visited, graph, node):  # Function for DFS
+    if node not in visited:
+        print (node)
+        visited.add(node)
+        for neighbour in graph[node]:
+            dfs(visited, graph, neighbour)
+
+# Driver Code
+print("Following is the Depth-First Search")
+dfs(visited, graph, '5')
+```
+
+    Following is the Depth-First Search
+    5
+    3
+    2
+    4
+    8
+    7
+    
 
 
 ### Поиск в ширину (BFS) <a name="basicbfs"></a>  
@@ -460,7 +380,7 @@ table th:nth-of-type(8) {
 
 ### Матрица смежности <a name="basicgraphadjacencymatrix"></a>  
 
-Квадратная целочисленная матрица размера V*V, в которой значение элемента a{i,j} равно числу рёбер из i-й вершины в j-ю вершину.  
+Квадратная целочисленная матрица размера V*V, в которой значение элемента a{i, j} равно числу рёбер из i-й вершины в j-ю вершину.  
 Матрица смежности простого графа (не содержащего петель и кратных рёбер) является бинарной матрицей и содержит нули на главной диагонали.
 
 
@@ -507,5 +427,3 @@ n! >> 2^n >> n^3 >> n^2 >> nlogn >> n >> logn >> 1
 
 Задачи класса P — реально вычислимые задачи ([тезис Кобэма](https://en.wikipedia.org/wiki/Cobham%27s_thesis)), решаются за полиномиальное время.  
 NP-полные задачи —  не разрешимы за полиномиальное время, но могут быть сведены к задачам разрешимости (да/нет), которые, в свою очередь, решаются за полиномиальное время.
-
-Источники!!!
