@@ -2512,13 +2512,15 @@ n: int = 100
 
 for i in range(1, n + 1):
     if i % 15 == 0:
-        print("FizzBuzz", end=" ")
+        item = "FizzBuzz"
     elif i % 5 == 0:
-        print("Buzz", end=" ")
+        item = "Buzz"
     elif i % 3 == 0:
-        print("Fizz", end=" ")
+        item = "Fizz"
     else:
-        print(i, end=" ")
+        item = i
+
+    print(item, end=" ")
 ```
 
     1 2 Fizz 4 Buzz Fizz 7 8 Fizz Buzz 11 Fizz 13 14 FizzBuzz 16 17 Fizz 19 Buzz Fizz 22 23 Fizz Buzz 26 Fizz 28 29 FizzBuzz 31 32 Fizz 34 Buzz Fizz 37 38 Fizz Buzz 41 Fizz 43 44 FizzBuzz 46 47 Fizz 49 Buzz Fizz 52 53 Fizz Buzz 56 Fizz 58 59 FizzBuzz 61 62 Fizz 64 Buzz Fizz 67 68 Fizz Buzz 71 Fizz 73 74 FizzBuzz 76 77 Fizz 79 Buzz Fizz 82 83 Fizz Buzz 86 Fizz 88 89 FizzBuzz 91 92 Fizz 94 Buzz Fizz 97 98 Fizz Buzz 
@@ -2679,11 +2681,9 @@ print(arr)
     [0, 1, 2, 13, 28, 64]
     
 
-
 ### Timsort <a name="basictimsort"></a>  
 
-Комбинированный алгоритм сортировки, сочетающий сортировку вставками и сортировку слиянием. Стандарт для Python, Java, Swift.
-
+Комбинированный алгоритм сортировки, сочетающий сортировку вставками, сортировку слиянием и предположение, что в реальном мире данные часто уже частично упорядочены (поиск упорядоченных подмассивов). Стандарт для Python, Java, Swift.
 
 
 ### Introsort <a name="basicintrosort"></a>  
@@ -2834,12 +2834,9 @@ def dfs(visited, graph, node):  # Function for DFS
         for neighbour in graph[node]:
             dfs(visited, graph, neighbour)
 
-# Driver Code
-print("Following is the Depth-First Search")
 dfs(visited, graph, '5')
 ```
 
-    Following is the Depth-First Search
     5
     3
     2
@@ -2849,25 +2846,85 @@ dfs(visited, graph, '5')
     
 
 
-### Поиск в ширину (BFS) <a name="basicbfs"></a>  
+### Поиск в ширину (BFS) <a name="bfs"></a>  
 
 В отличие от предыдущего варианта алгоритм Breadth-first search (BFS) перебирает в первую очередь вершины с одинаковым расстоянием от корня, и только потом идет «вглубь».
 
 
 
-### Алгоритм Дейкстры <a name="basicdijkstras"></a>  
+```python
+# https://codereview.stackexchange.com/questions/135156/bfs-implementation-in-python-3
+import collections
+
+
+def breadth_first_search(graph, root): 
+    visited, queue = set(), collections.deque([root])
+    while queue: 
+        vertex = queue.popleft()
+        for neighbour in graph[vertex]: 
+            if neighbour not in visited: 
+                visited.add(neighbour) 
+                queue.append(neighbour)
+
+if __name__ == '__main__':
+    graph = {0: [1, 2], 1: [2], 2: []} 
+    breadth_first_search(graph, 0)
+```
+
+    deque([])
+    
+
+
+### Алгоритм Дейкстры <a name="dijkstras"></a>  
 
 Находит кратчайшие пути от одной из вершин графа до всех остальных. Алгоритм работает только для графов без отрицательных рёбер.
 
 
 
-### Алгоритм Беллмана-Форда <a name="basicbellmanford"></a>  
+```python
+# https://stackoverflow.com/questions/22897209/dijkstras-algorithm-in-python
+nodes = ('A', 'B', 'C', 'D', 'E', 'F', 'G')
+distances = {
+    'B': {'A': 5, 'D': 1, 'G': 2},
+    'A': {'B': 5, 'D': 3, 'E': 12, 'F' :5},
+    'D': {'B': 1, 'G': 1, 'E': 1, 'A': 3},
+    'G': {'B': 2, 'D': 1, 'C': 2},
+    'C': {'G': 2, 'E': 1, 'F': 16},
+    'E': {'A': 12, 'D': 1, 'C': 1, 'F': 2},
+    'F': {'A': 5, 'E': 2, 'C': 16}}
+
+unvisited = {node: None for node in nodes} #using None as +inf
+visited = {}
+current = 'B'
+currentDistance = 0
+unvisited[current] = currentDistance
+
+while True:
+    for neighbour, distance in distances[current].items():
+        if neighbour not in unvisited: continue
+        newDistance = currentDistance + distance
+        if unvisited[neighbour] is None or unvisited[neighbour] > newDistance:
+            unvisited[neighbour] = newDistance
+    visited[current] = currentDistance
+    del unvisited[current]
+    if not unvisited: break
+    candidates = [node for node in unvisited.items() if node[1]]
+    current, currentDistance = sorted(candidates, key = lambda x: x[1])[0]
+
+print(visited)
+```
+
+    {'B': 0, 'D': 1, 'E': 2, 'G': 2, 'C': 3, 'A': 4, 'F': 4}
+    
+
+
+### Алгоритм Беллмана-Форда <a name="bellmanford"></a>  
 
 Как и алгоритм Дейкстры, находит кратчайшие пути от одной из вершин графа до всех остальных, но, в отличие от первого, позволяет работать с графами с ребрами, имеющими отрицательный вес.
 
 
 
-### Таблица сравнения методов поиска <a name="basicfindingcomparisontable"></a>  
+### Таблица сравнения методов поиска <a name="findingcomparisontable"></a>  
 
 | Вид поиска | Структура данных | Avg | Worst | Mem |
 | :- | :- | :-: | :-: | :-: |
@@ -2880,21 +2937,21 @@ dfs(visited, graph, '5')
 
 
 
-### Матрица смежности <a name="basicgraphadjacencymatrix"></a>  
+### Матрица смежности <a name="graphadjacencymatrix"></a>  
 
 Квадратная целочисленная матрица размера V*V, в которой значение элемента a{i, j} равно числу рёбер из i-й вершины в j-ю вершину.  
 Матрица смежности простого графа (не содержащего петель и кратных рёбер) является бинарной матрицей и содержит нули на главной диагонали.
 
 
 
-### Матрица инцидентности <a name="basicgraphincidencematrix"></a>  
+### Матрица инцидентности <a name="graphincidencematrix"></a>  
 
 Способ представления графа, в которой указываются связи между инцидентными элементами графа (ребрами и вершинами). Столбцы матрицы соответствуют ребрам, строки — вершинам. Ненулевое значение в ячейке матрицы указывает связь между вершиной и ребром (их инцидентность). Если связи между вершиной и ребром нет, то в соответствующую ячейку ставится «0».  
 В случае ориентированного графа каждой дуге ставится в соответствующем столбце: 1 в строке вершины x и -1 в строке вершины y.  
 
 
 
-### Список смежности <a name="basicgraphadjacencylist"></a>  
+### Список смежности <a name="graphadjacencylist"></a>  
 
 Способ представления графа в виде коллекции списков вершин. Каждой вершине графа соответствует список, состоящий из «соседей» этой вершины.  
 Варианты:  
@@ -2904,13 +2961,13 @@ dfs(visited, graph, '5')
 
 
 
-### Список инцидентности <a name="basicgraphincidencelist"></a>  
+### Список инцидентности <a name="graphincidencelist"></a>  
 
 Список инцидентности похож на список смежности, только с той разницей, что в i-ой строке записываются номера ребер, инцидентных данной i-ой вершине.
 
 
 
-### Сравнение структур представления графов <a name="basicgraphstructcomparison"></a>  
+### Сравнение структур представления графов <a name="graphstructcomparison"></a>  
 
 | Метод | Mem | Add V | Add E | Remove V | Remove E | Проверка смежн. V |
 | :- | :-: | :-: | :-: | :-: | :-: | :-: |
@@ -2919,13 +2976,13 @@ dfs(visited, graph, '5')
 | Список смежности<br>(Adjacency list) | V+E | 1 | 1 | V+E | E | V |
 | Список инцидентности<br>(Incidence list) | V+E | 1 | 1 | E | E | E |
 
-### О-о-о! Большое! <a name="basicbigo"></a>  
+### О-о-о! Большое! <a name="bigo"></a>  
 
 Нотация O - характеристика асимптотической сложности алгоритма без учета константы.  
 
 n! >> 2^n >> n^3 >> n^2 >> nlogn >> n >> logn >> 1
 
-### P vs NP <a name="advancedalgorithmspvsnp"></a>  
+### P vs NP <a name="algorithmspvsnp"></a>  
 
 Задачи класса P — реально вычислимые задачи ([тезис Кобэма](https://en.wikipedia.org/wiki/Cobham%27s_thesis)), решаются за полиномиальное время.  
 NP-полные задачи —  не разрешимы за полиномиальное время, но могут быть сведены к задачам разрешимости (да/нет), которые, в свою очередь, решаются за полиномиальное время.
