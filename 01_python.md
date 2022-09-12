@@ -158,10 +158,10 @@ a.clear()  # Очистка списка
     ['A', ' ', 'h', 'o', 'l', 'e', ' ', 's', 't', 'i', 'n', 'g'] r
     
 
-sorted_by_second = sorted(<collection>, key=lambda el: el[1])
-sorted_by_both   = sorted(<collection>, key=lambda el: (el[1], el[0]))
-flatter_list     = list(itertools.chain.from_iterable(<list>))
-product_of_elems = functools.reduce(lambda out, el: out * el, <collection>)
+sorted_by_second = sorted(<collection>, key=lambda el: el[1])  
+sorted_by_both   = sorted(<collection>, key=lambda el: (el[1], el[0]))  
+flatter_list     = list(itertools.chain.from_iterable(<list>))  
+product_of_elems = functools.reduce(lambda out, el: out * el, <collection>)  
 
 ### Dictionary (словарь)
 
@@ -1227,15 +1227,15 @@ print(mx)
 
 ### Comprehensions
  
-<list> = [i+1 for i in range(10)]                         # [1, 2, ..., 10]
-<set>  = {i for i in range(10) if i > 5}                  # {6, 7, 8, 9}
-<iter> = (i+5 for i in range(10))                         # (5, 6, ..., 14)
-<dict> = {i: i*2 for i in range(10)}                      # {0: 0, 1: 2, ..., 9: 18}
+<list> = [i+1 for i in range(10)]                         # [1, 2, ..., 10]  
+<set>  = {i for i in range(10) if i > 5}                  # {6, 7, 8, 9}  
+<iter> = (i+5 for i in range(10))                         # (5, 6, ..., 14)  
+<dict> = {i: i*2 for i in range(10)}                      # {0: 0, 1: 2, ..., 9: 18}  
  
 
  
->>> [l+r for l in 'abc' for r in 'abc']
-['aa', 'ab', 'ac', ..., 'cc']
+>>> [l+r for l in 'abc' for r in 'abc']  
+['aa', 'ab', 'ac', ..., 'cc']  
 
 ### List comprehension
 An elegant approach to create a new list based on the values of an existing list.
@@ -1285,16 +1285,16 @@ print(d2)
 
 ### Map, Filter, Reduce
  
-<iter> = map(lambda x: x + 1, range(10))                  # (1, 2, ..., 10)
-<iter> = filter(lambda x: x > 5, range(10))               # (6, 7, 8, 9)
-<obj>  = reduce(lambda out, x: out + x, range(10))        # 45
+<iter> = map(lambda x: x + 1, range(10))                  # (1, 2, ..., 10)  
+<iter> = filter(lambda x: x > 5, range(10))               # (6, 7, 8, 9)  
+<obj>  = reduce(lambda out, x: out + x, range(10))        # 45  
  
-* **Reduce must be imported from the functools module.**
+Reduce must be imported from the functools module.  
 
 ### Any, All
  
-<bool> = any(<collection>)                                # Is `bool(el)` True for any element.
-<bool> = all(<collection>)                                # Is True for all elements or empty.
+<bool> = any(<collection>)                                # Is `bool(el)` True for any element.  
+<bool> = all(<collection>)                                # Is True for all elements or empty.  
 
 ### bisect и бинарный поиск
 
@@ -1314,9 +1314,9 @@ print(d2)
 
 Closure
 
-**We have/get a closure in Python when:**
-* **A nested function references a value of its enclosing function and then**
-* **the enclosing function returns the nested function.**
+We have/get a closure in Python when:
+A nested function references a value of its enclosing function and then
+the enclosing function returns the nested function.
 
  
 def get_multiplier(a):
@@ -1331,8 +1331,8 @@ def get_multiplier(a):
 30
  
 
-* **If multiple nested functions within enclosing function reference the same value, that value gets shared.**
-* **To dynamically access function's first free variable use `'<function>.__closure__[0].cell_contents'`.**
+If multiple nested functions within enclosing function reference the same value, that value gets shared.
+To dynamically access function's first free variable use `'<function>.__closure__[0].cell_contents'`.
 
 
 ```python
@@ -1372,20 +1372,20 @@ print(binary_search(a, 15))
  
 from itertools import count, repeat, cycle, chain, islice
 
-<iter> = count(start=0, step=1)             # Returns updated value endlessly. Accepts floats.
-<iter> = repeat(<el> [, times])             # Returns element endlessly or 'times' times.
-<iter> = cycle(<collection>)                # Repeats the sequence endlessly.
+<iter> = count(start=0, step=1)             # Returns updated value endlessly. Accepts floats.  
+<iter> = repeat(<el> [, times])             # Returns element endlessly or 'times' times.  
+<iter> = cycle(<collection>)                # Repeats the sequence endlessly.  
 
-<iter> = chain(<coll_1>, <coll_2> [, ...])  # Empties collections in order (figuratively).
-<iter> = chain.from_iterable(<collection>)  # Empties collections inside a collection in order.
+<iter> = chain(<coll_1>, <coll_2> [, ...])  # Empties collections in order (figuratively).  
+<iter> = chain.from_iterable(<collection>)  # Empties collections inside a collection in order.  
 
-<iter> = islice(<coll>, to_exclusive)       # Only returns first 'to_exclusive' elements.
-<iter> = islice(<coll>, from_inclusive, …)  # `to_exclusive, step_size`.
+<iter> = islice(<coll>, to_exclusive)       # Only returns first 'to_exclusive' elements.  
+<iter> = islice(<coll>, from_inclusive, …)  # `to_exclusive, step_size`.  
 
  
->>> from collections.abc import Iterable, Collection, Sequence
->>> isinstance([1, 2, 3], Iterable)
-True
+>>> from collections.abc import Iterable, Collection, Sequence  
+>>> isinstance([1, 2, 3], Iterable)  
+True  
 
  text
 +------------------+------------+------------+------------+
@@ -1396,8 +1396,8 @@ True
 | iter             |    yes     |            |            |
 +------------------+------------+------------+------------+
 
->>> from numbers import Number, Complex, Real, Rational, Integral
->>> isinstance(123, Number)
+>>> from numbers import Number, Complex, Real, Rational, Integral  
+>>> isinstance(123, Number)  
 True
 
  text
@@ -1416,8 +1416,8 @@ from statistics import mean, median, variance, stdev, quantiles, groupby
 
 Combinatorics
 -------------
-* **Every function returns an iterator.**
-* **If you want to print the iterator, you need to pass it to the list() function first!**
+Every function returns an iterator.
+If you want to print the iterator, you need to pass it to the list() function first!
 
 from itertools import product, combinations, combinations_with_replacement, permutations
 
@@ -1821,13 +1821,13 @@ print(f"List after shuffle: {a}")
 
 Input
 -----
-**Reads a line from user input or pipe if present.**
+Reads a line from user input or pipe if present.
 
 <str> = input(prompt=None)
  
-* **Trailing newline gets stripped.**
-* **Prompt string is printed to the standard output before reading input.**
-* **Raises EOFError when user hits EOF (ctrl-d/ctrl-z⏎) or input stream gets exhausted.**
+Trailing newline gets stripped.
+Prompt string is printed to the standard output before reading input.
+Raises EOFError when user hits EOF (ctrl-d/ctrl-z⏎) or input stream gets exhausted.
 
 Command Line Arguments
 ----------------------
@@ -1848,28 +1848,28 @@ p.add_argument('<name>', type=<type>, nargs='*')                  # Optional arg
 args  = p.parse_args()                                            # Exits on error.
 value = args.<name>
 
-* **Use `'help=<str>'` to set argument description.**
-* **Use `'default=<el>'` to set the default value.**
-* **Use `'type=FileType(<mode>)'` for files.**
+Use `'help=<str>'` to set argument description.
+Use `'default=<el>'` to set the default value.
+Use `'type=FileType(<mode>)'` for files.
 
 Print
 -----
  
 print(<el_1>, ..., sep=' ', end='\n', file=sys.stdout, flush=False)
  
-* **Use `'file=sys.stderr'` for messages about errors.**
-* **Use `'flush=True'` to forcibly flush the stream.**
+Use `'file=sys.stderr'` for messages about errors.
+Use `'flush=True'` to forcibly flush the stream.
 
 ### Pretty Print
  
 from pprint import pprint
 pprint(<collection>, width=80, depth=None, compact=False, sort_dicts=True)
  
-* **Levels deeper than 'depth' get replaced by '...'.**
+Levels deeper than 'depth' get replaced by '...'.
 
 NumPy
 -----
-**Array manipulation mini-language. It can run up to one hundred times faster than the equivalent Python code. An even faster alternative that runs on a GPU is called CuPy.**
+Array manipulation mini-language. It can run up to one hundred times faster than the equivalent Python code. An even faster alternative that runs on a GPU is called CuPy.
 
  
 # $ pip3 install numpy
@@ -1894,8 +1894,8 @@ import numpy as np
 indexes = <array>.argmin(axis)
  
 
-* **Shape is a tuple of dimension sizes.**
-* **Axis is an index of the dimension that gets collapsed. Leftmost dimension has index 0.**
+Shape is a tuple of dimension sizes.
+Axis is an index of the dimension that gets collapsed. Leftmost dimension has index 0.
 
 ### Indexing
  bash
@@ -1916,7 +1916,7 @@ indexes = <array>.argmin(axis)
  
 
 ### Broadcasting
-**Broadcasting is a set of rules by which NumPy functions operate on arrays of different sizes and/or dimensions.**
+Broadcasting is a set of rules by which NumPy functions operate on arrays of different sizes and/or dimensions.
 
  
 left  = [[0.1], [0.6], [0.8]]        # Shape: (3, 1)
@@ -1974,7 +1974,7 @@ from pandas import Series, DataFrame
  
 
 ### Series
-**Ordered dictionary with a name.**
+Ordered dictionary with a name.
 
  
 >>> Series([1, 2], index=['x', 'y'], name='a')
@@ -2046,10 +2046,10 @@ y    2
 | sr.transform(…) |     y  2    |   y     2   |       y  2    |
 +-----------------+-------------+-------------+---------------+
  
-* **Last result has a hierarchical index. Use `'<Sr>[key_1, key_2]'` to get its values.**
+Last result has a hierarchical index. Use `'<Sr>[key_1, key_2]'` to get its values.
 
 ### DataFrame
-**Table with labeled rows and columns.**
+Table with labeled rows and columns.
 
  
 >>> DataFrame([[1, 2], [3, 4]], index=['a', 'b'], columns=['x', 'y'])
@@ -2138,7 +2138,7 @@ c  6  7
 <DF> = <DF>.rank/diff/cumsum/ffill/interpl()  # Or: <DF>.apply/agg/transform(lambda <Sr>: <Sr>)
 <DF> = <DF>.fillna(<el>)                      # Or: <DF>.applymap(lambda <el>: <el>)
  
-* **All operations operate on columns by default. Pass `'axis=1'` to process the rows instead.**
+All operations operate on columns by default. Pass `'axis=1'` to process the rows instead.
 
  
 >>> df = DataFrame([[1, 2], [3, 4]], index=['a', 'b'], columns=['x', 'y'])
@@ -2165,7 +2165,7 @@ b  3  4
 |                 |             | b    2    2 |               |
 +-----------------+-------------+-------------+---------------+
  
-* **Use `'<DF>[col_key_1, col_key_2][row_key]'` to get the fifth result's values.**
+Use `'<DF>[col_key_1, col_key_2][row_key]'` to get the fifth result's values.
 
 #### DataFrame — Plot, Encode, Decode:
  
@@ -2188,7 +2188,7 @@ import matplotlib.pyplot as plt
  
 
 ### GroupBy
-**Object that groups together rows of a dataframe based on the value of the passed column.**
+Object that groups together rows of a dataframe based on the value of the passed column.
 
  
 >>> df = DataFrame([[1, 2, 3], [4, 5, 6], [7, 8, 6]], index=list('abc'), columns=list('xyz'))
@@ -2237,7 +2237,7 @@ c  7  8
  
 
 ### Rolling
-**Object for rolling window calculations.**
+Object for rolling window calculations.
 
  
 <R_Sr/R_DF/R_GB> = <Sr/DF/GB>.rolling(window_size)  # Also: `min_periods=None, center=False`.
@@ -2249,8 +2249,8 @@ OS Commands
 import os, shutil, subprocess
 
 ### Files and Directories
-* **Paths can be either strings, Paths or DirEntry objects.**
-* **Functions report OS related errors by raising either OSError or one of its [subclasses](#exceptions-1).**
+Paths can be either strings, Paths or DirEntry objects.
+Functions report OS related errors by raising either OSError or one of its [subclasses](#exceptions-1).
  
 os.chdir(<path>)                    # Changes the current working directory.
 os.mkdir(<path>, mode=0o777)        # Creates a directory. Mode is in octal.
@@ -2268,8 +2268,8 @@ shutil.rmtree(<path>)               # Deletes the directory.
 
 Threading
 ---------
-* **CPython interpreter can only run a single thread at a time.**
-* **That is why using multiple threads won't result in a faster execution, unless at least one of the threads contains an I/O operation.**
+CPython interpreter can only run a single thread at a time.
+That is why using multiple threads won't result in a faster execution, unless at least one of the threads contains an I/O operation.
  
 from threading import Thread, RLock, Semaphore, Event, Barrier
 from concurrent.futures import ThreadPoolExecutor
@@ -2282,8 +2282,8 @@ from concurrent.futures import ThreadPoolExecutor
 <bool> = <Thread>.is_alive()                   # Checks if the thread has finished executing.
 <Thread>.join()                                # Waits for the thread to finish.
  
-* **Use `'kwargs=<dict>'` to pass keyword arguments to the function.**
-* **Use `'daemon=True'`, or the program will not be able to exit while the thread is alive.**
+Use `'kwargs=<dict>'` to pass keyword arguments to the function.
+Use `'daemon=True'`, or the program will not be able to exit while the thread is alive.**
 
 ### Lock
  
@@ -2306,8 +2306,8 @@ with <lock>:                                   # Enters the block by calling acq
  
 
 ### Thread Pool Executor
-* **Object that manages thread execution.**
-* **An object with the same interface called ProcessPoolExecutor provides true parallelism by running a separate interpreter in each process. All arguments must be [pickable](#pickle).**
+Object that manages thread execution.
+An object with the same interface called ProcessPoolExecutor provides true parallelism by running a separate interpreter in each process. All arguments must be [pickable](#pickle).
 
  
 <Exec> = ThreadPoolExecutor(max_workers=None)  # Or: `with ThreadPoolExecutor() as <name>: …`
@@ -2553,13 +2553,13 @@ def f(<nondefault_args>):                      # def f(x, y):
 def f(<default_args>):                         # def f(x=0, y=0):
 def f(<nondefault_args>, <default_args>):      # def f(x, y=0):
  
-* **A function has its default values evaluated when it's first encountered in the scope.**
-* **Any changes to default values that are mutable will persist between invocations.**
+A function has its default values evaluated when it's first encountered in the scope.
+Any changes to default values that are mutable will persist between invocations.
 
 Splat Operator
 --------------
 ### Inside Function Call
-**Splat expands a collection into positional arguments, while splatty-splat expands a dictionary into keyword arguments.**
+Splat expands a collection into positional arguments, while splatty-splat expands a dictionary into keyword arguments.
  
 args   = (1, 2)
 kwargs = {'x': 3, 'y': 4, 'z': 5}
@@ -2572,7 +2572,7 @@ func(1, 2, x=3, y=4, z=5)
  
 
 ### Inside Function Definition
-**Splat combines zero or more positional arguments into a tuple, while splatty-splat combines zero or more keyword arguments into a dictionary.**
+Splat combines zero or more positional arguments into a tuple, while splatty-splat combines zero or more keyword arguments into a dictionary.
  
 def add(*a):
     return sum(a)
@@ -2632,11 +2632,11 @@ from functools import partial
 >>> multiply_by_3(10)
 30
  
-* **Partial is also useful in cases when function needs to be passed as an argument because it enables us to set its arguments beforehand.**
-* **A few examples being: `'defaultdict(<function>)'`, `'iter(<function>, to_exclusive)'` and dataclass's `'field(default_factory=<function>)'`.**
+Partial is also useful in cases when function needs to be passed as an argument because it enables us to set its arguments beforehand.
+A few examples being: `'defaultdict(<function>)'`, `'iter(<function>, to_exclusive)'` and dataclass's `'field(default_factory=<function>)'`.
 
 ### Non-Local
-**If variable is being assigned to anywhere in the scope, it is regarded as a local variable, unless it is declared as a 'global' or a 'nonlocal'.**
+If variable is being assigned to anywhere in the scope, it is regarded as a local variable, unless it is declared as a 'global' or a 'nonlocal'.
 
  
 def get_counter():
@@ -2657,8 +2657,8 @@ def get_counter():
 Iterable Duck Types
 -------------------
 ### Iterable
-* **Only required method is iter(). It should return an iterator of object's items.**
-* **Contains() automatically works on any object that has iter() defined.**
+Only required method is iter(). It should return an iterator of object's items.
+Contains() automatically works on any object that has iter() defined.
  
 class MyIterable:
     def __init__(self, a):
@@ -2675,13 +2675,13 @@ class MyIterable:
 True
 
 #### Discrepancies between glossary definitions and abstract base classes:
-* **Glossary defines iterable as any object with iter() or getitem() and sequence as any object with len() and getitem(). It does not define collection.**
-* **Passing ABC Iterable to isinstance() or issubclass() checks whether object/class has iter(), while ABC Collection checks for iter(), contains() and len().**
+Glossary defines iterable as any object with iter() or getitem() and sequence as any object with len() and getitem(). It does not define collection.
+Passing ABC Iterable to isinstance() or issubclass() checks whether object/class has iter(), while ABC Collection checks for iter(), contains() and len().
 
 ### ABC Sequence
-* **It's a richer interface than the basic sequence.**
-* **Extending it generates iter(), contains(), reversed(), index() and count().**
-* **Unlike `'abc.Iterable'` and `'abc.Collection'`, it is not a duck type. That is why `'issubclass(MySequence, abc.Sequence)'` would return False even if MySequence had all the methods defined.**
+It's a richer interface than the basic sequence.
+Extending it generates iter(), contains(), reversed(), index() and count().
+Unlike `'abc.Iterable'` and `'abc.Collection'`, it is not a duck type. That is why `'issubclass(MySequence, abc.Sequence)'` would return False even if MySequence had all the methods defined.
  
 from collections import abc
 
@@ -2707,8 +2707,8 @@ class MyAbcSequence(abc.Sequence):
 | count()    |            |            |            |     Yes      |
 +------------+------------+------------+------------+--------------+
  
-* **Other ABCs that generate missing methods are: MutableSequence, Set, MutableSet, Mapping and MutableMapping.**
-* **Names of their required methods are stored in `'<abc>.__abstractmethods__'`.**
+Other ABCs that generate missing methods are: MutableSequence, Set, MutableSet, Mapping and MutableMapping.
+Names of their required methods are stored in `'<abc>.__abstractmethods__'`.
 
 ### Итераторы
 
@@ -2831,8 +2831,8 @@ https://habr.com/ru/post/141501/
 
 Decorator
 ---------
-* **A decorator takes a function, adds some functionality and returns it.**
-* **It can be any [callable](#callable), but is usually implemented as a function that returns a [closure](#closure).**
+A decorator takes a function, adds some functionality and returns it.
+It can be any [callable](#callable), but is usually implemented as a function that returns a [closure](#closure).
 
  
 @decorator_name
@@ -2841,7 +2841,7 @@ def function_that_gets_passed_to_decorator():
  
 
 ### Debugger Example
-**Decorator that prints function's name every time it gets called.**
+Decorator that prints function's name every time it gets called.
 
  
 from functools import wraps
@@ -2862,7 +2862,7 @@ Without it `'add.__name__'` would return `'out'`.
 
 
 ### LRU Cache
-**Decorator that caches function's return values. All function's arguments must be hashable.**
+Decorator that caches function's return values. All function's arguments must be hashable.
 
  
 from functools import lru_cache
@@ -2871,11 +2871,11 @@ from functools import lru_cache
 def fib(n):
     return n if n < 2 else fib(n-2) + fib(n-1)
  
-* **Default size of the cache is 128 values. Passing `'maxsize=None'` makes it unbounded.**
-* **CPython interpreter limits recursion depth to 1000 by default. To increase it use `'sys.setrecursionlimit(<depth>)'`.**
+Default size of the cache is 128 values. Passing `'maxsize=None'` makes it unbounded.
+CPython interpreter limits recursion depth to 1000 by default. To increase it use `'sys.setrecursionlimit(<depth>)'`.
 
 ### Parametrized Decorator
-**A decorator that accepts arguments and returns a normal decorator that accepts a function.**
+A decorator that accepts arguments and returns a normal decorator that accepts a function.
  
 from functools import wraps
 
@@ -2912,7 +2912,7 @@ Some types do not have built-in names, so they must be imported:
 from types import FunctionType, MethodType, LambdaType, GeneratorType, ModuleType
 
 ### Abstract Base Classes
-**Each abstract base class specifies a set of virtual subclasses. These classes are then recognized by isinstance() and issubclass() as subclasses of the ABC, although they are really not. ABC can also manually decide whether or not a specific class is its virtual subclass, usually based on which methods the class has implemented. For instance, Iterable ABC looks for method iter() while Collection ABC looks for methods iter(), contains() and len().
+Each abstract base class specifies a set of virtual subclasses. These classes are then recognized by isinstance() and issubclass() as subclasses of the ABC, although they are really not. ABC can also manually decide whether or not a specific class is its virtual subclass, usually based on which methods the class has implemented. For instance, Iterable ABC looks for method iter() while Collection ABC looks for methods iter(), contains() and len().
 
 Class
 -----
@@ -2930,8 +2930,8 @@ class <name>:
     def get_class_name(cls):
         return cls.__name__
  
-* **Return value of repr() should be unambiguous and of str() readable.**
-* **If only repr() is defined, it will also be used for str().**
+Return value of repr() should be unambiguous and of str() readable.
+If only repr() is defined, it will also be used for str().
 
 #### Str() use cases:
  
@@ -2974,13 +2974,13 @@ class A: pass
 class B: pass
 class C(A, B): pass
 
-**MRO determines the order in which parent classes are traversed when searching for a method:**
+MRO determines the order in which parent classes are traversed when searching for a method:
  
 >>> C.mro()
 [<class 'C'>, <class 'A'>, <class 'B'>, <class 'object'>]
 
 ### Property
-**Pythonic way of implementing getters and setters.**
+Pythonic way of implementing getters and setters.
  
 class Person:
     @property
@@ -3010,7 +3010,7 @@ def func(<arg_name>: <type> [= <obj>]) -> <type>:
 <var_name>: typing.Dict/Tuple/Union[<type>, ...]
 
 ### Slots
-**Mechanism that restricts objects to attributes listed in 'slots' and significantly reduces their memory footprint.**
+Mechanism that restricts objects to attributes listed in 'slots' and significantly reduces their memory footprint.
 
 class MyClassWithSlots:
     __slots__ = ['a']
@@ -3025,13 +3025,13 @@ from copy import copy, deepcopy
 
 Duck Types
 ----------
-**A duck type is an implicit type that prescribes a set of special methods. Any object that has those methods defined is considered a member of that duck type.**
+A duck type is an implicit type that prescribes a set of special methods. Any object that has those methods defined is considered a member of that duck type.
 
 ### Comparable
-* **If eq() method is not overridden, it returns `'id(self) == id(other)'`, which is the same as `'self is other'`.**
-* **That means all objects compare not equal by default.**
-* **Only the left side object has eq() method called, unless it returns NotImplemented, in which case the right object is consulted.**
-* **Ne() automatically works on any object that has eq() defined.**
+If eq() method is not overridden, it returns `'id(self) == id(other)'`, which is the same as `'self is other'`.
+That means all objects compare not equal by default.
+Only the left side object has eq() method called, unless it returns NotImplemented, in which case the right object is consulted.
+Ne() automatically works on any object that has eq() defined.
 
 class MyComparable:
     def __init__(self, a):
@@ -3042,9 +3042,9 @@ class MyComparable:
         return NotImplemented
 
 ### Hashable
-* **Hashable object needs both hash() and eq() methods and its hash value should never change.**
-* **Hashable objects that compare equal must have the same hash value, meaning default hash() that returns `'id(self)'` will not do.**
-* **That is why Python automatically makes classes unhashable if you only implement eq().**
+Hashable object needs both hash() and eq() methods and its hash value should never change.
+Hashable objects that compare equal must have the same hash value, meaning default hash() that returns `'id(self)'` will not do.
+That is why Python automatically makes classes unhashable if you only implement eq().
 
 class MyHashable:
     def __init__(self, a):
@@ -3060,9 +3060,9 @@ class MyHashable:
         return hash(self.a)
 
 ### Sortable
-* **With 'total_ordering' decorator, you only need to provide eq() and one of lt(), gt(), le() or ge() special methods and the rest will be automatically generated.**
-* **Functions sorted() and min() only require lt() method, while max() only requires gt(). However, it is best to define them all so that confusion doesn't arise in other contexts.**
-* **When two lists, strings or dataclasses are compared, their values get compared in order until a pair of unequal values is found. The comparison of this two values is then returned. The shorter sequence is considered smaller in case of all values being equal.**
+With 'total_ordering' decorator, you only need to provide eq() and one of lt(), gt(), le() or ge() special methods and the rest will be automatically generated.
+Functions sorted() and min() only require lt() method, while max() only requires gt(). However, it is best to define them all so that confusion doesn't arise in other contexts.
+When two lists, strings or dataclasses are compared, their values get compared in order until a pair of unequal values is found. The comparison of this two values is then returned. The shorter sequence is considered smaller in case of all values being equal.
 
 from functools import total_ordering
 
@@ -3080,9 +3080,9 @@ class MySortable:
         return NotImplemented
 
 ### Iterator
-* **Any object that has methods next() and iter() is an iterator.**
-* **Next() should return next item or raise StopIteration.**
-* **Iter() should return 'self'.**
+Any object that has methods next() and iter() is an iterator.
+Next() should return next item or raise StopIteration.
+Iter() should return 'self'.
  
 class Counter:
     def __init__(self):
@@ -3098,14 +3098,14 @@ class Counter:
 (1, 2, 3)
 
 #### Python has many different iterator objects:
-* **Sequence iterators returned by the [iter()](#iterator) function, such as list\_iterator and set\_iterator.**
-* **Objects returned by the [itertools](#itertools) module, such as count, repeat and cycle.**
-* **Generators returned by the [generator functions](#generator) and [generator expressions](#comprehensions).**
-* **File objects returned by the [open()](#open) function, etc.**
+Sequence iterators returned by the [iter()](#iterator) function, such as list\_iterator and set\_iterator.
+Objects returned by the [itertools](#itertools) module, such as count, repeat and cycle.
+Generators returned by the [generator functions](#generator) and [generator expressions](#comprehensions).
+File objects returned by the [open()](#open) function, etc.
 
 ### Callable
-* **All functions and classes have a call() method, hence are callable.**
-* **When this cheatsheet uses `'<function>'` as an argument, it actually means `'<callable>'`.**
+All functions and classes have a call() method, hence are callable.
+When this cheatsheet uses `'<function>'` as an argument, it actually means `'<callable>'`.
  
 class Counter:
     def __init__(self):
@@ -3120,9 +3120,9 @@ class Counter:
 
 
 ### Collection
-* **Only required methods are iter() and len().**
-* **This cheatsheet actually means `'<iterable>'` when it uses `'<collection>'`.**
-* **I chose not to use the name 'iterable' because it sounds scarier and more vague than 'collection'. The only drawback of this decision is that a reader could think a certain function doesn't accept iterators when it does, since iterators are the only built-in objects that are iterable but are not collections.**
+Only required methods are iter() and len().
+This cheatsheet actually means `'<iterable>'` when it uses `'<collection>'`.
+I chose not to use the name 'iterable' because it sounds scarier and more vague than 'collection'. The only drawback of this decision is that a reader could think a certain function doesn't accept iterators when it does, since iterators are the only built-in objects that are iterable but are not collections.
  
 class MyCollection:
     def __init__(self, a):
@@ -3135,10 +3135,10 @@ class MyCollection:
         return len(self.a)
 
 ### Sequence
-* **Only required methods are len() and getitem().**
-* **Getitem() should return an item at the passed index or raise IndexError.**
-* **Iter() and contains() automatically work on any object that has getitem() defined.**
-* **Reversed() automatically works on any object that has len() and getitem() defined.**
+Only required methods are len() and getitem().
+Getitem() should return an item at the passed index or raise IndexError.
+Iter() and contains() automatically work on any object that has getitem() defined.
+Reversed() automatically works on any object that has len() and getitem() defined.
  
 class MySequence:
     def __init__(self, a):
@@ -3156,7 +3156,7 @@ class MySequence:
 
 ## Introspection
 
-**Inspecting code at runtime.**
+Inspecting code at runtime.
 
 ### Variables
  
@@ -3191,7 +3191,7 @@ from inspect import signature
 
 Operator
 --------
-**Module of functions that provide the functionality of operators.**
+Module of functions that provide the functionality of operators.
  
 import operator as op
 <el>      = op.add/sub/mul/truediv/floordiv/mod(<el>, <el>)  # +, -, *, /, //, %
@@ -3208,8 +3208,8 @@ product_of_elems = functools.reduce(op.mul, <collection>)
 union_of_sets    = functools.reduce(op.or_, <coll_of_sets>)
 first_element    = op.methodcaller('pop', 0)(<list>)
  
-* **Binary operators require objects to have and(), or(), xor() and invert() special methods, unlike logical operators that work on all types of objects.**
-* **Also: `'<bool> = <bool> &|^ <bool>'` and `'<int> = <bool> &|^ <int>'`.**
+Binary operators require objects to have and(), or(), xor() and invert() special methods, unlike logical operators that work on all types of objects.
+Also: `'<bool> = <bool> &|^ <bool>'` and `'<int> = <bool> &|^ <int>'`.
 
 ### Одинарное (_) и двойное (__) подчеркивания. Name mangling.
 
@@ -3264,10 +3264,10 @@ MRO – method resolution order, порядок разрешения метод�
 
 Metaprogramming
 ---------------
-**Code that generates code.**
+Code that generates code.
 
 ### Type
-**Type is the root class. If only passed an object it returns its type (class). Otherwise it creates a new class.**
+Type is the root class. If only passed an object it returns its type (class). Otherwise it creates a new class.
 
  
 <class> = type('<class_name>', <tuple_of_parents>, <dict_of_class_attributes>)
@@ -3283,7 +3283,7 @@ Metaprogramming
 Какие задачи решали с помощью метаклассов?
 
 ### Meta Class
-**A class that creates classes.**
+A class that creates classes.
 
  
 def my_meta_class(name, parents, attrs):
@@ -3298,13 +3298,13 @@ class MyMetaClass(type):
         attrs['a'] = 'abcde'
         return type.__new__(cls, name, parents, attrs)
  
-* **New() is a class method that gets called before init(). If it returns an instance of its class, then that instance gets passed to init() as a 'self' argument.**
-* **It receives the same arguments as init(), except for the first one that specifies the desired type of the returned instance (MyMetaClass in our case).**
-* **Like in our case, new() can also be called directly, usually from a new() method of a child class (**`def __new__(cls): return super().__new__(cls)`**).**
-* **The only difference between the examples above is that my\_meta\_class() returns a class of type type, while MyMetaClass() returns a class of type MyMetaClass.**
+New() is a class method that gets called before init(). If it returns an instance of its class, then that instance gets passed to init() as a 'self' argument.
+It receives the same arguments as init(), except for the first one that specifies the desired type of the returned instance (MyMetaClass in our case).
+Like in our case, new() can also be called directly, usually from a new() method of a child class (`def __new__(cls): return super().__new__(cls)`).
+The only difference between the examples above is that my\_meta\_class() returns a class of type type, while MyMetaClass() returns a class of type MyMetaClass.
 
 ### Metaclass Attribute
-**Right before a class is created it checks if it has the 'metaclass' attribute defined. If not, it recursively checks if any of his parents has it defined and eventually comes to type().**
+Right before a class is created it checks if it has the 'metaclass' attribute defined. If not, it recursively checks if any of his parents has it defined and eventually comes to type().
 
  
 class MyClass(metaclass=MyMetaClass):
@@ -3498,10 +3498,10 @@ process_data(data)
 Напишем свой контекстный менеджер:
 
 ### Context Manager
-* **Enter() should lock the resources and optionally return an object.**
-* **Exit() should release the resources.**
-* **Any exception that happens inside the with block is passed to the exit() method.**
-* **If it wishes to suppress the exception it must return a true value.**
+Enter() should lock the resources and optionally return an object.
+Exit() should release the resources.
+Any exception that happens inside the with block is passed to the exit() method.
+If it wishes to suppress the exception it must return a true value.
  
 class MyOpen:
     def __init__(self, filename):
