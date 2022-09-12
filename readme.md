@@ -2693,6 +2693,23 @@ class MyAbcSequence(abc.Sequence):
     def __getitem__(self, i):
         return self.a[i]
 
+#### Table of required and automatically available special methods:
+ text
++------------+------------+------------+------------+--------------+
+|            |  Iterable  | Collection |  Sequence  | abc.Sequence |
++------------+------------+------------+------------+--------------+
+| iter()     |    REQ     |    REQ     |    Yes     |     Yes      |
+| contains() |    Yes     |    Yes     |    Yes     |     Yes      |
+| len()      |            |    REQ     |    REQ     |     REQ      |
+| getitem()  |            |            |    REQ     |     REQ      |
+| reversed() |            |            |    Yes     |     Yes      |
+| index()    |            |            |            |     Yes      |
+| count()    |            |            |            |     Yes      |
++------------+------------+------------+------------+--------------+
+ 
+* **Other ABCs that generate missing methods are: MutableSequence, Set, MutableSet, Mapping and MutableMapping.**
+* **Names of their required methods are stored in `'<abc>.__abstractmethods__'`.**
+
 ### Итераторы
 
 
@@ -3770,6 +3787,7 @@ Memory View
 ### Источники
 
 Е. П. Моргунов. PostgreSQL. Основы языка SQL.  
+
 ## **Архитектура**
 
 ### SOLID <a name="arcchsolid"></a>  
