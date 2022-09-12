@@ -123,6 +123,87 @@ PL/pgSQL. Процедурный язык для PostgreSQL. Функции PL/p
 
 Полная SQL-совместимость.
 
+SQLite
+------
+**Server-less database engine that stores each database into a separate file.**
+
+### Connect
+**Opens a connection to the database file. Creates a new file if path doesn't exist.**
+ 
+import sqlite3
+<conn> = sqlite3.connect(<path>)                # Also ':memory:'.
+<conn>.close()                                  # Closes the connection.
+
+### Read
+**Returned values can be of type str, int, float, bytes or None.**
+ 
+<cursor> = <conn>.execute('<query>')            # Can raise a subclass of sqlite3.Error.
+<tuple>  = <cursor>.fetchone()                  # Returns next row. Also next(<cursor>).
+<list>   = <cursor>.fetchall()                  # Returns remaining rows. Also list(<cursor>).
+ 
+
+### Write
+ 
+<conn>.execute('<query>')                       # Can raise a subclass of sqlite3.Error.
+<conn>.commit()                                 # Saves all changes since the last commit.
+<conn>.rollback()                               # Discards all changes since the last commit.
+ 
+
+#### Or:
+ 
+with <conn>:                                    # Exits the block with commit() or rollback(),
+    <conn>.execute('<query>')                   # depending on whether any exception occurred.
+ 
+
+### Placeholders
+* **Passed values can be of type str, int, float, bytes, None, bool, datetime.date or datetime.datetime.**
+* **Bools will be stored and returned as ints and dates as [ISO formatted strings](#encode).**
+ 
+<conn>.execute('<query>', <list/tuple>)         # Replaces '?'s in query with values.
+<conn>.execute('<query>', <dict/namedtuple>)    # Replaces ':<key>'s with values.
+<conn>.executemany('<query>', <coll_of_above>)  # Runs execute() multiple times.
+ 
+
+### Example
+**Values are not actually saved in this example because `'conn.commit()'` is omitted!**
+ 
+>>> conn = sqlite3.connect('test.db')
+>>> conn.execute('CREATE TABLE person (person_id INTEGER PRIMARY KEY, name, height)')
+>>> conn.execute('INSERT INTO person VALUES (NULL, ?, ?)', ('Jean-Luc', 187)).lastrowid
+1
+>>> conn.execute('SELECT * FROM person').fetchall()
+[(1, 'Jean-Luc', 187)]
+
+
+
+### MySQL
+**Has a very similar interface, with differences listed below.**
+ 
+# $ pip3 install mysql-connector
+from mysql import connector
+<conn>   = connector.connect(host=<str>, …)     # `user=<str>, password=<str>, database=<str>`.
+<cursor> = <conn>.cursor()                      # Only cursor has execute() method.
+<cursor>.execute('<query>')                     # Can raise a subclass of connector.Error.
+<cursor>.execute('<query>', <list/tuple>)       # Replaces '%s's in query with values.
+<cursor>.execute('<query>', <dict/namedtuple>)  # Replaces '%(<key>)s's with values.
+
+Memory View
+-----------
+* **A sequence object that points to the memory of another object.**
+* **Each element can reference a single or multiple consecutive bytes, depending on format.**
+* **Order and number of elements can be changed with slicing.**
+* **Casting only works between char and other types and uses system's sizes and byte order.**
+
+ 
+<mview> = memoryview(<bytes/bytearray/array>)  # Immutable if bytes, else mutable.
+<real>  = <mview>[<index>]                     # Returns an int or a float.
+<mview> = <mview>[<slice>]                     # Mview with rearranged elements.
+<mview> = <mview>.cast('<typecode>')           # Casts memoryview to the new format.
+<mview>.release()                              # Releases the object's memory buffer.
+
+
+
+
 ### Источники
 
 Е. П. Моргунов. PostgreSQL. Основы языка SQL.  
