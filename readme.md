@@ -42,7 +42,8 @@ n|      ...        |
 -+-----------------+
 ```
 
-Новый словарь инициализируется с 8 пустыми слотами.  
+Новый словарь инициализируется с 8 пустыми слотами.
+
 Интерпретатор сначала пытается добавить новую запись по адресу, зависящему от хеша ключа, i = hash(key) & mask, где mask = PyDictMINSIZE - 1. Если этот адрес занят, то интерпретатор проверяет (при помощи ==) хеш и ключ. Если оба совпадают, то, значит, запись уже существует. Тогда начинается зондирование свободных слотов, которое идет в псевдослучайном порядке (порядок зависит от значения ключа). Новая запись будет добавлена по первому свободному адресу.
 
 Чтение из словаря происходит аналогично, интерпретатор начинает поиск с позиции i и идет по тому же псевдослучайному пути, пока не прочитает нужную запись.
@@ -549,30 +550,6 @@ print(a1.index(-4))  # Returns an index of a member or raises ValueError
     49
     b'1234567890'
     3
-    
-
-### Generator (генератор)
-
-Any function that contains a yield statement returns a generator.
-
-
-```python
-def count(start, step):
-    current = start
-    while True:
-        yield current
-        current += step
-
-c = count(100, 10)
-
-print(next(c))
-print(next(c))
-print(next(c))
-```
-
-    100
-    110
-    120
     
 
 ## String (строка)
@@ -1198,7 +1175,7 @@ print(s5, s6, t2)
 
 ## Где будет быстрее поиск, а где перебор и почему: dict, list, set, tuple?!!!
 
-## Data querying
+## Обработка данных
 
 ### Sum, Count, Min, Max
 
@@ -1544,144 +1521,6 @@ if __name__ == '__main__':
     Encrypted message: b' E\x92\xbeH\x87\xdde\t\xd3\x9ap\x0cO\xc3\xf8\x84\xc7~\x1c\x90\xcd\x9a\xd3\x1bNd\xccDt\x1b\xfcZ\x91\xb5\xd78\x85\x91R\x1e]3\x9c\xec\xcbC\xd8'
     Decrypted message: b'A am the Message'
     
-
-## Exceptions
-
-### Catching exceptions
-
-Basic Example
-
-
-```python
-a: float = 0
-b: float = 0
-
-try:
-    b: float = 1/a
-except ZeroDivisionError as e:
-    print(f"Error: {e}")
-```
-
-    Error: division by zero
-    
-
-More complex example. Code inside the *else* block will only be executed if *try* block had no exceptions. Code inside the *finally* block will always be executed (unless a signal is received).
-
-
-```python
-import traceback
-
-a: float = 0
-b: float = 0
-
-try:
-    b: float = 1/a
-except ZeroDivisionError as e:
-    print(f"Error: {e}")
-except ArithmeticError as e:
-    print(f"We have a bit more complicated problem: {e}")
-except Exception as serious_problem:  # Catch all exceptions
-    print(f"I don't really know what is going on: {traceback.print_exception(serious_problem)}")
-else:
-    print("No errors!")
-finally:
-    print("This part is always called")
-```
-
-    Error: division by zero
-    This part is always called
-    
-
-### Вызов исключений
-
-
-```python
-from decimal import *
-
-def div(a: Decimal, b: Decimal) -> Decimal:
-    if b == 0:
-        raise ValueError("Second argument must be non-zero")
-    return a/b
-
-
-try:
-    c: Decimal = div(1, 0)
-except ValueError:
-    print("We have ValueError, as a planned!")
-    # raise # We can re-raise exception
-```
-
-    We have ValueError, as a planned!
-    
-
-### Встроенные исключения
-```text
-BaseException
- +-- SystemExit                   # Raised by the sys.exit() function
- +-- KeyboardInterrupt            # Raised when the user press the interrupt key (ctrl-c)
- +-- Exception                    # User-defined exceptions should be derived from this class
-      +-- ArithmeticError         # Base class for arithmetic errors
-      |    +-- ZeroDivisionError  # Dividing by zero
-      +-- AttributeError          # Attribute is missing
-      +-- EOFError                # Raised by input() when it hits end-of-file condition
-      +-- LookupError             # Raised when a look-up on a collection fails
-      |    +-- IndexError         # A sequence index is out of range
-      |    +-- KeyError           # A dictionary key or set element is missing
-      +-- NameError               # An object is missing
-      +-- OSError                 # Errors such as “file not found”
-      |    +-- FileNotFoundError  # File or directory is requested but doesn't exist
-      +-- RuntimeError            # Error that don't fall into other categories
-      |    +-- RecursionError     # Maximum recursion depth is exceeded
-      +-- StopIteration           # Raised by next() when run on an empty iterator
-      +-- TypeError               # An argument is of wrong type
-      +-- ValueError              # When an argument is of right type but inappropriate value
-           +-- UnicodeError       # Encoding/decoding strings to/from bytes fails
-```
-
-### Выход из программы при помощи вызова исключения SystemExit
-
-
-```python
-import sys
-
-# sys.exit()  # Exits with exit code 0 (success)
-# sys.exit(777)  # Exits with passed exit code
-```
-
-### Исключения, определяемые пользователем
-
-
-```python
-class MyException(Exception):
-    pass
-
-raise MyException("My car is broken")
-```
-
-
-    ---------------------------------------------------------------------------
-
-    MyException                               Traceback (most recent call last)
-
-    c:\Works\amaargiru\pycore\01_python.ipynb Ячейка 103 in <cell line: 4>()
-          <a href='vscode-notebook-cell:/c%3A/Works/amaargiru/pycore/01_python.ipynb#Y204sZmlsZQ%3D%3D?line=0'>1</a> class MyException(Exception):
-          <a href='vscode-notebook-cell:/c%3A/Works/amaargiru/pycore/01_python.ipynb#Y204sZmlsZQ%3D%3D?line=1'>2</a>     pass
-    ----> <a href='vscode-notebook-cell:/c%3A/Works/amaargiru/pycore/01_python.ipynb#Y204sZmlsZQ%3D%3D?line=3'>4</a> raise MyException("My car is broken")
-    
-
-    MyException: My car is broken
-
-
-### Exception Object
-
-```python
-arguments = <name>.args
-exc_type = <name>.__class__
-filename = <name>.__traceback__.tb_frame.f_code.co_filename
-func_name = <name>.__traceback__.tb_frame.f_code.co_name
-line = linecache.getline(filename, <name>.__traceback__.tb_lineno)
-error_msg = ''.join(traceback.format_exception(exc_type, <name>, <name>.__traceback__))
-```
 
 ## Математика
 
@@ -2243,6 +2082,179 @@ Object for rolling window calculations.
 <R_Sr/R_DF/R_GB> = <Sr/DF/GB>.rolling(window_size)  # Also: `min_periods=None, center=False`.
 <R_Sr/R_DF>      = <R_DF/R_GB>[column_key/s]        # Or: <R>.column_key
 <Sr/DF/DF>       = <R_Sr/R_DF/R_GB>.sum/max/mean()  # Or: <R>.apply/agg(<agg_func/str>)
+
+### Generator (генератор)
+
+Any function that contains a yield statement returns a generator.
+
+
+```python
+def count(start, step):
+    current = start
+    while True:
+        yield current
+        current += step
+
+c = count(100, 10)
+
+print(next(c))
+print(next(c))
+print(next(c))
+```
+
+    100
+    110
+    120
+    
+
+## Exceptions
+
+### Catching exceptions
+
+Basic Example
+
+
+```python
+a: float = 0
+b: float = 0
+
+try:
+    b: float = 1/a
+except ZeroDivisionError as e:
+    print(f"Error: {e}")
+```
+
+    Error: division by zero
+    
+
+More complex example. Code inside the *else* block will only be executed if *try* block had no exceptions. Code inside the *finally* block will always be executed (unless a signal is received).
+
+
+```python
+import traceback
+
+a: float = 0
+b: float = 0
+
+try:
+    b: float = 1/a
+except ZeroDivisionError as e:
+    print(f"Error: {e}")
+except ArithmeticError as e:
+    print(f"We have a bit more complicated problem: {e}")
+except Exception as serious_problem:  # Catch all exceptions
+    print(f"I don't really know what is going on: {traceback.print_exception(serious_problem)}")
+else:
+    print("No errors!")
+finally:
+    print("This part is always called")
+```
+
+    Error: division by zero
+    This part is always called
+    
+
+### Вызов исключений
+
+
+```python
+from decimal import *
+
+def div(a: Decimal, b: Decimal) -> Decimal:
+    if b == 0:
+        raise ValueError("Second argument must be non-zero")
+    return a/b
+
+
+try:
+    c: Decimal = div(1, 0)
+except ValueError:
+    print("We have ValueError, as a planned!")
+    # raise # We can re-raise exception
+```
+
+    We have ValueError, as a planned!
+    
+
+### Встроенные исключения
+```text
+BaseException
+ +-- SystemExit                   # Raised by the sys.exit() function
+ +-- KeyboardInterrupt            # Raised when the user press the interrupt key (ctrl-c)
+ +-- Exception                    # User-defined exceptions should be derived from this class
+      +-- ArithmeticError         # Base class for arithmetic errors
+      |    +-- ZeroDivisionError  # Dividing by zero
+      +-- AttributeError          # Attribute is missing
+      +-- EOFError                # Raised by input() when it hits end-of-file condition
+      +-- LookupError             # Raised when a look-up on a collection fails
+      |    +-- IndexError         # A sequence index is out of range
+      |    +-- KeyError           # A dictionary key or set element is missing
+      +-- NameError               # An object is missing
+      +-- OSError                 # Errors such as “file not found”
+      |    +-- FileNotFoundError  # File or directory is requested but doesn't exist
+      +-- RuntimeError            # Error that don't fall into other categories
+      |    +-- RecursionError     # Maximum recursion depth is exceeded
+      +-- StopIteration           # Raised by next() when run on an empty iterator
+      +-- TypeError               # An argument is of wrong type
+      +-- ValueError              # When an argument is of right type but inappropriate value
+           +-- UnicodeError       # Encoding/decoding strings to/from bytes fails
+```
+
+### Выход из программы при помощи вызова исключения SystemExit
+
+
+```python
+import sys
+
+# sys.exit()  # Exits with exit code 0 (success)
+# sys.exit(777)  # Exits with passed exit code
+```
+
+### Исключения, определяемые пользователем
+
+
+```python
+class MyException(Exception):
+    pass
+
+raise MyException("My car is broken")
+```
+
+
+    ---------------------------------------------------------------------------
+    
+
+    MyException                               Traceback (most recent call last)
+    
+
+    c:\Works\amaargiru\pycore\01_python.ipynb Ячейка 103 in <cell line: 4>()
+    
+
+          <a href='vscode-notebook-cell:/c%3A/Works/amaargiru/pycore/01_python.ipynb#Y204sZmlsZQ%3D%3D?line=0'>1</a> class MyException(Exception):
+    
+
+          <a href='vscode-notebook-cell:/c%3A/Works/amaargiru/pycore/01_python.ipynb#Y204sZmlsZQ%3D%3D?line=1'>2</a>     pass
+    
+
+    ----> <a href='vscode-notebook-cell:/c%3A/Works/amaargiru/pycore/01_python.ipynb#Y204sZmlsZQ%3D%3D?line=3'>4</a> raise MyException("My car is broken")
+    
+
+    
+    
+
+    MyException: My car is broken
+
+
+### Exception Object
+
+```python
+arguments = <name>.args
+exc_type = <name>.__class__
+filename = <name>.__traceback__.tb_frame.f_code.co_filename
+func_name = <name>.__traceback__.tb_frame.f_code.co_name
+line = linecache.getline(filename, <name>.__traceback__.tb_lineno)
+error_msg = ''.join(traceback.format_exception(exc_type, <name>, <name>.__traceback__))
+```
 
 OS Commands
 -----------
