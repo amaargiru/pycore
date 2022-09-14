@@ -1,4 +1,4 @@
-## Структуры данных
+## 1. Структуры данных
 
 ### Массив (array, bytearray) <a name="basicarray"></a>  
 
@@ -111,6 +111,68 @@ table th:nth-of-type(8) {
 | КЧ дерево | - | - | logn | logn | logn | logn | n |
 | АВЛ дерево | - |  | logn | logn | logn | logn | n |
 | Префиксное дерево | - | T9,<br> алгоритм [Ахо–Корасик](https://en.wikipedia.org/wiki/Aho%E2%80%93Corasick_algorithm),<br> алгоритм [LZW](https://en.wikipedia.org/wiki/Lempel%E2%80%93Ziv%E2%80%93Welch) |  | key | key | key |  |
+
+### Array (массив)  
+Object type that can only hold numbers of a predefined type.
+
+
+```python
+from array import array
+
+a1 = array("l", [1, 2, 3, -4])  # Array from collection of numbers
+a2 = array("b", b"1234567890")  # Array from bytes object
+b = bytes(a2)
+
+print(a1)
+print(a2[0])
+print(b)
+
+print(a1.index(-4))  # Returns an index of a member or raises ValueError
+```
+
+    array('l', [1, 2, 3, -4])
+    49
+    b'1234567890'
+    3
+    
+
+### Bytes
+
+Bytes object is an immutable sequence of single bytes. Mutable version is called bytearray.
+
+
+```python
+
+### Encode
+b1 = bytes([1, 2, 3, 4])  # Ints must be in range from 0 to 255
+b2 = "The String".encode('utf-8')
+b3 = (-1024).to_bytes(4, byteorder='big', signed=True)  # byteorder="big"/"little"/"sys.byteorder", signed=False/True
+b4 = bytes.fromhex('FEADCA')  # Hex pairs can be separated by spaces
+b5 = bytes(range(10,30,2))
+
+print(b1, b2, b3, b4, b5)
+
+### Decode
+c: list = list(b"\xfc\x00\x00\x00\x00\x01")  # Returns ints in range from 0 to 255
+s: str = b'The String'.decode("utf-8")
+b: int = int.from_bytes(b"\xfc\x00", byteorder='big', signed=False)  # byteorder="big"/"little"/"sys.byteorder", signed=False/True
+s2: str = b"\xfc\x00\x00\x00\x00\x01".hex(" ")  # Returns a string of hexadecimal pairs, hex pairs can be separated by spaces
+
+print(c, s, b, s2)
+
+with open("1.bin", "wb") as file:  # Write bytes to file
+    file.write(b1)
+
+with open("1.bin", "rb") as file:  # Read bytes from file
+    b6 = file.read()
+
+print(b6)
+```
+
+    b'\x01\x02\x03\x04' b'The String' b'\xff\xff\xfc\x00' b'\xfe\xad\xca' b'\n\x0c\x0e\x10\x12\x14\x16\x18\x1a\x1c'
+    [252, 0, 0, 0, 0, 1] The String 64512 fc 00 00 00 00 01
+    b'\x01\x02\x03\x04'
+    
 
 ### List (список)
 
@@ -528,28 +590,30 @@ print(a, b, c, q.queue)
     eat sleep code deque(['repeat'])
     
 
-### Array (массив)  
-Object type that can only hold numbers of a predefined type.
+### Struct
+
+Module that performs conversions between a sequence of numbers and a bytes object. System’s type sizes and byte order are used by default.
 
 
 ```python
-from array import array
+from struct import pack, unpack, iter_unpack
 
-a1 = array("l", [1, 2, 3, -4])  # Array from collection of numbers
-a2 = array("b", b"1234567890")  # Array from bytes object
-b = bytes(a2)
-
-print(a1)
-print(a2[0])
+b = pack(">hhll", 1, 2, 3, 4)
 print(b)
 
-print(a1.index(-4))  # Returns an index of a member or raises ValueError
+t = unpack(">hhll", b)
+print(t)
+
+i = pack("ii", 1, 2) * 5
+print(i)
+
+print(list(iter_unpack('ii', i)))
 ```
 
-    array('l', [1, 2, 3, -4])
-    49
-    b'1234567890'
-    3
+    b'\x00\x01\x00\x02\x00\x00\x00\x03\x00\x00\x00\x04'
+    (1, 2, 3, 4)
+    b'\x01\x00\x00\x00\x02\x00\x00\x00\x01\x00\x00\x00\x02\x00\x00\x00\x01\x00\x00\x00\x02\x00\x00\x00\x01\x00\x00\x00\x02\x00\x00\x00\x01\x00\x00\x00\x02\x00\x00\x00'
+    [(1, 2), (1, 2), (1, 2), (1, 2), (1, 2)]
     
 
 ## String (строка)
@@ -710,202 +774,6 @@ for num in nums:
     33 -> !
     
 
-## Regex
-
-Argument flags=re.IGNORECASE can be used with all functions
-
-
-```python
-import re
-
-s1: str = "123 abc ABC 456"
-
-m1 = re.search("[aA]", s1)  # Searches for first occurrence of the pattern; search() return None if it can't find a match
-print(m1)
-print(m1.group(0))
-
-m2 = re.match("[aA]", s1)  # Searches at the beginning of the text; match() return None if it can't find a match
-print(m2)
-
-c1: list = re.findall("[aA]", s1)  # Returns all occurrences as strings
-print(c1)
-
-def replacer(s):  # replacer() can be a function that accepts a match object and returns a string
-    return chr(ord(s[0]) + 1)  # Next symbol in alphabet
-
-s2 = re.sub("\w", replacer, s1)  # Substitutes all occurrences with 'replacer'
-print(s2)
-
-c2 = re.split("\d", s1)
-print(c2)
-
-iter = re.finditer("\D", s1)  # Returns all occurrences as match objects
-
-for ch in iter:
-    print(ch.group(0), end= "")
-```
-
-    <re.Match object; span=(4, 5), match='a'>
-    a
-    None
-    ['a', 'A']
-    234 bcd BCD 567
-    ['', '', '', ' abc ABC ', '', '', '']
-     abc ABC 
-
-### Match Object
-
-
-```python
-import re
-
-m3 = re.match(r"(\w+) (\w+)", "John Connor, leader of the Resistance")
-
-s3: str = m3.group(0)  # Returns the whole match
-s4: str = m3.group(1)  # Returns part in the first bracket
-t1: tuple = m3.groups()  # Returns all bracketed parts
-start: int = m3.start()  # Returns start index of the match
-end: int = m3.end()  # Returns exclusive end index of the match
-t2: tuple[int, int] = m3.span()  # Return the 2-tuple (start, end)
-
-print (f"{s3}\n {s4}\n {t1}\n {start}\n {end}\n {t2}\n")
-```
-
-    John Connor
-     John
-     ('John', 'Connor')
-     0
-     11
-     (0, 11)
-    
-    
-
-### JSON
-
-Human-readable text format to store and transmit data objects.
-
-
-```python
-import json
-
-d: dict = {1: "Lemon", 2: "Apple", 3: "Banana!"}
-
-object_as_string: str = json.dumps(d, indent=2)
-print(object_as_string)
-
-restored_object = json.loads(object_as_string)
-
-# Write object to JSON file
-with open("1.json", 'w', encoding='utf-8') as file:
-    json.dump(d, file, indent=2)
-
-# Read object from JSON file
-with open("1.json", encoding='utf-8') as file:
-    restored_from_file = json.load(file)
-    
-print(restored_from_file)
-
-```
-
-    {
-      "1": "Lemon",
-      "2": "Apple",
-      "3": "Banana!"
-    }
-    {'1': 'Lemon', '2': 'Apple', '3': 'Banana!'}
-    
-
-### Pickle
-
-Бинарный формат для хранения и транспортировки структур данных.
-
-
-```python
-import pickle
-
-d: dict = {1: "Lemon", 2: "Apple", 3: "Banana!"}
-
-# Запись объекта в бинарный файл
-with open("1.bin", "wb") as file:
-    pickle.dump(d, file)
-
-# Чтение объекта из файла
-with open("1.bin", "rb") as file:
-    restored_from_file = pickle.load(file)
-
-print(restored_from_file)
-```
-
-    {1: 'Lemon', 2: 'Apple', 3: 'Banana!'}
-    
-
-### Protocol Buffers
-Если вы хотите передавать и хранить данные, используя универсальную структуру, одинаково хорошо понимаемую всеми языками программирования (как JSON) и занимающую мало места (как Pickle), то можно посмотреть в сторону Protocol Buffers ([Wikipedia](https://en.wikipedia.org/wiki/Protocol_Buffers), [примеры для Python](https://developers.google.com/protocol-buffers/docs/pythontutorial)). Есть еще альтернативы, например, [FlatBuffers](https://google.github.io/flatbuffers/), [Apache Avro](https://avro.apache.org/) или [Thrift](https://thrift.apache.org/).
-
-### Bytes
-
-Bytes object is an immutable sequence of single bytes. Mutable version is called bytearray.
-
-
-```python
-
-### Encode
-b1 = bytes([1, 2, 3, 4])  # Ints must be in range from 0 to 255
-b2 = "The String".encode('utf-8')
-b3 = (-1024).to_bytes(4, byteorder='big', signed=True)  # byteorder="big"/"little"/"sys.byteorder", signed=False/True
-b4 = bytes.fromhex('FEADCA')  # Hex pairs can be separated by spaces
-b5 = bytes(range(10,30,2))
-
-print(b1, b2, b3, b4, b5)
-
-### Decode
-c: list = list(b"\xfc\x00\x00\x00\x00\x01")  # Returns ints in range from 0 to 255
-s: str = b'The String'.decode("utf-8")
-b: int = int.from_bytes(b"\xfc\x00", byteorder='big', signed=False)  # byteorder="big"/"little"/"sys.byteorder", signed=False/True
-s2: str = b"\xfc\x00\x00\x00\x00\x01".hex(" ")  # Returns a string of hexadecimal pairs, hex pairs can be separated by spaces
-
-print(c, s, b, s2)
-
-with open("1.bin", "wb") as file:  # Write bytes to file
-    file.write(b1)
-
-with open("1.bin", "rb") as file:  # Read bytes from file
-    b6 = file.read()
-
-print(b6)
-```
-
-    b'\x01\x02\x03\x04' b'The String' b'\xff\xff\xfc\x00' b'\xfe\xad\xca' b'\n\x0c\x0e\x10\x12\x14\x16\x18\x1a\x1c'
-    [252, 0, 0, 0, 0, 1] The String 64512 fc 00 00 00 00 01
-    b'\x01\x02\x03\x04'
-    
-
-### Struct
-
-Module that performs conversions between a sequence of numbers and a bytes object. System’s type sizes and byte order are used by default.
-
-
-```python
-from struct import pack, unpack, iter_unpack
-
-b = pack(">hhll", 1, 2, 3, 4)
-print(b)
-
-t = unpack(">hhll", b)
-print(t)
-
-i = pack("ii", 1, 2) * 5
-print(i)
-
-print(list(iter_unpack('ii', i)))
-```
-
-    b'\x00\x01\x00\x02\x00\x00\x00\x03\x00\x00\x00\x04'
-    (1, 2, 3, 4)
-    b'\x01\x00\x00\x00\x02\x00\x00\x00\x01\x00\x00\x00\x02\x00\x00\x00\x01\x00\x00\x00\x02\x00\x00\x00\x01\x00\x00\x00\x02\x00\x00\x00\x01\x00\x00\x00\x02\x00\x00\x00'
-    [(1, 2), (1, 2), (1, 2), (1, 2), (1, 2)]
-    
-
 ## Datetime
 
 Module *datetime* provides *date*, *time*, *datetime* and *timedelta*. All are immutable and hashable
@@ -980,202 +848,8 @@ print (f"{tz1}\n {tz2}\n {tz3}\n {tz4}\n {local_dt}\n {utc_dt}")
      2022-09-06 12:50:37.895639+00:00
     
 
-### Encode
-
-Python uses the Unix Epoch: "1970-01-01 00:00 UTC"
-
-
-```python
-from datetime import datetime
-from dateutil.tz import tzlocal
-
-dt1: datetime = datetime.fromisoformat("2021-10-04 00:05:23.555+00:00")  # Raises ValueError
-dt2: datetime = datetime.strptime("21/10/04 17:30", "%d/%m/%y %H:%M")   # Datetime from str, according to format (https://docs.python.org/3/library/datetime.html#strftime-and-strptime-format-codes)
-dt3: datetime = datetime.fromordinal(100000)  # 100000th day after 1.1.0001
-dt4: datetime = datetime.fromtimestamp(20_000_000.01)  # Local datetime from seconds since the Epoch
-
-tz2: tzinfo = tzlocal()
-dt5: datetime = datetime.fromtimestamp(300_000_000, tz2)  # Aware datetime from seconds since the Epoch
-
-print (f"{dt1}\n {dt2}\n {dt3}\n {dt4}\n {dt5}")
-```
-
-    2021-10-04 00:05:23.555000+00:00
-     2004-10-21 17:30:00
-     0274-10-16 00:00:00
-     1970-08-20 16:33:20.010000
-     1979-07-05 10:20:00+05:00
-    
-
-### Decode
-
-
-```python
-from datetime import datetime
-
-dt1: datetime = datetime.today()
-
-s1: str = dt1.isoformat()
-s2: str = dt1.strftime("%d/%m/%y %H:%M")  # Outputting datetime object to string (format: https://docs.python.org/3/library/datetime.html#strftime-and-strptime-format-codes)
-i: int = dt1.toordinal()  # Days since Gregorian NYE 1, ignoring time and tz
-a: float = dt1.timestamp()  # Seconds since the Epoch
-
-print (f"{dt1}\n {s1}\n {s2}\n {i}\n {a}")
-```
-
-    2022-09-06 17:50:38.041159
-     2022-09-06T17:50:38.041159
-     06/09/22 17:50
-     738404
-     1662468638.041159
-    
-
-### Арифметика datetime
-
-
-```python
-from datetime import date, time, datetime, timedelta
-from dateutil.tz import UTC, tzlocal, gettz, datetime_exists, resolve_imaginary
-
-d: date  = date.today()
-dt1: datetime = datetime.today()
-dt2: datetime = datetime(year=1981, month=12, day=2)
-td1: timedelta = timedelta(days=5)
-td2: timedelta = timedelta(days=1)
-
-d = d + td1  # date = date ± timedelta
-dt3 = dt1 - td1  # datetime = datetime ± timedelta
-
-td3 = dt1 - dt2  # timedelta = datetime - datetime
-
-td4 = 10 * td1  # timedelta = const * timedelta
-c: float = td1/td2  # timedelta/timedelta
-
-print (f"{d}\n {dt3}\n {td3}\n {td4}\n {c}")
-```
-
-    2022-09-11
-     2022-09-01 17:50:38.132916
-     14888 days, 17:50:38.132916
-     50 days, 0:00:00
-     5.0
-    
-
-## File
-
-### Open
-
-Open the file and return a corresponding file object.
-
-
-```python
-f = open("f.txt", mode='r', encoding="utf-8", newline=None)
-
-print(f.read())
-```
-
-    Hello from file!
-    
-
-
-*encoding=None* means that the default encoding is used, which is platform dependent. Best practice is to use *encoding="utf-8"* whenever possible.  
-*newline=None* means all different end of line combinations are converted to '\n' on read, while on write all '\n' characters are converted to system's default line separator.  
-*newline=""* means no conversions take place, but input is still broken into chunks by readline() and readlines() on every "\n", "\r" and "\r\n".  
-
-### Режимы
-
-"r" - Read (default)  
-"w" - Write (truncate)  
-"x" - Write or fail if the file already exists  
-"a" - Append  
-"w+" - Read and write (truncate)  
-"r+" - Read and write from the start  
-"a+" - Read and write from the end  
-"t" - Text mode (default)  
-"b" - Binary mode (`'br'`, `'bw'`, `'bx'`, …)  
-
-### Исключения
-
-*FileNotFoundError* can be raised when reading with "r" or "r+".  
-*FileExistsError* can be raised when writing with "x".  
-*IsADirectoryError* and *PermissionError* can be raised by any.  
-*OSError* is the parent class of all listed exceptions.  
-
-### Чтение из файла
-
-
-```python
-with open("f.txt", encoding="utf-8") as f:
-    chars = f.read(5)  # Reads chars/bytes or until EOF
-    print(chars)
-
-    f.seek(0)  # Moves to the start of the file. Also seek(offset) and seek(±offset, anchor), where anchor is 0 for start, 1 for current position and 2 for end
-
-    lines: list[str] = f.readlines()  # Also readline()
-    print(lines)
-```
-
-    Hello
-    ['Hello from file!']
-    
-
-### Запись в файл
-
-
-```python
-with open("f.txt", "w", encoding="utf-8") as f:
-    f.write("Hello from file!")  # Also f.writelines(<collection>)
-    # f.flush() for flushes write buffer; runs every 4096/8192 B
-```
-
-## Paths
-
-
-```python
-from os import getcwd, path, listdir
-from pathlib import Path
-
-s1: str = getcwd()  # Returns the current working directory
-print(s1)
-
-s2: str = path.abspath("f.txt")  # Returns absolute path
-print(s2)
-
-s3: str = path.basename(s2)  # Returns final component of the path
-s4: str = path.dirname(s2)  # Returns path without the final component
-t1: tuple = path.splitext(s2)  # Splits on last period of the final component
-print(s3, s4, t1)
-
-p = Path(s2)
-st = p.stat()
-print(st)
-
-b1: bool = p.exists()
-b2: bool = p.is_file()
-b3: bool = p.is_dir()
-print(b1, b2, b3)
-
-c: list = listdir(path=s1)  # Returns filenames located at path
-print(c)
-
-s5: str = p.stem  # Returns final component without extension
-s6: str  = p.suffix  # Returns final component's extension
-t2: tuple = p.parts  # Returns all components as strings
-print(s5, s6, t2)
-```
-
-    c:\Works\amaargiru\pycore
-    c:\Works\amaargiru\pycore\f.txt
-    f.txt c:\Works\amaargiru\pycore ('c:\\Works\\amaargiru\\pycore\\f', '.txt')
-    os.stat_result(st_mode=33206, st_ino=2251799814917120, st_dev=3628794147, st_nlink=1, st_uid=0, st_gid=0, st_size=16, st_atime=1662468638, st_mtime=1662468638, st_ctime=1661089564)
-    True True False
-    ['.git', '.gitignore', '.pytest_cache', '01_python.ipynb', '01_python.md', '02_postgre.md', '03_architecture.md', '04_algorithms.ipynb', '04_algorithms.md', '05_admin_devops.md', '06_pytest_mock.ipynb', '06_pytest_mock.md', '07_fastapi.md', '08_flask.md', '1.bin', '1.json', 'compose_readme.bat', 'coupling_vs_cohesion.svg', 'f.txt', 'gitflow.svg', 'graph_for_dfs.jpg', 'pycallgraph3.png', 'readme.md']
-    f .txt ('c:\\', 'Works', 'amaargiru', 'pycore', 'f.txt')
-    
-
 ## Где будет быстрее поиск, а где перебор и почему: dict, list, set, tuple?!!!
-
-## Обработка данных
+## 2. Обработка данных
 
 ### Sum, Count, Min, Max
 
@@ -1275,42 +949,6 @@ Reduce must be imported from the functools module.
 
 ### bisect и бинарный поиск
 
-### Lambda
- 
-<func> = lambda: <return_value>
-<func> = lambda <arg_1>, <arg_2>: <return_value>
-
-### Conditional Expression
- 
-<obj> = <exp_if_true> if <condition> else <exp_if_false>
- 
-
- 
->>> [a if a else 'zero' for a in (0, 1, 2, 3)]
-['zero', 1, 2, 3]
-
-Closure
-
-We have/get a closure in Python when:
-A nested function references a value of its enclosing function and then
-the enclosing function returns the nested function.
-
- 
-def get_multiplier(a):
-    def out(b):
-        return a * b
-    return out
- 
-
- 
->>> multiply_by_3 = get_multiplier(3)
->>> multiply_by_3(10)
-30
- 
-
-If multiple nested functions within enclosing function reference the same value, that value gets shared.
-To dynamically access function's first free variable use `'<function>.__closure__[0].cell_contents'`.
-
 
 ```python
 import bisect
@@ -1343,6 +981,21 @@ print(binary_search(a, 15))
     5
     [1, 6, 8, 12, 15, 19, 33]
     4
+    
+
+### Pairwise
+
+
+```python
+import itertools
+
+a = [1, 2, 3, 4, 5]
+p = itertools.pairwise(a)  # Returns successive overlapping pairs
+
+print(list(p))
+```
+
+    [(1, 2), (2, 3), (3, 4), (4, 5)]
     
 
 ### Itertools
@@ -1423,19 +1076,85 @@ from itertools import product, combinations, combinations_with_replacement, perm
  ('c', 'a'), ('c', 'b')]                     # c x  x  .
 
 
-### Pairwise
+### Encode
+
+Python uses the Unix Epoch: "1970-01-01 00:00 UTC"
 
 
 ```python
-import itertools
+from datetime import datetime
+from dateutil.tz import tzlocal
 
-a = [1, 2, 3, 4, 5]
-p = itertools.pairwise(a)  # Returns successive overlapping pairs
+dt1: datetime = datetime.fromisoformat("2021-10-04 00:05:23.555+00:00")  # Raises ValueError
+dt2: datetime = datetime.strptime("21/10/04 17:30", "%d/%m/%y %H:%M")   # Datetime from str, according to format (https://docs.python.org/3/library/datetime.html#strftime-and-strptime-format-codes)
+dt3: datetime = datetime.fromordinal(100000)  # 100000th day after 1.1.0001
+dt4: datetime = datetime.fromtimestamp(20_000_000.01)  # Local datetime from seconds since the Epoch
 
-print(list(p))
+tz2: tzinfo = tzlocal()
+dt5: datetime = datetime.fromtimestamp(300_000_000, tz2)  # Aware datetime from seconds since the Epoch
+
+print (f"{dt1}\n {dt2}\n {dt3}\n {dt4}\n {dt5}")
 ```
 
-    [(1, 2), (2, 3), (3, 4), (4, 5)]
+    2021-10-04 00:05:23.555000+00:00
+     2004-10-21 17:30:00
+     0274-10-16 00:00:00
+     1970-08-20 16:33:20.010000
+     1979-07-05 10:20:00+05:00
+    
+
+### Decode
+
+
+```python
+from datetime import datetime
+
+dt1: datetime = datetime.today()
+
+s1: str = dt1.isoformat()
+s2: str = dt1.strftime("%d/%m/%y %H:%M")  # Outputting datetime object to string (format: https://docs.python.org/3/library/datetime.html#strftime-and-strptime-format-codes)
+i: int = dt1.toordinal()  # Days since Gregorian NYE 1, ignoring time and tz
+a: float = dt1.timestamp()  # Seconds since the Epoch
+
+print (f"{dt1}\n {s1}\n {s2}\n {i}\n {a}")
+```
+
+    2022-09-06 17:50:38.041159
+     2022-09-06T17:50:38.041159
+     06/09/22 17:50
+     738404
+     1662468638.041159
+    
+
+### Арифметика datetime
+
+
+```python
+from datetime import date, time, datetime, timedelta
+from dateutil.tz import UTC, tzlocal, gettz, datetime_exists, resolve_imaginary
+
+d: date  = date.today()
+dt1: datetime = datetime.today()
+dt2: datetime = datetime(year=1981, month=12, day=2)
+td1: timedelta = timedelta(days=5)
+td2: timedelta = timedelta(days=1)
+
+d = d + td1  # date = date ± timedelta
+dt3 = dt1 - td1  # datetime = datetime ± timedelta
+
+td3 = dt1 - dt2  # timedelta = datetime - datetime
+
+td4 = 10 * td1  # timedelta = const * timedelta
+c: float = td1/td2  # timedelta/timedelta
+
+print (f"{d}\n {dt3}\n {td3}\n {td4}\n {c}")
+```
+
+    2022-09-11
+     2022-09-01 17:50:38.132916
+     14888 days, 17:50:38.132916
+     50 days, 0:00:00
+     5.0
     
 
 ### Шифрование и дешифрование
@@ -1621,90 +1340,117 @@ print(math.dist(p1, p2))
     5.39588732276722
     
 
-## Random
+## File
+
+### Open
+
+Open the file and return a corresponding file object.
 
 
 ```python
-import random
+f = open("f.txt", mode='r', encoding="utf-8", newline=None)
 
-rf: float = random.random()  # A float inside [0, 1)
-print(f"Single float random: {rf}")
-
-ri: int = random.randint(1, 10)  # An int inside [from, to]
-print(f"Single int random: {ri}")
-
-rb = random.randbytes(10)
-print(f"Random bytes: {rb}")
-
-rc: str = random.choice(["Alice", "Bob", "Maggie", "Madhuri Dixit"])
-print(f"Random choice: {rc}")
-
-rs: str = random.sample([1, 2, 3, 4, 5, 6, 7, 8, 9, 10], 5)
-print(f"Random list without duplicates: {rs}")
-
-a = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
-print(f"List before shuffle: {a}")
-random.shuffle(a)
-print(f"List after shuffle: {a}")
-
+print(f.read())
 ```
 
-    Single float random: 0.9024807633898538
-    Single int random: 7
-    Random bytes: b'>\xe0^\x16PX\xf8E\xf8\x98'
-    Random choice: Bob
-    Random list without duplicates: [5, 10, 3, 6, 1]
-    List before shuffle: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
-    List after shuffle: [10, 4, 6, 5, 1, 8, 3, 9, 7, 2]
+    Hello from file!
     
 
-Input
------
-Reads a line from user input or pipe if present.
 
-<str> = input(prompt=None)
- 
-Trailing newline gets stripped.
-Prompt string is printed to the standard output before reading input.
-Raises EOFError when user hits EOF (ctrl-d/ctrl-z⏎) or input stream gets exhausted.
+*encoding=None* means that the default encoding is used, which is platform dependent. Best practice is to use *encoding="utf-8"* whenever possible.  
+*newline=None* means all different end of line combinations are converted to '\n' on read, while on write all '\n' characters are converted to system's default line separator.  
+*newline=""* means no conversions take place, but input is still broken into chunks by readline() and readlines() on every "\n", "\r" and "\r\n".  
 
-Command Line Arguments
-----------------------
+### Режимы
 
-import sys
-scripts_path = sys.argv[0]
-arguments    = sys.argv[1:]
+"r" - Read (default)  
+"w" - Write (truncate)  
+"x" - Write or fail if the file already exists  
+"a" - Append  
+"w+" - Read and write (truncate)  
+"r+" - Read and write from the start  
+"a+" - Read and write from the end  
+"t" - Text mode (default)  
+"b" - Binary mode (`'br'`, `'bw'`, `'bx'`, …)  
 
-### Argument Parser
- 
-from argparse import ArgumentParser, FileType
-p = ArgumentParser(description=<str>)
-p.add_argument('-<short_name>', '--<name>', action='store_true')  # Flag.
-p.add_argument('-<short_name>', '--<name>', type=<type>)          # Option.
-p.add_argument('<name>', type=<type>, nargs=1)                    # First argument.
-p.add_argument('<name>', type=<type>, nargs='+')                  # Remaining arguments.
-p.add_argument('<name>', type=<type>, nargs='*')                  # Optional arguments.
-args  = p.parse_args()                                            # Exits on error.
-value = args.<name>
+### Исключения
 
-Use `'help=<str>'` to set argument description.
-Use `'default=<el>'` to set the default value.
-Use `'type=FileType(<mode>)'` for files.
+*FileNotFoundError* can be raised when reading with "r" or "r+".  
+*FileExistsError* can be raised when writing with "x".  
+*IsADirectoryError* and *PermissionError* can be raised by any.  
+*OSError* is the parent class of all listed exceptions.  
 
-Print
------
- 
-print(<el_1>, ..., sep=' ', end='\n', file=sys.stdout, flush=False)
- 
-Use `'file=sys.stderr'` for messages about errors.
-Use `'flush=True'` to forcibly flush the stream.
+### Чтение из файла
 
-### Pretty Print
- 
-from pprint import pprint
-pprint(<collection>, width=80, depth=None, compact=False, sort_dicts=True)
- 
-Levels deeper than 'depth' get replaced by '...'.
+
+```python
+with open("f.txt", encoding="utf-8") as f:
+    chars = f.read(5)  # Reads chars/bytes or until EOF
+    print(chars)
+
+    f.seek(0)  # Moves to the start of the file. Also seek(offset) and seek(±offset, anchor), where anchor is 0 for start, 1 for current position and 2 for end
+
+    lines: list[str] = f.readlines()  # Also readline()
+    print(lines)
+```
+
+    Hello
+    ['Hello from file!']
+    
+
+### Запись в файл
+
+
+```python
+with open("f.txt", "w", encoding="utf-8") as f:
+    f.write("Hello from file!")  # Also f.writelines(<collection>)
+    # f.flush() for flushes write buffer; runs every 4096/8192 B
+```
+
+## Paths
+
+
+```python
+from os import getcwd, path, listdir
+from pathlib import Path
+
+s1: str = getcwd()  # Returns the current working directory
+print(s1)
+
+s2: str = path.abspath("f.txt")  # Returns absolute path
+print(s2)
+
+s3: str = path.basename(s2)  # Returns final component of the path
+s4: str = path.dirname(s2)  # Returns path without the final component
+t1: tuple = path.splitext(s2)  # Splits on last period of the final component
+print(s3, s4, t1)
+
+p = Path(s2)
+st = p.stat()
+print(st)
+
+b1: bool = p.exists()
+b2: bool = p.is_file()
+b3: bool = p.is_dir()
+print(b1, b2, b3)
+
+c: list = listdir(path=s1)  # Returns filenames located at path
+print(c)
+
+s5: str = p.stem  # Returns final component without extension
+s6: str  = p.suffix  # Returns final component's extension
+t2: tuple = p.parts  # Returns all components as strings
+print(s5, s6, t2)
+```
+
+    c:\Works\amaargiru\pycore
+    c:\Works\amaargiru\pycore\f.txt
+    f.txt c:\Works\amaargiru\pycore ('c:\\Works\\amaargiru\\pycore\\f', '.txt')
+    os.stat_result(st_mode=33206, st_ino=2251799814917120, st_dev=3628794147, st_nlink=1, st_uid=0, st_gid=0, st_size=16, st_atime=1662468638, st_mtime=1662468638, st_ctime=1661089564)
+    True True False
+    ['.git', '.gitignore', '.pytest_cache', '01_python.ipynb', '01_python.md', '02_postgre.md', '03_architecture.md', '04_algorithms.ipynb', '04_algorithms.md', '05_admin_devops.md', '06_pytest_mock.ipynb', '06_pytest_mock.md', '07_fastapi.md', '08_flask.md', '1.bin', '1.json', 'compose_readme.bat', 'coupling_vs_cohesion.svg', 'f.txt', 'gitflow.svg', 'graph_for_dfs.jpg', 'pycallgraph3.png', 'readme.md']
+    f .txt ('c:\\', 'Works', 'amaargiru', 'pycore', 'f.txt')
+    
 
 NumPy
 -----
@@ -2083,6 +1829,157 @@ Object for rolling window calculations.
 <R_Sr/R_DF>      = <R_DF/R_GB>[column_key/s]        # Or: <R>.column_key
 <Sr/DF/DF>       = <R_Sr/R_DF/R_GB>.sum/max/mean()  # Or: <R>.apply/agg(<agg_func/str>)
 
+## Regex
+
+Argument flags=re.IGNORECASE can be used with all functions
+
+
+```python
+import re
+
+s1: str = "123 abc ABC 456"
+
+m1 = re.search("[aA]", s1)  # Searches for first occurrence of the pattern; search() return None if it can't find a match
+print(m1)
+print(m1.group(0))
+
+m2 = re.match("[aA]", s1)  # Searches at the beginning of the text; match() return None if it can't find a match
+print(m2)
+
+c1: list = re.findall("[aA]", s1)  # Returns all occurrences as strings
+print(c1)
+
+def replacer(s):  # replacer() can be a function that accepts a match object and returns a string
+    return chr(ord(s[0]) + 1)  # Next symbol in alphabet
+
+s2 = re.sub("\w", replacer, s1)  # Substitutes all occurrences with 'replacer'
+print(s2)
+
+c2 = re.split("\d", s1)
+print(c2)
+
+iter = re.finditer("\D", s1)  # Returns all occurrences as match objects
+
+for ch in iter:
+    print(ch.group(0), end= "")
+```
+
+    <re.Match object; span=(4, 5), match='a'>
+    a
+    None
+    ['a', 'A']
+    234 bcd BCD 567
+    ['', '', '', ' abc ABC ', '', '', '']
+     abc ABC 
+
+### Match Object
+
+
+```python
+import re
+
+m3 = re.match(r"(\w+) (\w+)", "John Connor, leader of the Resistance")
+
+s3: str = m3.group(0)  # Returns the whole match
+s4: str = m3.group(1)  # Returns part in the first bracket
+t1: tuple = m3.groups()  # Returns all bracketed parts
+start: int = m3.start()  # Returns start index of the match
+end: int = m3.end()  # Returns exclusive end index of the match
+t2: tuple[int, int] = m3.span()  # Return the 2-tuple (start, end)
+
+print (f"{s3}\n {s4}\n {t1}\n {start}\n {end}\n {t2}\n")
+```
+
+    John Connor
+     John
+     ('John', 'Connor')
+     0
+     11
+     (0, 11)
+    
+    
+
+### JSON
+
+Human-readable text format to store and transmit data objects.
+
+
+```python
+import json
+
+d: dict = {1: "Lemon", 2: "Apple", 3: "Banana!"}
+
+object_as_string: str = json.dumps(d, indent=2)
+print(object_as_string)
+
+restored_object = json.loads(object_as_string)
+
+# Write object to JSON file
+with open("1.json", 'w', encoding='utf-8') as file:
+    json.dump(d, file, indent=2)
+
+# Read object from JSON file
+with open("1.json", encoding='utf-8') as file:
+    restored_from_file = json.load(file)
+    
+print(restored_from_file)
+
+```
+
+    {
+      "1": "Lemon",
+      "2": "Apple",
+      "3": "Banana!"
+    }
+    {'1': 'Lemon', '2': 'Apple', '3': 'Banana!'}
+    
+
+### Pickle
+
+Бинарный формат для хранения и транспортировки структур данных.
+
+
+```python
+import pickle
+
+d: dict = {1: "Lemon", 2: "Apple", 3: "Banana!"}
+
+# Запись объекта в бинарный файл
+with open("1.bin", "wb") as file:
+    pickle.dump(d, file)
+
+# Чтение объекта из файла
+with open("1.bin", "rb") as file:
+    restored_from_file = pickle.load(file)
+
+print(restored_from_file)
+```
+
+    {1: 'Lemon', 2: 'Apple', 3: 'Banana!'}
+    
+
+### Protocol Buffers
+Если вы хотите передавать и хранить данные, используя универсальную структуру, одинаково хорошо понимаемую всеми языками программирования (как JSON) и занимающую мало места (как Pickle), то можно посмотреть в сторону Protocol Buffers ([Wikipedia](https://en.wikipedia.org/wiki/Protocol_Buffers), [примеры для Python](https://developers.google.com/protocol-buffers/docs/pythontutorial)). Есть еще альтернативы, например, [FlatBuffers](https://google.github.io/flatbuffers/), [Apache Avro](https://avro.apache.org/) или [Thrift](https://thrift.apache.org/).
+## 3. Потоки данных
+
+### Итераторы
+
+
+
+Iterator
+--------
+ 
+<iter> = iter(<collection>)                 # `iter(<iter>)` returns unmodified iterator.
+<iter> = iter(<function>, to_exclusive)     # A sequence of return values until 'to_exclusive'.
+<el>   = next(<iter> [, default])           # Raises StopIteration or returns 'default' on end.
+<list> = list(<iter>)                       # Returns a list of iterator's remaining elements.
+
+Enumerate
+---------
+ 
+for i, el in enumerate(<collection> [, i_start]):
+    ...
+
 ### Generator (генератор)
 
 Any function that contains a yield statement returns a generator.
@@ -2106,639 +2003,6 @@ print(next(c))
     110
     120
     
-
-## Exceptions
-
-### Catching exceptions
-
-Basic Example
-
-
-```python
-a: float = 0
-b: float = 0
-
-try:
-    b: float = 1/a
-except ZeroDivisionError as e:
-    print(f"Error: {e}")
-```
-
-    Error: division by zero
-    
-
-More complex example. Code inside the *else* block will only be executed if *try* block had no exceptions. Code inside the *finally* block will always be executed (unless a signal is received).
-
-
-```python
-import traceback
-
-a: float = 0
-b: float = 0
-
-try:
-    b: float = 1/a
-except ZeroDivisionError as e:
-    print(f"Error: {e}")
-except ArithmeticError as e:
-    print(f"We have a bit more complicated problem: {e}")
-except Exception as serious_problem:  # Catch all exceptions
-    print(f"I don't really know what is going on: {traceback.print_exception(serious_problem)}")
-else:
-    print("No errors!")
-finally:
-    print("This part is always called")
-```
-
-    Error: division by zero
-    This part is always called
-    
-
-### Вызов исключений
-
-
-```python
-from decimal import *
-
-def div(a: Decimal, b: Decimal) -> Decimal:
-    if b == 0:
-        raise ValueError("Second argument must be non-zero")
-    return a/b
-
-
-try:
-    c: Decimal = div(1, 0)
-except ValueError:
-    print("We have ValueError, as a planned!")
-    # raise # We can re-raise exception
-```
-
-    We have ValueError, as a planned!
-    
-
-### Встроенные исключения
-```text
-BaseException
- +-- SystemExit                   # Raised by the sys.exit() function
- +-- KeyboardInterrupt            # Raised when the user press the interrupt key (ctrl-c)
- +-- Exception                    # User-defined exceptions should be derived from this class
-      +-- ArithmeticError         # Base class for arithmetic errors
-      |    +-- ZeroDivisionError  # Dividing by zero
-      +-- AttributeError          # Attribute is missing
-      +-- EOFError                # Raised by input() when it hits end-of-file condition
-      +-- LookupError             # Raised when a look-up on a collection fails
-      |    +-- IndexError         # A sequence index is out of range
-      |    +-- KeyError           # A dictionary key or set element is missing
-      +-- NameError               # An object is missing
-      +-- OSError                 # Errors such as “file not found”
-      |    +-- FileNotFoundError  # File or directory is requested but doesn't exist
-      +-- RuntimeError            # Error that don't fall into other categories
-      |    +-- RecursionError     # Maximum recursion depth is exceeded
-      +-- StopIteration           # Raised by next() when run on an empty iterator
-      +-- TypeError               # An argument is of wrong type
-      +-- ValueError              # When an argument is of right type but inappropriate value
-           +-- UnicodeError       # Encoding/decoding strings to/from bytes fails
-```
-
-### Выход из программы при помощи вызова исключения SystemExit
-
-
-```python
-import sys
-
-# sys.exit()  # Exits with exit code 0 (success)
-# sys.exit(777)  # Exits with passed exit code
-```
-
-### Исключения, определяемые пользователем
-
-
-```python
-class MyException(Exception):
-    pass
-
-raise MyException("My car is broken")
-```
-
-
-    ---------------------------------------------------------------------------
-    
-
-    MyException                               Traceback (most recent call last)
-    
-
-    c:\Works\amaargiru\pycore\01_python.ipynb Ячейка 103 in <cell line: 4>()
-    
-
-          <a href='vscode-notebook-cell:/c%3A/Works/amaargiru/pycore/01_python.ipynb#Y204sZmlsZQ%3D%3D?line=0'>1</a> class MyException(Exception):
-    
-
-          <a href='vscode-notebook-cell:/c%3A/Works/amaargiru/pycore/01_python.ipynb#Y204sZmlsZQ%3D%3D?line=1'>2</a>     pass
-    
-
-    ----> <a href='vscode-notebook-cell:/c%3A/Works/amaargiru/pycore/01_python.ipynb#Y204sZmlsZQ%3D%3D?line=3'>4</a> raise MyException("My car is broken")
-    
-
-    
-    
-
-    MyException: My car is broken
-
-
-### Exception Object
-
-```python
-arguments = <name>.args
-exc_type = <name>.__class__
-filename = <name>.__traceback__.tb_frame.f_code.co_filename
-func_name = <name>.__traceback__.tb_frame.f_code.co_name
-line = linecache.getline(filename, <name>.__traceback__.tb_lineno)
-error_msg = ''.join(traceback.format_exception(exc_type, <name>, <name>.__traceback__))
-```
-
-OS Commands
------------
-import os, shutil, subprocess
-
-### Files and Directories
-Paths can be either strings, Paths or DirEntry objects.
-Functions report OS related errors by raising either OSError or one of its [subclasses](#exceptions-1).
- 
-os.chdir(<path>)                    # Changes the current working directory.
-os.mkdir(<path>, mode=0o777)        # Creates a directory. Mode is in octal.
-os.makedirs(<path>, mode=0o777)     # Creates all directories in the path.
-
-shutil.copy(from, to)               # Copies the file. 'to' can exist or be a dir.
-shutil.copytree(from, to)           # Copies the directory. 'to' must not exist.
-
-os.rename(from, to)                 # Renames/moves the file or directory.
-os.replace(from, to)                # Same, but overwrites 'to' if it exists.
-
-os.remove(<path>)                   # Deletes the file.
-os.rmdir(<path>)                    # Deletes the empty directory.
-shutil.rmtree(<path>)               # Deletes the directory.
-
-Threading
----------
-CPython interpreter can only run a single thread at a time.
-That is why using multiple threads won't result in a faster execution, unless at least one of the threads contains an I/O operation.
- 
-from threading import Thread, RLock, Semaphore, Event, Barrier
-from concurrent.futures import ThreadPoolExecutor
- 
-
-### Thread
- 
-<Thread> = Thread(target=<function>)           # Use `args=<collection>` to set the arguments.
-<Thread>.start()                               # Starts the thread.
-<bool> = <Thread>.is_alive()                   # Checks if the thread has finished executing.
-<Thread>.join()                                # Waits for the thread to finish.
- 
-Use `'kwargs=<dict>'` to pass keyword arguments to the function.
-Use `'daemon=True'`, or the program will not be able to exit while the thread is alive.**
-
-### Lock
- 
-<lock> = RLock()                               # Lock that can only be released by the owner.
-<lock>.acquire()                               # Waits for the lock to be available.
-<lock>.release()                               # Makes the lock available again.
- 
-
-#### Or:
- 
-with <lock>:                                   # Enters the block by calling acquire(),
-    ...                                        # and exits it with release().
- 
-
-### Semaphore, Event, Barrier
- 
-<Semaphore> = Semaphore(value=1)               # Lock that can be acquired by 'value' threads.
-<Event>     = Event()                          # Method wait() blocks until set() is called.
-<Barrier>   = Barrier(n_times)                 # Wait() blocks until it's called n_times.
- 
-
-### Thread Pool Executor
-Object that manages thread execution.
-An object with the same interface called ProcessPoolExecutor provides true parallelism by running a separate interpreter in each process. All arguments must be [pickable](#pickle).
-
- 
-<Exec> = ThreadPoolExecutor(max_workers=None)  # Or: `with ThreadPoolExecutor() as <name>: …`
-<Exec>.shutdown(wait=True)                     # Blocks until all threads finish executing.
- 
-
- 
-<iter> = <Exec>.map(<func>, <args_1>, ...)     # A multithreaded and non-lazy map().
-<Futr> = <Exec>.submit(<func>, <arg_1>, ...)   # Starts a thread and returns its Future object.
-<bool> = <Futr>.done()                         # Checks if the thread has finished executing.
-<obj>  = <Futr>.result()                       # Waits for thread to finish and returns result.
-
-## Profiling
-
-### Stopwatch
-
-
-```python
-from time import time
-start_time = time()
-
-j: int = 0
-for i in range(10_000_000):  # Long operation
-    j = i ** 2
-
-duration = time() - start_time
-print(f"{duration} seconds")
-```
-
-    2.2923033237457275 seconds
-    
-
-### High performance
-
-
-```python
-from time import perf_counter
-start_time = perf_counter()
-
-j: int = 0
-for i in range(10_000_000):  # Long operation
-    j = i ** 2
-
-duration = perf_counter() - start_time
-print(f"{duration} seconds")
-```
-
-    2.3540456001646817 seconds
-    
-
-### timeit
-
-Try to avoid a number of common traps for measuring execution times
-
-
-```python
-from timeit import timeit
-
-def long_pow():
-    j: int = 0
-    for i in range(1000_000):  # Long operation
-        j = i ** 2
-
-timeit("long_pow()", number=10, globals=globals(), setup='pass')
-```
-
-
-
-
-    1.8552540000528097
-
-
-
-### Call Graph
-
-Создает PNG изображение графа вызовов с подсвеченными узкими местами
-
-
-```python
-from pycallgraph3 import PyCallGraph
-from pycallgraph3.output import GraphvizOutput
-
-def long_pow():
-    j: int = 0
-    for i in range(1000_000):  # Long operation
-        j = i ** 2
-
-def short_pow():
-    j: int = 0
-    for i in range(1000):  # Short operation
-        j = i ** 2
-
-with PyCallGraph(output=GraphvizOutput()):
-    # Code to be profiled
-    long_pow()
-    short_pow()
-    # This will generate a file called pycallgraph3.png
-```
-
-<img src="pycallgraph3.png" style="height:400px">
-
-## asyncio!!!
-
-В JavaScript async / await сделаны жадными как Promise. При вызове async функции автоматически создается задача и отправляется в очередь на исполнение в event loop. await, в свою очередь, просто ждёт результат.
-
-В питоне асинхронщину задизайнили иначе - лениво.
-
-Вызов async функции возвращает объект - корутину, - которая ни чего не делает.
-
-asyncio.run() создаёт event loop, запускает (корневую) корутину и блокирует поток до получения результата.
-
-await запускает корутину изнутри другой корутины в текущем event loop и ждёт результат.
-
-Для запуска корутины без ожидания (как это делает Promise) используется asyncio.create_task(coro). Либо asyncio.gather(*aws), если надо запустить сразу несколько. Нужно только следить, чтобы ссылка на возвращаемое значение сохранялась до конца вычисления, иначе его пожрет GC и все оборвется на самом интересном месте (промис бы отработал до конца не смотря ни на что).
-
-В JS только один event loop, поэтому было вполне разумно закопать его внутрь promise / async / await как деталь реализации, упростив работу прикладному программисту. В питоне отзеркалили более ранний вариант корутин на генераторах, дали возможность использовать разные event loop и выставили все кишки наружу.
-
-## Сборщик мусора
-
-Стандартный интерпретатор Python (CPython) использует для сборки мусора два алгоритма: подсчет ссылок (reference counting, неотключаемый механизм) и garbage collector (стандартный модуль gc из Python, отключаемый). Алгоритм подсчета ссылок не умеет определять циклические ссылки.
-
-Циклические ссылки могут находиться только в “контейнерных” объектах, т.е. в объектах, которые могут хранить другие объекты, например в списках, словарях, классах и кортежах. GC не следит за простыми и неизменяемыми типами, за исключением кортежей. Некоторые кортежи и словари также исключаются из списка слежки при выполнении определенных условий. Со всеми остальными объектами гарантированно справляется алгоритм подсчета ссылок.
-
-В отличие от алгоритма подсчета ссылок, циклический GC не работает постоянно, а запускается периодически. GC разделяет все объекты на 3 поколения. Новые объекты попадают в первое поколение. Если новый объект выживает процесс сборки мусора, то он перемещается в следующее поколение. Чем выше поколение, тем реже оно сканируется. Так как новые объекты зачастую имеют очень маленький срок жизни (являются временными), то имеет смысл опрашивать их чаще, чем те, которые уже прошли через несколько этапов сборки мусора.  
-В каждом поколенн есть специальный счетчик и порог срабатывания, при достижении которого начинается процесс сборки мусора. Как только в Python создается какой-либо контейнерный объект, он проверяет эти пороги. Если условия срабатывают, то начинается процесс сборки мусора.  
-Стандартные пороги срабатывания для поколений установлены на 700, 10 и 10 соответственно, но всегда можно изменить их с помощью функций gc.get_threshold и gc.set_threshold.
-
-Алгоритм поиска циклических ссылок: говоря кратко, GC проходит по всем объектам из выбранного поколения и временно удаляет все ссылки от каждого объекта. Все объекты, у которых после этого счетчик ссылок меньше двух, считаются недоступными и могут быть удалены.
-
-Ручной отлов циклических ссылок возможен благодаря наличию у GC отладочному флагу DEBUG_SAVEALL, с которым все недоступные объекты будут добавлены в список gc.garbage:
-```python
-gc.set_debug(gc.DEBUG_SAVEALL)
-```
-Список gc.garbage, в свою очередь, можно визуализировать с помощью objgraph:
-
-<img src="garbage.svg" style="height:350px">
-
-В других интерпретаторах Python имеются другие механизмы сборки мусора, например, в интерпретаторе PyPy отсутствует алгоритм постоянного подсчета ссылок. Из-за этого, например, содержимое файла может быть обновлено только после прохода GC, а не тогда, когда файл был закрыт в программе.
-
-### GIL
-
-Global Interpreter Lock - собенность интерпретатора, когда одновременно может исполняться только один тред, остальные треды в это время простаивают.  
-
-GIL позволяет безопасно согласовывать изменения данных. Без этого, например, если один тред удалит все элемены из списка, а второй начнет итерацию по нему, произойдет ошибка. Аналогично, сборщик мусора может начать некорректно подсчитывать ссылки. Проблему можно решить, установив блокировки на все разделяемые структуры данных, но это привнесло бы дополнительные сложности: оверхед по коду, потерю производительности, возможные deadlocks. GIL позволяет осуществлять простую интеграцию C-библиотек, которые зачастую тоже не потокобезопасны, а также обеспечивает быструю работу однопоточных скриптов.
-
-GIL работает так: на каждый тред выделяется некоторый квант времени. Он измеряется в машинных единицах “тиках” и по умолчанию равен 100. Как только на тред было потрачено 100 тиков, интерпретатор бросает этот тред и переключается на второй, тратит 100 тактов на него, затем третий, и так по кругу. Этот алгоритм гаранитрует, что всем тредам будет выделено ресурсов поровну.
-
-Проблема в том, что из-за GIL далеко не все задачи могут быть решены в тредах. Напротив, их использование чаще всего снижает быстродействие программы. С использованием тредов требуется следить за доступом к общим ресурсам: словарям, файлам, соединением к БД.
-
-Как обойти ограничения, накладываемые GIL?  
-Вариант 1 - использовать альтернативные интерпретаторы Python, например PyPy.  
-Вариант 2 - уход от многопоточности в сторону мультипроцессности, используя модуль multiprocessing. Последний вариант подробно разобран ниже.
-
-
-```python
-# Однопоточное приложение
-import time
-
-COUNT = 100_000_000
-
-def countdown(n):
-    while n > 0:
-        n -= 1
-
-start = time.time()
-countdown(COUNT)
-end = time.time()
-
-print("Count time", end - start)
-```
-
-    Count time 3.81453800201416
-    
-
-
-```python
-# Многопоточное приложение, время выполнения будет больше, чем у однопоточного, т. к. добавятся временные затраты на переключение потоков
-import time
-from threading import Thread
-
-COUNT = 100_000_000
-
-def countdown(n):
-    while n > 0:
-        n -= 1
-
-t1 = Thread(target=countdown, args=(COUNT//2,))
-t2 = Thread(target=countdown, args=(COUNT//2,))
-
-start = time.time()
-t1.start()
-t2.start()
-t1.join()
-t2.join()
-end = time.time()
-
-print("Count time", end - start)
-```
-
-    Count time 3.8378489017486572
-    
-
-
-```python
-# Многопроцессорное приложение
-import time
-import multiprocessing as mp
-
-COUNT = 100_000_000
-
-
-def countdown(n):
-    while n > 0:
-        n -= 1
-
-if __name__ ==  '__main__':
-    pool = mp.Pool()
-    start = time.time()
-    pool.apply_async(countdown, args=(COUNT // 2,))
-    pool.apply_async(countdown, args=(COUNT // 2,))
-    pool.close()
-    pool.join()
-    end = time.time()
-    print("Count time", end - start)
-```
-
-Count time 2.0029137134552
-
-## Как передаются значения аргументов в функцию или метод?
-Как передаются аргументы функций в Python (by value or reference)?  
-
-Arguments
----------
-### Inside Function Call
- 
-<function>(<positional_args>)                  # f(0, 0)
-<function>(<keyword_args>)                     # f(x=0, y=0)
-<function>(<positional_args>, <keyword_args>)  # f(0, y=0)
-
-### Inside Function Definition
- 
-def f(<nondefault_args>):                      # def f(x, y):
-def f(<default_args>):                         # def f(x=0, y=0):
-def f(<nondefault_args>, <default_args>):      # def f(x, y=0):
- 
-A function has its default values evaluated when it's first encountered in the scope.
-Any changes to default values that are mutable will persist between invocations.
-
-Splat Operator
---------------
-### Inside Function Call
-Splat expands a collection into positional arguments, while splatty-splat expands a dictionary into keyword arguments.
- 
-args   = (1, 2)
-kwargs = {'x': 3, 'y': 4, 'z': 5}
-func(*args, **kwargs)
- 
-
-#### Is the same as:
- 
-func(1, 2, x=3, y=4, z=5)
- 
-
-### Inside Function Definition
-Splat combines zero or more positional arguments into a tuple, while splatty-splat combines zero or more keyword arguments into a dictionary.
- 
-def add(*a):
-    return sum(a)
- 
-
- 
->>> add(1, 2, 3)
-6
- 
-
-#### Legal argument combinations:
- 
-def f(*, x, y, z):          # f(x=1, y=2, z=3)
-def f(x, *, y, z):          # f(x=1, y=2, z=3) | f(1, y=2, z=3)
-def f(x, y, *, z):          # f(x=1, y=2, z=3) | f(1, y=2, z=3) | f(1, 2, z=3)
- 
-
- 
-def f(*args):               # f(1, 2, 3)
-def f(x, *args):            # f(1, 2, 3)
-def f(*args, z):            # f(1, 2, z=3)
- 
-
- 
-def f(**kwargs):            # f(x=1, y=2, z=3)
-def f(x, **kwargs):         # f(x=1, y=2, z=3) | f(1, y=2, z=3)
-def f(*, x, **kwargs):      # f(x=1, y=2, z=3)
- 
-
- 
-def f(*args, **kwargs):     # f(x=1, y=2, z=3) | f(1, y=2, z=3) | f(1, 2, z=3) | f(1, 2, 3)
-def f(x, *args, **kwargs):  # f(x=1, y=2, z=3) | f(1, y=2, z=3) | f(1, 2, z=3) | f(1, 2, 3)
-def f(*args, y, **kwargs):  # f(x=1, y=2, z=3) | f(1, y=2, z=3)
- 
-
-### Other Uses
- 
-<list>  = [*<collection> [, ...]]
-<set>   = {*<collection> [, ...]}
-<tuple> = (*<collection>, [...])
-<dict>  = {**<dict> [, ...]}
- 
-
- 
-head, *body, tail = <collection>
- 
-
-### Partial
- 
-from functools import partial
-<function> = partial(<function> [, <arg_1>, <arg_2>, ...])
- 
-
- 
->>> import operator as op
->>> multiply_by_3 = partial(op.mul, 3)
->>> multiply_by_3(10)
-30
- 
-Partial is also useful in cases when function needs to be passed as an argument because it enables us to set its arguments beforehand.
-A few examples being: `'defaultdict(<function>)'`, `'iter(<function>, to_exclusive)'` and dataclass's `'field(default_factory=<function>)'`.
-
-### Non-Local
-If variable is being assigned to anywhere in the scope, it is regarded as a local variable, unless it is declared as a 'global' or a 'nonlocal'.
-
- 
-def get_counter():
-    i = 0
-    def out():
-        nonlocal i
-        i += 1
-        return i
-    return out
- 
-
- 
->>> counter = get_counter()
->>> counter(), counter(), counter()
-(1, 2, 3)
-
-
-Iterable Duck Types
--------------------
-### Iterable
-Only required method is iter(). It should return an iterator of object's items.
-Contains() automatically works on any object that has iter() defined.
- 
-class MyIterable:
-    def __init__(self, a):
-        self.a = a
-    def __iter__(self):
-        return iter(self.a)
-    def __contains__(self, el):
-        return el in self.a
- 
->>> obj = MyIterable([1, 2, 3])
->>> [el for el in obj]
-[1, 2, 3]
->>> 1 in obj
-True
-
-#### Discrepancies between glossary definitions and abstract base classes:
-Glossary defines iterable as any object with iter() or getitem() and sequence as any object with len() and getitem(). It does not define collection.
-Passing ABC Iterable to isinstance() or issubclass() checks whether object/class has iter(), while ABC Collection checks for iter(), contains() and len().
-
-### ABC Sequence
-It's a richer interface than the basic sequence.
-Extending it generates iter(), contains(), reversed(), index() and count().
-Unlike `'abc.Iterable'` and `'abc.Collection'`, it is not a duck type. That is why `'issubclass(MySequence, abc.Sequence)'` would return False even if MySequence had all the methods defined.
- 
-from collections import abc
-
-class MyAbcSequence(abc.Sequence):
-    def __init__(self, a):
-        self.a = a
-    def __len__(self):
-        return len(self.a)
-    def __getitem__(self, i):
-        return self.a[i]
-
-#### Table of required and automatically available special methods:
- text
-+------------+------------+------------+------------+--------------+
-|            |  Iterable  | Collection |  Sequence  | abc.Sequence |
-+------------+------------+------------+------------+--------------+
-| iter()     |    REQ     |    REQ     |    Yes     |     Yes      |
-| contains() |    Yes     |    Yes     |    Yes     |     Yes      |
-| len()      |            |    REQ     |    REQ     |     REQ      |
-| getitem()  |            |            |    REQ     |     REQ      |
-| reversed() |            |            |    Yes     |     Yes      |
-| index()    |            |            |            |     Yes      |
-| count()    |            |            |            |     Yes      |
-+------------+------------+------------+------------+--------------+
- 
-Other ABCs that generate missing methods are: MutableSequence, Set, MutableSet, Mapping and MutableMapping.
-Names of their required methods are stored in `'<abc>.__abstractmethods__'`.
-
-### Итераторы
-
-
-
-Iterator
---------
- 
-<iter> = iter(<collection>)                 # `iter(<iter>)` returns unmodified iterator.
-<iter> = iter(<function>, to_exclusive)     # A sequence of return values until 'to_exclusive'.
-<el>   = next(<iter> [, default])           # Raises StopIteration or returns 'default' on end.
-<list> = list(<iter>)                       # Returns a list of iterator's remaining elements.
-
-Enumerate
----------
- 
-for i, el in enumerate(<collection> [, i_start]):
-    ...
 
 ### Генераторы
 https://xakep.ru/2014/10/06/generatora-iteratory-python/  
@@ -2906,6 +2170,80 @@ def add(x, y):
     return x + y
  
 Using only `'@debug'` to decorate the add() function would not work here, because debug would then receive the add() function as a 'print_result' argument. Decorators can however manually check if the argument they received is a function and act accordingly.
+
+### Контекстный менеджер
+
+В питоне есть оператор with. Размещенный внутри код выполняется с особенностью: до и после гарантированно срабатывают события входа в блок with и выхода из него. Объект, который определяет логику событий, называется контекстным менеджером.
+
+На уровне класса события определены методами __enter__ и __exit__. Первый срабатывает в тот момент, когда ход исполнения программы переходит внутрь with. Метод может вернуть значение. Оно будет доступно низлежащему внутри блока with коду.
+
+__exit__ срабатывает в момент выхода блока, в т.ч. и в случае исключения. В этом случае в метод будет передана тройка значений (exc_class, exc_instance, traceback).
+
+Самый распространённый контекстный менеджер – класс, порожденный функцией open. Он гарантирует, что файл будет закрыт даже в том случае, если внутри блока возникнет ошибка.
+
+Желательно выходить из контекстного менеджера как можно быстрее, чтобы освобождать контекст и ресурсы.
+
+```python
+with open('file.txt') as f:
+    data = f.read()
+process_data(data)
+```
+
+В примере выше мы вышли из блока with сразу же после прочтения файла. Обработка данных происходит в основном блоке программы.
+
+Контекстные менеджеры можно использовать для временной замены параметров, переменных окружения, транзакций БД.
+
+Какие функции нужно переопределить в классе А, чтобы экземпляры этого класса могли реализовать протокол контекстного менеджера?
+
+Напишем свой контекстный менеджер:
+
+### Context Manager
+Enter() should lock the resources and optionally return an object.
+Exit() should release the resources.
+Any exception that happens inside the with block is passed to the exit() method.
+If it wishes to suppress the exception it must return a true value.
+ 
+class MyOpen:
+    def __init__(self, filename):
+        self.filename = filename
+    def __enter__(self):
+        self.file = open(self.filename)
+        return self.file
+    def __exit__(self, exc_type, exception, traceback):
+        self.file.close()
+
+>>> with open('test.txt', 'w') as file:
+...     file.write('Hello World!')
+>>> with MyOpen('test.txt') as file:
+...     print(file.read())
+Hello World!
+## 4. ООП
+
+
+### Классы, объекты
+
+Что такое магические методы, для чего нужны?
+
+Магическими метода называют методы, имена которых начинаются и заканчиваются двойным подчеркиванием. Магические они потому, что почти никогда не вызываются явно. Их вызывают встроенные функции или синтаксические конструкции. Например, функция len() вызывает метод __len__() переданного объекта. Метод __add__(self, other) вызывается автоматически при сложении оператором +.
+
+Перечислим некоторые магические методы:
+
+__init__: конструктор класса  
+__add__: сложение с другим объектом  
+__eq__: проверка на равенство с другим объектом  
+__cmp__: сравнение (больше, меньше, равно)  
+__iter__: при подстановке объекта в цикл  
+
+Как в классе сослаться на родительский класс?
+
+Функция super принимает класс и экземпляр:
+
+```python
+class NextClass(FirstClass):
+    def __init__(self, x):
+        super(NextClass, self).__init__()
+        self.x = x
+```
 
 ### Классы
 
@@ -3131,140 +2469,21 @@ class Counter:
 (1, 2, 3)
 
 
-### Collection
-Only required methods are iter() and len().
-This cheatsheet actually means `'<iterable>'` when it uses `'<collection>'`.
-I chose not to use the name 'iterable' because it sounds scarier and more vague than 'collection'. The only drawback of this decision is that a reader could think a certain function doesn't accept iterators when it does, since iterators are the only built-in objects that are iterable but are not collections.
- 
-class MyCollection:
-    def __init__(self, a):
-        self.a = a
-    def __iter__(self):
-        return iter(self.a)
-    def __contains__(self, el):
-        return el in self.a
-    def __len__(self):
-        return len(self.a)
 
-### Sequence
-Only required methods are len() and getitem().
-Getitem() should return an item at the passed index or raise IndexError.
-Iter() and contains() automatically work on any object that has getitem() defined.
-Reversed() automatically works on any object that has len() and getitem() defined.
- 
-class MySequence:
-    def __init__(self, a):
-        self.a = a
-    def __iter__(self):
-        return iter(self.a)
-    def __contains__(self, el):
-        return el in self.a
-    def __len__(self):
-        return len(self.a)
-    def __getitem__(self, i):
-        return self.a[i]
-    def __reversed__(self):
-        return reversed(self.a)
+### \_\_slots\_\_
 
-## Introspection
+Классы хранят поля и их значения в секретном словаре dict. Поскольку словарь – изменяемая структура, вы можете на лету добавлять и удалять из класса поля. Параметр slots в классе жестко фиксирует набор полей класса. Слоты используются когда у класса может быть очень много полей, например, в некоторых ORM, либо когда критична производительность, потому что доступ к слоту срабатывает быстрее, чем поиск в словаре.
 
-Inspecting code at runtime.
+Слоты активно используются в библиотеках requests и falcon.
 
-### Variables
- 
-<list> = dir()                             # Names of local variables (incl. functions).
-<dict> = vars()                            # Dict of local variables. Also locals().
-<dict> = globals()                         # Dict of global variables.
- 
+Недостатки: нельзя присвоить классу поле, которого нет в слотах. Не работают методы __getattr__ и __setattr__.
 
-### Attributes
- 
-<list> = dir(<object>)                     # Names of object's attributes (incl. methods).
-<dict> = vars(<object>)                    # Dict of writable attributes. Also <obj>.__dict__.
-<bool> = hasattr(<object>, '<attr_name>')  # Checks if getattr() raises an AttributeError.
-value  = getattr(<object>, '<attr_name>')  # Raises AttributeError if attribute is missing.
-setattr(<object>, '<attr_name>', value)    # Only works on objects with '__dict__' attribute.
-delattr(<object>, '<attr_name>')           # Same. Also `del <object>.<attr_name>`.
- 
+### Копирование объектов
 
-### Parameters
- 
-from inspect import signature
-<Sig>  = signature(<function>)             # Function's Signature object.
-<dict> = <Sig>.parameters                  # Dict of function's Parameter objects.
-<str>  = <Param>.name                      # Parameter's name.
-<memb> = <Param>.kind                      # Member of ParameterKind enum.
+В Python оператор присваивания (=) не копирует объекты. Вместо этого он создает связь между существующим объектом и именем целевой переменной. Чтобы создать копии объекта в Python, необходимо использовать модуль copy. Более того, существует два способа создания копий для данного объекта с помощью модуля copy.
 
-(использование dir(), dir, hasattr(), getattr())
-
-Как получить список атрибутов объекта?
-
-Функция dir возвращает список строк – полей объекта. Поле __dict__ содержит словарь вида {поле -> значение}.
-
-Operator
---------
-Module of functions that provide the functionality of operators.
- 
-import operator as op
-<el>      = op.add/sub/mul/truediv/floordiv/mod(<el>, <el>)  # +, -, *, /, //, %
-<int/set> = op.and_/or_/xor(<int/set>, <int/set>)            # &, |, ^
-<bool>    = op.eq/ne/lt/le/gt/ge(<sortable>, <sortable>)     # ==, !=, <, <=, >, >=
-<func>    = op.itemgetter/attrgetter/methodcaller(<obj>)     # [index/key], .name, .name()
- 
-
- 
-elementwise_sum  = map(op.add, list_a, list_b)
-sorted_by_second = sorted(<collection>, key=op.itemgetter(1))
-sorted_by_both   = sorted(<collection>, key=op.itemgetter(1, 0))
-product_of_elems = functools.reduce(op.mul, <collection>)
-union_of_sets    = functools.reduce(op.or_, <coll_of_sets>)
-first_element    = op.methodcaller('pop', 0)(<list>)
- 
-Binary operators require objects to have and(), or(), xor() and invert() special methods, unlike logical operators that work on all types of objects.
-Also: `'<bool> = <bool> &|^ <bool>'` and `'<int> = <bool> &|^ <int>'`.
-
-### Одинарное (_) и двойное (__) подчеркивания. Name mangling.
-
-Python не использует спецификаторы доступа, такие как private, public, protected и т. д. Однако, в нем есть имитации поведения переменных путем использования одинарного или двойного подчеркивания в качестве префикса к именам переменных. По умолчанию переменные без подчеркивания являются общедоступными.
-
-Поле класса с одним лидирующим подчеркиванием говорит о том, что параметр используется только внутри класса. При этом он доступен для обращения извне.
-
-```python
-class Foo(object):
-    def __init__(self):
-        self._bar = 42
-
-Foo()._bar
-42
-```
-
-Современные IDE вроде PyCharm подсвечивают обращение к полю с подчеркиванием, но ошибки в процессе исполнения не будет.
-
-Поля с двойным подчеркиванием доступны внутри класса, но извне доступны только при обращении к полю вида _<ClassName>__<fieldName> (name mangling). Значение скрытого поля вне класса получить можно, но это смотрится уродливо.
-
-```python
-class Foo(object):
-    def __init__(self):
-        self.__bar = 42
-
-Foo().__bar
-  AttributeError: 'Foo' object has no attribute '__bar'
-
-Foo()._Foo__bar
-42
-```
-
-В целом, джентельменское соглашение пайтон-программистов подразумевает (простое именование для приватных переменных или использование одинарного подчеркивания для переменных, которые **очень** нежелательно вытаскивать за пределы класса) + использование методов для доступа к переменным
-```python
-class Stack(object):
-
-    def __init__(self):
-        self._storage = []
-
-    def push(self, value):
-        self._storage.append(value)
-```
-
+Shallow Copy – это побитовая копия объекта. Созданный скопированный объект имеет точную копию значений в исходном объекте. Если одно из значений является ссылкой на другие объекты, копируются только адреса ссылок на них.
+Deep Copy – рекурсивно копирует все значения от исходного объекта к целевому, т. е. дублирует даже объекты, на которые ссылается исходный объект.
 
 ## Что такое MRO? Какая разница между MRO2 и MR3 (diamond problem)?!!!
 
@@ -3273,6 +2492,13 @@ class Stack(object):
 Да, можно указать более одного родителя в классе потомка.
 
 MRO – method resolution order, порядок разрешения методов. Алгоритм, по которому следует искать метод в случае, если у класса два и более родителей. Алгоритм линеаризует граф наследования. Коротко можно описать так: ищи слева направо. Поэтому чем левее стоит класс, тем больше у него приоритет при поиске метода.
+
+
+Прокомментировать выражение object() == object()
+
+Всегда ложь, поскольку по умолчанию объекты сравниваются по полю id (адрес в памяти), если только не переопределен метод __eq__.
+
+Как удаляется объект?
 
 Metaprogramming
 ---------------
@@ -3367,20 +2593,52 @@ MyMetaClass.__base__ == type         # MyMetaClass is a subclass of type.
 
 https://proglib.io/p/metaclasses-in-python  
 https://habr.com/ru/post/145835/  
+## 5. Внутренности языка
 
-## PEP8
+## Сборщик мусора
 
-Пробовал flake8 + black, остановился на линтере, встроенном в Pycharm + mypy.
+Стандартный интерпретатор Python (CPython) использует для сборки мусора два алгоритма: подсчет ссылок (reference counting, неотключаемый механизм) и garbage collector (стандартный модуль gc из Python, отключаемый). Алгоритм подсчета ссылок не умеет определять циклические ссылки.
 
-Разница между is и ==?  
-Как создается объект в Python, разница между __init __() и __new __()?  
-В чем разница между потоками и процессами?  
-Какие есть виды импорта?  
-Что такое класс, итератор, генератор?  
-В чем разница между итераторами и генераторами?  
-В чем разница между staticmethod и classmethod?  
-Как работают dict comprehension, list comprehension и set comprehension?  
+Циклические ссылки могут находиться только в “контейнерных” объектах, т.е. в объектах, которые могут хранить другие объекты, например в списках, словарях, классах и кортежах. GC не следит за простыми и неизменяемыми типами, за исключением кортежей. Некоторые кортежи и словари также исключаются из списка слежки при выполнении определенных условий. Со всеми остальными объектами гарантированно справляется алгоритм подсчета ссылок.
 
+В отличие от алгоритма подсчета ссылок, циклический GC не работает постоянно, а запускается периодически. GC разделяет все объекты на 3 поколения. Новые объекты попадают в первое поколение. Если новый объект выживает процесс сборки мусора, то он перемещается в следующее поколение. Чем выше поколение, тем реже оно сканируется. Так как новые объекты зачастую имеют очень маленький срок жизни (являются временными), то имеет смысл опрашивать их чаще, чем те, которые уже прошли через несколько этапов сборки мусора.  
+В каждом поколенн есть специальный счетчик и порог срабатывания, при достижении которого начинается процесс сборки мусора. Как только в Python создается какой-либо контейнерный объект, он проверяет эти пороги. Если условия срабатывают, то начинается процесс сборки мусора.  
+Стандартные пороги срабатывания для поколений установлены на 700, 10 и 10 соответственно, но всегда можно изменить их с помощью функций gc.get_threshold и gc.set_threshold.
+
+Алгоритм поиска циклических ссылок: говоря кратко, GC проходит по всем объектам из выбранного поколения и временно удаляет все ссылки от каждого объекта. Все объекты, у которых после этого счетчик ссылок меньше двух, считаются недоступными и могут быть удалены.
+
+Ручной отлов циклических ссылок возможен благодаря наличию у GC отладочному флагу DEBUG_SAVEALL, с которым все недоступные объекты будут добавлены в список gc.garbage:
+```python
+gc.set_debug(gc.DEBUG_SAVEALL)
+```
+Список gc.garbage, в свою очередь, можно визуализировать с помощью objgraph:
+
+<img src="garbage.svg" style="height:350px">
+
+В других интерпретаторах Python имеются другие механизмы сборки мусора, например, в интерпретаторе PyPy отсутствует алгоритм постоянного подсчета ссылок. Из-за этого, например, содержимое файла может быть обновлено только после прохода GC, а не тогда, когда файл был закрыт в программе.
+
+### GIL
+
+Global Interpreter Lock - собенность интерпретатора, когда одновременно может исполняться только один тред, остальные треды в это время простаивают.  
+
+GIL позволяет безопасно согласовывать изменения данных. Без этого, например, если один тред удалит все элемены из списка, а второй начнет итерацию по нему, произойдет ошибка. Аналогично, сборщик мусора может начать некорректно подсчитывать ссылки. Проблему можно решить, установив блокировки на все разделяемые структуры данных, но это привнесло бы дополнительные сложности: оверхед по коду, потерю производительности, возможные deadlocks. GIL позволяет осуществлять простую интеграцию C-библиотек, которые зачастую тоже не потокобезопасны, а также обеспечивает быструю работу однопоточных скриптов.
+
+GIL работает так: на каждый тред выделяется некоторый квант времени. Он измеряется в машинных единицах “тиках” и по умолчанию равен 100. Как только на тред было потрачено 100 тиков, интерпретатор бросает этот тред и переключается на второй, тратит 100 тактов на него, затем третий, и так по кругу. Этот алгоритм гаранитрует, что всем тредам будет выделено ресурсов поровну.
+
+Проблема в том, что из-за GIL далеко не все задачи могут быть решены в тредах. Напротив, их использование чаще всего снижает быстродействие программы. С использованием тредов требуется следить за доступом к общим ресурсам: словарям, файлам, соединением к БД.
+
+Как обойти ограничения, накладываемые GIL?  
+Вариант 1 - использовать альтернативные интерпретаторы Python, например PyPy.  
+Вариант 2 - уход от многопоточности в сторону мультипроцессности, используя модуль multiprocessing. Последний вариант подробно разобран ниже.
+
+
+### *args, **kwargs
+
+Выражения *args и **kwargs объявляют в сигнатуре функции. Они означают, что внутри функции будут доступны переменные с именами args и kwargs (без звездочек). Можно использовать другие имена, но это считается дурным тоном.
+
+args – это кортеж, который накапливает позиционные аргументы. kwargs – словарь позиционных аргументов, где ключ – имя параметра, значение – значение параметра.
+
+Важно: если в функцию не передано никаких параметров, переменные будут соответственно равны пустому кортежу и пустому словарю, а не None.
 
 ### lambda-функции
 
@@ -3394,14 +2652,899 @@ nope = lambda: pass
 riser = lambda x: raise Exception(x)
 Нет, при загрузке модуля выскочит исключение SyntaxError. В теле лямбды может быть только выражение. pass и raise являются операторами.
 
+### Lambda
+ 
+<func> = lambda: <return_value>
+<func> = lambda <arg_1>, <arg_2>: <return_value>
 
-### *args, **kwargs
+### Conditional Expression
+ 
+<obj> = <exp_if_true> if <condition> else <exp_if_false>
+ 
 
-Выражения *args и **kwargs объявляют в сигнатуре функции. Они означают, что внутри функции будут доступны переменные с именами args и kwargs (без звездочек). Можно использовать другие имена, но это считается дурным тоном.
+ 
+>>> [a if a else 'zero' for a in (0, 1, 2, 3)]
+['zero', 1, 2, 3]
 
-args – это кортеж, который накапливает позиционные аргументы. kwargs – словарь позиционных аргументов, где ключ – имя параметра, значение – значение параметра.
+Closure
 
-Важно: если в функцию не передано никаких параметров, переменные будут соответственно равны пустому кортежу и пустому словарю, а не None.
+We have/get a closure in Python when:
+A nested function references a value of its enclosing function and then
+the enclosing function returns the nested function.
+
+ 
+def get_multiplier(a):
+    def out(b):
+        return a * b
+    return out
+ 
+
+ 
+>>> multiply_by_3 = get_multiplier(3)
+>>> multiply_by_3(10)
+30
+ 
+
+If multiple nested functions within enclosing function reference the same value, that value gets shared.
+To dynamically access function's first free variable use `'<function>.__closure__[0].cell_contents'`.
+
+## Exceptions
+
+### Catching exceptions
+
+Basic Example
+
+
+```python
+a: float = 0
+b: float = 0
+
+try:
+    b: float = 1/a
+except ZeroDivisionError as e:
+    print(f"Error: {e}")
+```
+
+    Error: division by zero
+    
+
+More complex example. Code inside the *else* block will only be executed if *try* block had no exceptions. Code inside the *finally* block will always be executed (unless a signal is received).
+
+
+```python
+import traceback
+
+a: float = 0
+b: float = 0
+
+try:
+    b: float = 1/a
+except ZeroDivisionError as e:
+    print(f"Error: {e}")
+except ArithmeticError as e:
+    print(f"We have a bit more complicated problem: {e}")
+except Exception as serious_problem:  # Catch all exceptions
+    print(f"I don't really know what is going on: {traceback.print_exception(serious_problem)}")
+else:
+    print("No errors!")
+finally:
+    print("This part is always called")
+```
+
+    Error: division by zero
+    This part is always called
+    
+
+### Вызов исключений
+
+
+```python
+from decimal import *
+
+def div(a: Decimal, b: Decimal) -> Decimal:
+    if b == 0:
+        raise ValueError("Second argument must be non-zero")
+    return a/b
+
+
+try:
+    c: Decimal = div(1, 0)
+except ValueError:
+    print("We have ValueError, as a planned!")
+    # raise # We can re-raise exception
+```
+
+    We have ValueError, as a planned!
+    
+
+### Встроенные исключения
+```text
+BaseException
+ +-- SystemExit                   # Raised by the sys.exit() function
+ +-- KeyboardInterrupt            # Raised when the user press the interrupt key (ctrl-c)
+ +-- Exception                    # User-defined exceptions should be derived from this class
+      +-- ArithmeticError         # Base class for arithmetic errors
+      |    +-- ZeroDivisionError  # Dividing by zero
+      +-- AttributeError          # Attribute is missing
+      +-- EOFError                # Raised by input() when it hits end-of-file condition
+      +-- LookupError             # Raised when a look-up on a collection fails
+      |    +-- IndexError         # A sequence index is out of range
+      |    +-- KeyError           # A dictionary key or set element is missing
+      +-- NameError               # An object is missing
+      +-- OSError                 # Errors such as “file not found”
+      |    +-- FileNotFoundError  # File or directory is requested but doesn't exist
+      +-- RuntimeError            # Error that don't fall into other categories
+      |    +-- RecursionError     # Maximum recursion depth is exceeded
+      +-- StopIteration           # Raised by next() when run on an empty iterator
+      +-- TypeError               # An argument is of wrong type
+      +-- ValueError              # When an argument is of right type but inappropriate value
+           +-- UnicodeError       # Encoding/decoding strings to/from bytes fails
+```
+
+### Выход из программы при помощи вызова исключения SystemExit
+
+
+```python
+import sys
+
+# sys.exit()  # Exits with exit code 0 (success)
+# sys.exit(777)  # Exits with passed exit code
+```
+
+### Исключения, определяемые пользователем
+
+
+```python
+class MyException(Exception):
+    pass
+
+raise MyException("My car is broken")
+```
+
+
+    ---------------------------------------------------------------------------
+    
+
+    
+    
+
+    MyException                               Traceback (most recent call last)
+    
+
+    
+    
+
+    c:\Works\amaargiru\pycore\01_python.ipynb Ячейка 103 in <cell line: 4>()
+    
+
+    
+    
+
+          <a href='vscode-notebook-cell:/c%3A/Works/amaargiru/pycore/01_python.ipynb#Y204sZmlsZQ%3D%3D?line=0'>1</a> class MyException(Exception):
+    
+
+    
+    
+
+          <a href='vscode-notebook-cell:/c%3A/Works/amaargiru/pycore/01_python.ipynb#Y204sZmlsZQ%3D%3D?line=1'>2</a>     pass
+    
+
+    
+    
+
+    ----> <a href='vscode-notebook-cell:/c%3A/Works/amaargiru/pycore/01_python.ipynb#Y204sZmlsZQ%3D%3D?line=3'>4</a> raise MyException("My car is broken")
+    
+
+    
+    
+
+    
+    
+
+    
+    
+
+    MyException: My car is broken
+
+
+### Exception Object
+
+```python
+arguments = <name>.args
+exc_type = <name>.__class__
+filename = <name>.__traceback__.tb_frame.f_code.co_filename
+func_name = <name>.__traceback__.tb_frame.f_code.co_name
+line = linecache.getline(filename, <name>.__traceback__.tb_lineno)
+error_msg = ''.join(traceback.format_exception(exc_type, <name>, <name>.__traceback__))
+```
+
+## PEP8
+
+Пробовал flake8 + black, остановился на линтере, встроенном в Pycharm + mypy.
+
+### Одинарное (_) и двойное (__) подчеркивания. Name mangling.
+
+Python не использует спецификаторы доступа, такие как private, public, protected и т. д. Однако, в нем есть имитации поведения переменных путем использования одинарного или двойного подчеркивания в качестве префикса к именам переменных. По умолчанию переменные без подчеркивания являются общедоступными.
+
+Поле класса с одним лидирующим подчеркиванием говорит о том, что параметр используется только внутри класса. При этом он доступен для обращения извне.
+
+```python
+class Foo(object):
+    def __init__(self):
+        self._bar = 42
+
+Foo()._bar
+42
+```
+
+Современные IDE вроде PyCharm подсвечивают обращение к полю с подчеркиванием, но ошибки в процессе исполнения не будет.
+
+Поля с двойным подчеркиванием доступны внутри класса, но извне доступны только при обращении к полю вида _<ClassName>__<fieldName> (name mangling). Значение скрытого поля вне класса получить можно, но это смотрится уродливо.
+
+```python
+class Foo(object):
+    def __init__(self):
+        self.__bar = 42
+
+Foo().__bar
+  AttributeError: 'Foo' object has no attribute '__bar'
+
+Foo()._Foo__bar
+42
+```
+
+В целом, джентельменское соглашение пайтон-программистов подразумевает (простое именование для приватных переменных или использование одинарного подчеркивания для переменных, которые **очень** нежелательно вытаскивать за пределы класса) + использование методов для доступа к переменным
+```python
+class Stack(object):
+
+    def __init__(self):
+        self._storage = []
+
+    def push(self, value):
+        self._storage.append(value)
+```
+
+
+### Collection
+Only required methods are iter() and len().
+This cheatsheet actually means `'<iterable>'` when it uses `'<collection>'`.
+I chose not to use the name 'iterable' because it sounds scarier and more vague than 'collection'. The only drawback of this decision is that a reader could think a certain function doesn't accept iterators when it does, since iterators are the only built-in objects that are iterable but are not collections.
+ 
+class MyCollection:
+    def __init__(self, a):
+        self.a = a
+    def __iter__(self):
+        return iter(self.a)
+    def __contains__(self, el):
+        return el in self.a
+    def __len__(self):
+        return len(self.a)
+
+### Sequence
+Only required methods are len() and getitem().
+Getitem() should return an item at the passed index or raise IndexError.
+Iter() and contains() automatically work on any object that has getitem() defined.
+Reversed() automatically works on any object that has len() and getitem() defined.
+ 
+class MySequence:
+    def __init__(self, a):
+        self.a = a
+    def __iter__(self):
+        return iter(self.a)
+    def __contains__(self, el):
+        return el in self.a
+    def __len__(self):
+        return len(self.a)
+    def __getitem__(self, i):
+        return self.a[i]
+    def __reversed__(self):
+        return reversed(self.a)
+
+## Introspection
+
+Inspecting code at runtime.
+
+### Variables
+ 
+<list> = dir()                             # Names of local variables (incl. functions).
+<dict> = vars()                            # Dict of local variables. Also locals().
+<dict> = globals()                         # Dict of global variables.
+ 
+
+### Attributes
+ 
+<list> = dir(<object>)                     # Names of object's attributes (incl. methods).
+<dict> = vars(<object>)                    # Dict of writable attributes. Also <obj>.__dict__.
+<bool> = hasattr(<object>, '<attr_name>')  # Checks if getattr() raises an AttributeError.
+value  = getattr(<object>, '<attr_name>')  # Raises AttributeError if attribute is missing.
+setattr(<object>, '<attr_name>', value)    # Only works on objects with '__dict__' attribute.
+delattr(<object>, '<attr_name>')           # Same. Also `del <object>.<attr_name>`.
+ 
+
+### Parameters
+ 
+from inspect import signature
+<Sig>  = signature(<function>)             # Function's Signature object.
+<dict> = <Sig>.parameters                  # Dict of function's Parameter objects.
+<str>  = <Param>.name                      # Parameter's name.
+<memb> = <Param>.kind                      # Member of ParameterKind enum.
+
+(использование dir(), dir, hasattr(), getattr())
+
+Как получить список атрибутов объекта?
+
+Функция dir возвращает список строк – полей объекта. Поле __dict__ содержит словарь вида {поле -> значение}.
+
+Operator
+--------
+Module of functions that provide the functionality of operators.
+ 
+import operator as op
+<el>      = op.add/sub/mul/truediv/floordiv/mod(<el>, <el>)  # +, -, *, /, //, %
+<int/set> = op.and_/or_/xor(<int/set>, <int/set>)            # &, |, ^
+<bool>    = op.eq/ne/lt/le/gt/ge(<sortable>, <sortable>)     # ==, !=, <, <=, >, >=
+<func>    = op.itemgetter/attrgetter/methodcaller(<obj>)     # [index/key], .name, .name()
+ 
+
+ 
+elementwise_sum  = map(op.add, list_a, list_b)
+sorted_by_second = sorted(<collection>, key=op.itemgetter(1))
+sorted_by_both   = sorted(<collection>, key=op.itemgetter(1, 0))
+product_of_elems = functools.reduce(op.mul, <collection>)
+union_of_sets    = functools.reduce(op.or_, <coll_of_sets>)
+first_element    = op.methodcaller('pop', 0)(<list>)
+ 
+Binary operators require objects to have and(), or(), xor() and invert() special methods, unlike logical operators that work on all types of objects.
+Also: `'<bool> = <bool> &|^ <bool>'` and `'<int> = <bool> &|^ <int>'`.
+
+## Как передаются значения аргументов в функцию или метод?
+Как передаются аргументы функций в Python (by value or reference)?  
+
+Arguments
+---------
+### Inside Function Call
+ 
+<function>(<positional_args>)                  # f(0, 0)
+<function>(<keyword_args>)                     # f(x=0, y=0)
+<function>(<positional_args>, <keyword_args>)  # f(0, y=0)
+
+### Inside Function Definition
+ 
+def f(<nondefault_args>):                      # def f(x, y):
+def f(<default_args>):                         # def f(x=0, y=0):
+def f(<nondefault_args>, <default_args>):      # def f(x, y=0):
+ 
+A function has its default values evaluated when it's first encountered in the scope.
+Any changes to default values that are mutable will persist between invocations.
+
+Splat Operator
+--------------
+### Inside Function Call
+Splat expands a collection into positional arguments, while splatty-splat expands a dictionary into keyword arguments.
+ 
+args   = (1, 2)
+kwargs = {'x': 3, 'y': 4, 'z': 5}
+func(*args, **kwargs)
+ 
+
+#### Is the same as:
+ 
+func(1, 2, x=3, y=4, z=5)
+ 
+
+### Inside Function Definition
+Splat combines zero or more positional arguments into a tuple, while splatty-splat combines zero or more keyword arguments into a dictionary.
+ 
+def add(*a):
+    return sum(a)
+ 
+
+ 
+>>> add(1, 2, 3)
+6
+ 
+
+#### Legal argument combinations:
+ 
+def f(*, x, y, z):          # f(x=1, y=2, z=3)
+def f(x, *, y, z):          # f(x=1, y=2, z=3) | f(1, y=2, z=3)
+def f(x, y, *, z):          # f(x=1, y=2, z=3) | f(1, y=2, z=3) | f(1, 2, z=3)
+ 
+
+ 
+def f(*args):               # f(1, 2, 3)
+def f(x, *args):            # f(1, 2, 3)
+def f(*args, z):            # f(1, 2, z=3)
+ 
+
+ 
+def f(**kwargs):            # f(x=1, y=2, z=3)
+def f(x, **kwargs):         # f(x=1, y=2, z=3) | f(1, y=2, z=3)
+def f(*, x, **kwargs):      # f(x=1, y=2, z=3)
+ 
+
+ 
+def f(*args, **kwargs):     # f(x=1, y=2, z=3) | f(1, y=2, z=3) | f(1, 2, z=3) | f(1, 2, 3)
+def f(x, *args, **kwargs):  # f(x=1, y=2, z=3) | f(1, y=2, z=3) | f(1, 2, z=3) | f(1, 2, 3)
+def f(*args, y, **kwargs):  # f(x=1, y=2, z=3) | f(1, y=2, z=3)
+ 
+
+### Other Uses
+ 
+<list>  = [*<collection> [, ...]]
+<set>   = {*<collection> [, ...]}
+<tuple> = (*<collection>, [...])
+<dict>  = {**<dict> [, ...]}
+ 
+
+ 
+head, *body, tail = <collection>
+ 
+
+### Partial
+ 
+from functools import partial
+<function> = partial(<function> [, <arg_1>, <arg_2>, ...])
+ 
+
+ 
+>>> import operator as op
+>>> multiply_by_3 = partial(op.mul, 3)
+>>> multiply_by_3(10)
+30
+ 
+Partial is also useful in cases when function needs to be passed as an argument because it enables us to set its arguments beforehand.
+A few examples being: `'defaultdict(<function>)'`, `'iter(<function>, to_exclusive)'` and dataclass's `'field(default_factory=<function>)'`.
+
+### Non-Local
+If variable is being assigned to anywhere in the scope, it is regarded as a local variable, unless it is declared as a 'global' or a 'nonlocal'.
+
+ 
+def get_counter():
+    i = 0
+    def out():
+        nonlocal i
+        i += 1
+        return i
+    return out
+ 
+
+ 
+>>> counter = get_counter()
+>>> counter(), counter(), counter()
+(1, 2, 3)
+
+
+Iterable Duck Types
+-------------------
+### Iterable
+Only required method is iter(). It should return an iterator of object's items.
+Contains() automatically works on any object that has iter() defined.
+ 
+class MyIterable:
+    def __init__(self, a):
+        self.a = a
+    def __iter__(self):
+        return iter(self.a)
+    def __contains__(self, el):
+        return el in self.a
+ 
+>>> obj = MyIterable([1, 2, 3])
+>>> [el for el in obj]
+[1, 2, 3]
+>>> 1 in obj
+True
+
+#### Discrepancies between glossary definitions and abstract base classes:
+Glossary defines iterable as any object with iter() or getitem() and sequence as any object with len() and getitem(). It does not define collection.
+Passing ABC Iterable to isinstance() or issubclass() checks whether object/class has iter(), while ABC Collection checks for iter(), contains() and len().
+
+### ABC Sequence
+It's a richer interface than the basic sequence.
+Extending it generates iter(), contains(), reversed(), index() and count().
+Unlike `'abc.Iterable'` and `'abc.Collection'`, it is not a duck type. That is why `'issubclass(MySequence, abc.Sequence)'` would return False even if MySequence had all the methods defined.
+ 
+from collections import abc
+
+class MyAbcSequence(abc.Sequence):
+    def __init__(self, a):
+        self.a = a
+    def __len__(self):
+        return len(self.a)
+    def __getitem__(self, i):
+        return self.a[i]
+
+#### Table of required and automatically available special methods:
+ text
++------------+------------+------------+------------+--------------+
+|            |  Iterable  | Collection |  Sequence  | abc.Sequence |
++------------+------------+------------+------------+--------------+
+| iter()     |    REQ     |    REQ     |    Yes     |     Yes      |
+| contains() |    Yes     |    Yes     |    Yes     |     Yes      |
+| len()      |            |    REQ     |    REQ     |     REQ      |
+| getitem()  |            |            |    REQ     |     REQ      |
+| reversed() |            |            |    Yes     |     Yes      |
+| index()    |            |            |            |     Yes      |
+| count()    |            |            |            |     Yes      |
++------------+------------+------------+------------+--------------+
+ 
+Other ABCs that generate missing methods are: MutableSequence, Set, MutableSet, Mapping and MutableMapping.
+Names of their required methods are stored in `'<abc>.__abstractmethods__'`.
+## 6. Многопоточность и многозадачность
+
+Threading
+---------
+CPython interpreter can only run a single thread at a time.
+That is why using multiple threads won't result in a faster execution, unless at least one of the threads contains an I/O operation.
+ 
+from threading import Thread, RLock, Semaphore, Event, Barrier
+from concurrent.futures import ThreadPoolExecutor
+ 
+
+### Thread
+ 
+<Thread> = Thread(target=<function>)           # Use `args=<collection>` to set the arguments.
+<Thread>.start()                               # Starts the thread.
+<bool> = <Thread>.is_alive()                   # Checks if the thread has finished executing.
+<Thread>.join()                                # Waits for the thread to finish.
+ 
+Use `'kwargs=<dict>'` to pass keyword arguments to the function.
+Use `'daemon=True'`, or the program will not be able to exit while the thread is alive.**
+
+### Lock
+ 
+<lock> = RLock()                               # Lock that can only be released by the owner.
+<lock>.acquire()                               # Waits for the lock to be available.
+<lock>.release()                               # Makes the lock available again.
+ 
+
+#### Or:
+ 
+with <lock>:                                   # Enters the block by calling acquire(),
+    ...                                        # and exits it with release().
+ 
+
+### Semaphore, Event, Barrier
+ 
+<Semaphore> = Semaphore(value=1)               # Lock that can be acquired by 'value' threads.
+<Event>     = Event()                          # Method wait() blocks until set() is called.
+<Barrier>   = Barrier(n_times)                 # Wait() blocks until it's called n_times.
+ 
+
+### Thread Pool Executor
+Object that manages thread execution.
+An object with the same interface called ProcessPoolExecutor provides true parallelism by running a separate interpreter in each process. All arguments must be [pickable](#pickle).
+
+ 
+<Exec> = ThreadPoolExecutor(max_workers=None)  # Or: `with ThreadPoolExecutor() as <name>: …`
+<Exec>.shutdown(wait=True)                     # Blocks until all threads finish executing.
+ 
+
+ 
+<iter> = <Exec>.map(<func>, <args_1>, ...)     # A multithreaded and non-lazy map().
+<Futr> = <Exec>.submit(<func>, <arg_1>, ...)   # Starts a thread and returns its Future object.
+<bool> = <Futr>.done()                         # Checks if the thread has finished executing.
+<obj>  = <Futr>.result()                       # Waits for thread to finish and returns result.
+
+
+### Многопоточность
+
+Многопоточность достигается модулем Threading. Это нативные Posix-треды, такие треды исполняются операционной системой, а не виртуальной машиной.
+
+В чем отличие тредов от мультипроцессинга?
+
+Главное отличие в разделении памяти. Процессы независимы друг от друга, имеют раздельные адресные пространства, идентификаторы, ресурсы. Треды исполняются в совместном адресном пространстве, имеют общий доступ к памяти, переменным, загруженным модулям.
+
+Какие задачи хорошо параллелятся, какие плохо?
+
+Те задачи, которые порождают долгий IO. Когда тред упирается в ожидание сокета или диска, интерпретатор бросает этот тред и стартует следующий. Это значит, не будет простоя из-за ожидания. Наоборот, если ходить в сеть в одном треде (в цикле), то каждый раз придется ждать ответа.
+
+Однако, если затем в треде обрабатывает полученные данные, то выполнятся будет только он один. Это не только не даст прироста в скорости, но и замедлит программу из-за переключения на другие треды.
+
+Короткий ответ: хорошо ложатся на треды задачи по работе с сетью. Например, выкачать сто урлов. Полученные данные обрабатывайте вне тредов.
+
+Нужно посчитать 100 уравнений. Делать это в тредах или нет?
+
+Нет, потому что в этой задаче нет ввода-вывода. Интерпретатор только будет тратить лишнее время на переключение тредов. Сложные математические задачи лучше выносить в отдельные процессы, либо использовать фреймворк для распределенных задач Celery, либо подключать как C-библиотеки.
+
+Понимание что такое heap dump и thread dump.
+
+понимание многопоточности, способов ей управлять и проблем, с этим связанных (синхронизации, локи, race condition и т.д.);
+
+
+```python
+# Однопоточное приложение
+import time
+
+COUNT = 100_000_000
+
+def countdown(n):
+    while n > 0:
+        n -= 1
+
+start = time.time()
+countdown(COUNT)
+end = time.time()
+
+print("Count time", end - start)
+```
+
+    Count time 3.81453800201416
+    
+
+
+```python
+# Многопоточное приложение, время выполнения будет больше, чем у однопоточного, т. к. добавятся временные затраты на переключение потоков
+import time
+from threading import Thread
+
+COUNT = 100_000_000
+
+def countdown(n):
+    while n > 0:
+        n -= 1
+
+t1 = Thread(target=countdown, args=(COUNT//2,))
+t2 = Thread(target=countdown, args=(COUNT//2,))
+
+start = time.time()
+t1.start()
+t2.start()
+t1.join()
+t2.join()
+end = time.time()
+
+print("Count time", end - start)
+```
+
+    Count time 3.8378489017486572
+    
+
+
+```python
+# Многопроцессорное приложение
+import time
+import multiprocessing as mp
+
+COUNT = 100_000_000
+
+
+def countdown(n):
+    while n > 0:
+        n -= 1
+
+if __name__ ==  '__main__':
+    pool = mp.Pool()
+    start = time.time()
+    pool.apply_async(countdown, args=(COUNT // 2,))
+    pool.apply_async(countdown, args=(COUNT // 2,))
+    pool.close()
+    pool.join()
+    end = time.time()
+    print("Count time", end - start)
+```
+
+## asyncio!!!
+
+В JavaScript async / await сделаны жадными как Promise. При вызове async функции автоматически создается задача и отправляется в очередь на исполнение в event loop. await, в свою очередь, просто ждёт результат.
+
+В питоне асинхронщину задизайнили иначе - лениво.
+
+Вызов async функции возвращает объект - корутину, - которая ни чего не делает.
+
+asyncio.run() создаёт event loop, запускает (корневую) корутину и блокирует поток до получения результата.
+
+await запускает корутину изнутри другой корутины в текущем event loop и ждёт результат.
+
+Для запуска корутины без ожидания (как это делает Promise) используется asyncio.create_task(coro). Либо asyncio.gather(*aws), если надо запустить сразу несколько. Нужно только следить, чтобы ссылка на возвращаемое значение сохранялась до конца вычисления, иначе его пожрет GC и все оборвется на самом интересном месте (промис бы отработал до конца не смотря ни на что).
+
+В JS только один event loop, поэтому было вполне разумно закопать его внутрь promise / async / await как деталь реализации, упростив работу прикладному программисту. В питоне отзеркалили более ранний вариант корутин на генераторах, дали возможность использовать разные event loop и выставили все кишки наружу.
+
+Count time 2.0029137134552
+## 7. Популярные библиотеки
+
+## Profiling
+
+### Stopwatch
+
+
+```python
+from time import time
+start_time = time()
+
+j: int = 0
+for i in range(10_000_000):  # Long operation
+    j = i ** 2
+
+duration = time() - start_time
+print(f"{duration} seconds")
+```
+
+    2.2923033237457275 seconds
+    
+
+### High performance
+
+
+```python
+from time import perf_counter
+start_time = perf_counter()
+
+j: int = 0
+for i in range(10_000_000):  # Long operation
+    j = i ** 2
+
+duration = perf_counter() - start_time
+print(f"{duration} seconds")
+```
+
+    2.3540456001646817 seconds
+    
+
+### timeit
+
+Try to avoid a number of common traps for measuring execution times
+
+
+```python
+from timeit import timeit
+
+def long_pow():
+    j: int = 0
+    for i in range(1000_000):  # Long operation
+        j = i ** 2
+
+timeit("long_pow()", number=10, globals=globals(), setup='pass')
+```
+
+
+    1.8552540000528097
+
+
+### Call Graph
+
+Создает PNG изображение графа вызовов с подсвеченными узкими местами
+
+
+```python
+from pycallgraph3 import PyCallGraph
+from pycallgraph3.output import GraphvizOutput
+
+def long_pow():
+    j: int = 0
+    for i in range(1000_000):  # Long operation
+        j = i ** 2
+
+def short_pow():
+    j: int = 0
+    for i in range(1000):  # Short operation
+        j = i ** 2
+
+with PyCallGraph(output=GraphvizOutput()):
+    # Code to be profiled
+    long_pow()
+    short_pow()
+    # This will generate a file called pycallgraph3.png
+```
+
+<img src="pycallgraph3.png" style="height:400px">
+
+## Random
+
+
+```python
+import random
+
+rf: float = random.random()  # A float inside [0, 1)
+print(f"Single float random: {rf}")
+
+ri: int = random.randint(1, 10)  # An int inside [from, to]
+print(f"Single int random: {ri}")
+
+rb = random.randbytes(10)
+print(f"Random bytes: {rb}")
+
+rc: str = random.choice(["Alice", "Bob", "Maggie", "Madhuri Dixit"])
+print(f"Random choice: {rc}")
+
+rs: str = random.sample([1, 2, 3, 4, 5, 6, 7, 8, 9, 10], 5)
+print(f"Random list without duplicates: {rs}")
+
+a = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+print(f"List before shuffle: {a}")
+random.shuffle(a)
+print(f"List after shuffle: {a}")
+
+```
+
+    Single float random: 0.9024807633898538
+    Single int random: 7
+    Random bytes: b'>\xe0^\x16PX\xf8E\xf8\x98'
+    Random choice: Bob
+    Random list without duplicates: [5, 10, 3, 6, 1]
+    List before shuffle: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+    List after shuffle: [10, 4, 6, 5, 1, 8, 3, 9, 7, 2]
+    
+
+Input
+-----
+Reads a line from user input or pipe if present.
+
+<str> = input(prompt=None)
+ 
+Trailing newline gets stripped.
+Prompt string is printed to the standard output before reading input.
+Raises EOFError when user hits EOF (ctrl-d/ctrl-z⏎) or input stream gets exhausted.
+
+Command Line Arguments
+----------------------
+
+import sys
+scripts_path = sys.argv[0]
+arguments    = sys.argv[1:]
+
+### Argument Parser
+ 
+from argparse import ArgumentParser, FileType
+p = ArgumentParser(description=<str>)
+p.add_argument('-<short_name>', '--<name>', action='store_true')  # Flag.
+p.add_argument('-<short_name>', '--<name>', type=<type>)          # Option.
+p.add_argument('<name>', type=<type>, nargs=1)                    # First argument.
+p.add_argument('<name>', type=<type>, nargs='+')                  # Remaining arguments.
+p.add_argument('<name>', type=<type>, nargs='*')                  # Optional arguments.
+args  = p.parse_args()                                            # Exits on error.
+value = args.<name>
+
+Use `'help=<str>'` to set argument description.
+Use `'default=<el>'` to set the default value.
+Use `'type=FileType(<mode>)'` for files.
+
+Print
+-----
+ 
+print(<el_1>, ..., sep=' ', end='\n', file=sys.stdout, flush=False)
+ 
+Use `'file=sys.stderr'` for messages about errors.
+Use `'flush=True'` to forcibly flush the stream.
+
+### Pretty Print
+ 
+from pprint import pprint
+pprint(<collection>, width=80, depth=None, compact=False, sort_dicts=True)
+ 
+Levels deeper than 'depth' get replaced by '...'.
+
+OS Commands
+-----------
+import os, shutil, subprocess
+
+### Files and Directories
+Paths can be either strings, Paths or DirEntry objects.
+Functions report OS related errors by raising either OSError or one of its [subclasses](#exceptions-1).
+ 
+os.chdir(<path>)                    # Changes the current working directory.
+os.mkdir(<path>, mode=0o777)        # Creates a directory. Mode is in octal.
+os.makedirs(<path>, mode=0o777)     # Creates all directories in the path.
+
+shutil.copy(from, to)               # Copies the file. 'to' can exist or be a dir.
+shutil.copytree(from, to)           # Copies the directory. 'to' must not exist.
+
+os.rename(from, to)                 # Renames/moves the file or directory.
+os.replace(from, to)                # Same, but overwrites 'to' if it exists.
+
+os.remove(<path>)                   # Deletes the file.
+os.rmdir(<path>)                    # Deletes the empty directory.
+shutil.rmtree(<path>)               # Deletes the directory.
+
+Разница между is и ==?  
+Как создается объект в Python, разница между __init __() и __new __()?  
+В чем разница между потоками и процессами?  
+Какие есть виды импорта?  
+Что такое класс, итератор, генератор?  
+В чем разница между итераторами и генераторами?  
+В чем разница между staticmethod и classmethod?  
+Как работают dict comprehension, list comprehension и set comprehension?  
+
 
 Как работает thread locals?  
 Что такое type annotation?  
@@ -3456,130 +3599,6 @@ foo()
 foo()
 [1]
 
-
-
-### Классы, объекты
-
-Что такое магические методы, для чего нужны?
-
-Магическими метода называют методы, имена которых начинаются и заканчиваются двойным подчеркиванием. Магические они потому, что почти никогда не вызываются явно. Их вызывают встроенные функции или синтаксические конструкции. Например, функция len() вызывает метод __len__() переданного объекта. Метод __add__(self, other) вызывается автоматически при сложении оператором +.
-
-Перечислим некоторые магические методы:
-
-__init__: конструктор класса  
-__add__: сложение с другим объектом  
-__eq__: проверка на равенство с другим объектом  
-__cmp__: сравнение (больше, меньше, равно)  
-__iter__: при подстановке объекта в цикл  
-
-Как в классе сослаться на родительский класс?
-
-Функция super принимает класс и экземпляр:
-
-```python
-class NextClass(FirstClass):
-    def __init__(self, x):
-        super(NextClass, self).__init__()
-        self.x = x
-```
-
-### Контекстный менеджер
-
-В питоне есть оператор with. Размещенный внутри код выполняется с особенностью: до и после гарантированно срабатывают события входа в блок with и выхода из него. Объект, который определяет логику событий, называется контекстным менеджером.
-
-На уровне класса события определены методами __enter__ и __exit__. Первый срабатывает в тот момент, когда ход исполнения программы переходит внутрь with. Метод может вернуть значение. Оно будет доступно низлежащему внутри блока with коду.
-
-__exit__ срабатывает в момент выхода блока, в т.ч. и в случае исключения. В этом случае в метод будет передана тройка значений (exc_class, exc_instance, traceback).
-
-Самый распространённый контекстный менеджер – класс, порожденный функцией open. Он гарантирует, что файл будет закрыт даже в том случае, если внутри блока возникнет ошибка.
-
-Желательно выходить из контекстного менеджера как можно быстрее, чтобы освобождать контекст и ресурсы.
-
-```python
-with open('file.txt') as f:
-    data = f.read()
-process_data(data)
-```
-
-В примере выше мы вышли из блока with сразу же после прочтения файла. Обработка данных происходит в основном блоке программы.
-
-Контекстные менеджеры можно использовать для временной замены параметров, переменных окружения, транзакций БД.
-
-Какие функции нужно переопределить в классе А, чтобы экземпляры этого класса могли реализовать протокол контекстного менеджера?
-
-Напишем свой контекстный менеджер:
-
-### Context Manager
-Enter() should lock the resources and optionally return an object.
-Exit() should release the resources.
-Any exception that happens inside the with block is passed to the exit() method.
-If it wishes to suppress the exception it must return a true value.
- 
-class MyOpen:
-    def __init__(self, filename):
-        self.filename = filename
-    def __enter__(self):
-        self.file = open(self.filename)
-        return self.file
-    def __exit__(self, exc_type, exception, traceback):
-        self.file.close()
-
->>> with open('test.txt', 'w') as file:
-...     file.write('Hello World!')
->>> with MyOpen('test.txt') as file:
-...     print(file.read())
-Hello World!
-
-
-Прокомментировать выражение object() == object()
-
-Всегда ложь, поскольку по умолчанию объекты сравниваются по полю id (адрес в памяти), если только не переопределен метод __eq__.
-
-Как удаляется объект?
-
-
-### \_\_slots\_\_
-
-Классы хранят поля и их значения в секретном словаре dict. Поскольку словарь – изменяемая структура, вы можете на лету добавлять и удалять из класса поля. Параметр slots в классе жестко фиксирует набор полей класса. Слоты используются когда у класса может быть очень много полей, например, в некоторых ORM, либо когда критична производительность, потому что доступ к слоту срабатывает быстрее, чем поиск в словаре.
-
-Слоты активно используются в библиотеках requests и falcon.
-
-Недостатки: нельзя присвоить классу поле, которого нет в слотах. Не работают методы __getattr__ и __setattr__.
-
-
-### Многопоточность
-
-Многопоточность достигается модулем Threading. Это нативные Posix-треды, такие треды исполняются операционной системой, а не виртуальной машиной.
-
-В чем отличие тредов от мультипроцессинга?
-
-Главное отличие в разделении памяти. Процессы независимы друг от друга, имеют раздельные адресные пространства, идентификаторы, ресурсы. Треды исполняются в совместном адресном пространстве, имеют общий доступ к памяти, переменным, загруженным модулям.
-
-Какие задачи хорошо параллелятся, какие плохо?
-
-Те задачи, которые порождают долгий IO. Когда тред упирается в ожидание сокета или диска, интерпретатор бросает этот тред и стартует следующий. Это значит, не будет простоя из-за ожидания. Наоборот, если ходить в сеть в одном треде (в цикле), то каждый раз придется ждать ответа.
-
-Однако, если затем в треде обрабатывает полученные данные, то выполнятся будет только он один. Это не только не даст прироста в скорости, но и замедлит программу из-за переключения на другие треды.
-
-Короткий ответ: хорошо ложатся на треды задачи по работе с сетью. Например, выкачать сто урлов. Полученные данные обрабатывайте вне тредов.
-
-Нужно посчитать 100 уравнений. Делать это в тредах или нет?
-
-Нет, потому что в этой задаче нет ввода-вывода. Интерпретатор только будет тратить лишнее время на переключение тредов. Сложные математические задачи лучше выносить в отдельные процессы, либо использовать фреймворк для распределенных задач Celery, либо подключать как C-библиотеки.
-
-Понимание что такое heap dump и thread dump.
-
-понимание многопоточности, способов ей управлять и проблем, с этим связанных (синхронизации, локи, race condition и т.д.);
-
-
-
-
-### Копирование объектов
-
-В Python оператор присваивания (=) не копирует объекты. Вместо этого он создает связь между существующим объектом и именем целевой переменной. Чтобы создать копии объекта в Python, необходимо использовать модуль copy. Более того, существует два способа создания копий для данного объекта с помощью модуля copy.
-
-Shallow Copy – это побитовая копия объекта. Созданный скопированный объект имеет точную копию значений в исходном объекте. Если одно из значений является ссылкой на другие объекты, копируются только адреса ссылок на них.
-Deep Copy – рекурсивно копирует все значения от исходного объекта к целевому, т. е. дублирует даже объекты, на которые ссылается исходный объект.
 
 ## Источники  
 Официальная документация Python [docs.python.org](https://docs.python.org/), включающая [The Python Standard Library](https://docs.python.org/3/library/index.html).  
