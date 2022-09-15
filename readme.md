@@ -1,119 +1,8 @@
 ## 1. Структуры данных
 
-### Массив (array, bytearray) <a name="basicarray"></a>  
+### Массив (array, bytes, bytearray) <a name="array"></a>  
 
-Хранит переменные определенного типа, поэтому, в отличие от списка, не требует создания нового объекта для каждой новой переменной. Выигрывает у списка в размерах. Можно сказать, что это тонкая обертка на Си-массивами.
-
-### Список (list) <a name="basicdarray"></a>  
-
-Упорядоченные изменяемые коллекции объектов произвольных типов (почти как массив, но типы могут отличаться). Внутреннее строение списка - массив (точнее, vector) указателей, следовательно, список = динамический массив.
-
-### Односвязный список <a name="basicslist"></a>  
-
-Односвязный список представляет набор связанных узлов, каждый из которых хранит собственно данные и ссылку на следующий узел. В практике применим редко, но его любят использовать интервьюеры на собеседованиях, чтобы кандидат мог блеснуть своими алгоритмическими знаниями. Встроенной реализации не имеет, можно или использовать deque (в основе которого лежит двусвязный список), или написать свою реализацию.
-
-### Двусвязный список <a name="basicdlist"></a>  
-
-Ссылки в каждом узле указывают на предыдущий и на последующий узел в списке. Можно или использовать deque, или написать свою реализацию.
-
-### Словарь (dict) <a name="basichashtable"></a>  
-
-dict - реализация хеш-таблицы, поэтому в качестве ключа нельзя брать нехешируемый объект (например, список). Ключом словаря может быть любой неизменяемый объект: число, строка, datetime, функция и даже модуль. Такие объекты имеют метод __hash__(), который однозначно сопоставляет объект с некоторым числом. По этому числу словарь ищет значение для ключа.  
-Списки, словари и множества изменяемы и не имеют метода хеширования. При подстановке их в словарь возникнет ошибка.
-
-### Решение проблемы вычисления хеша при работе со словарем<a name="basichashtableproblem"></a>  
-
-Любая хеш-таблица должна уметь решать проблему вычисления хеша. Для этого используются техники **open addressing** или **chaining**. Python [использует](https://stackoverflow.com/questions/9010222/why-can-a-python-dict-have-multiple-keys-with-the-same-hash) open addressing.
-
-```text
-# Logical model of Python Hash table
--+-----------------+
-0| <hash|key|value>|
--+-----------------+
-1|      ...        |
--+-----------------+
-.|      ...        |
--+-----------------+
-i|      ...        |
--+-----------------+
-.|      ...        |
--+-----------------+
-n|      ...        |
--+-----------------+
-```
-
-Новый словарь инициализируется с 8 пустыми слотами.
-
-Интерпретатор сначала пытается добавить новую запись по адресу, зависящему от хеша ключа, i = hash(key) & mask, где mask = PyDictMINSIZE - 1. Если этот адрес занят, то интерпретатор проверяет (при помощи ==) хеш и ключ. Если оба совпадают, то, значит, запись уже существует. Тогда начинается зондирование свободных слотов, которое идет в псевдослучайном порядке (порядок зависит от значения ключа). Новая запись будет добавлена по первому свободному адресу.
-
-Чтение из словаря происходит аналогично, интерпретатор начинает поиск с позиции i и идет по тому же псевдослучайному пути, пока не прочитает нужную запись.
-
-### Бинарное дерево <a name="basicbinarytree"></a>  
-
-Иерархическая структура данных, в которой каждый узел имеет не более двух потомков. Встроенной реализации не имеет, нужно писать свою реализацию.
-
-### B-дерево (Би-дерево)<a name="basicbtree"></a>  
-
-Сбалансированное дерево, оптимизированное для доступа к относительно медленным элементам памяти (например, дисковым структурам или индексам баз данных), как ветви, так и листья представляют собой списки (для того, чтобы можно было считать такой список в один проход для дальнейшего разбора в ОЗУ), но обычно различаются по структуре. Нужно писать свою реализацию.
-
-### Красно-черное дерево <a name="basicrbtree"></a>  
-
-Самобалансирующееся двоичное дерево поиска, позволяющее быстро выполнять основные операции дерева поиска: добавление, удаление и поиск узла. Сбалансированность достигается за счёт введения дополнительного признака узла дерева — «цвета». Этот атрибут может принимать одно из двух возможных значений — «чёрный» или «красный». Листовые узлы КЧ деревьев не содержат данных, поэтому не требуют выделения памяти — достаточно просто записать в узле-предке нулевой указатель на потомка. Нужно писать свою реализацию.
-
-### АВЛ-дерево <a name="basicavltree"></a>  
-
-В АВЛ-деревьях операции вставки и удаления работают медленнее, чем в красно-черных деревьях (при том же количестве листьев красно-чёрное дерево может быть выше АВЛ-дерева, но не более чем в 1,388 раза). Поиск же в АВЛ-дереве выполняется быстрее (максимальная разница в скорости поиска составляет 39 %). Нужно писать свою реализацию.
-
-### Префиксное дерево <a name="basictrie"></a>  
-
-Структура данных, позволяющая хранить ассоциативный массив, ключами которого являются строки. Нужно писать свою реализацию.
-
-### Таблица выбора структуры данных <a name="basicstructselectiontable"></a>  
-
-В квадратных скобках показан худший случай.
-
-<style>
-table th:first-of-type {
-    width: 25%;
-}
-table th:nth-of-type(2) {
-    width: 25%;
-}
-table th:nth-of-type(3) {
-    width: 25%;
-}
-table th:nth-of-type(4) {
-    width: 5%;
-}
-table th:nth-of-type(5) {
-    width: 5%;
-}
-table th:nth-of-type(6) {
-    width: 5%;
-}
-table th:nth-of-type(7) {
-    width: 5%;
-}
-table th:nth-of-type(8) {
-    width: 5%;
-}
-</style>
-
-| Структура | Реализация | Применение | Индекс. | Поиск | Вставка | Удал. | Память |
-| :- | :- | :- | :-: | :-: | :-: | :-: | :-: |
-| Массив | array, bytearray | Для хранения однотипных данных | 1 | n |  |  | n |
-| Динамический массив | list |  | 1 | n | n | n | n |
-| Односвязный список | - (~deque)|  | n | n | 1 | 1 | n |
-| Двусвязный список | - (~deque)|  | n | n | 1 | 1 | n |
-| Хэш таблица | dict |  |  | 1<br> [n] | 1<br> [n] | 1<br> [n] | n |
-| Бинарное дерево | - |  | logn<br> [n] | logn<br> [n] | logn<br> [n] | logn<br> [n] | n |
-| [B-дерево](https://en.wikipedia.org/wiki/B-tree)<br> (Би-дерево) | sqlite3 | Для памяти с медленным доступом | logn | logn | logn | logn | n |
-| КЧ дерево | - | - | logn | logn | logn | logn | n |
-| АВЛ дерево | - |  | logn | logn | logn | logn | n |
-| Префиксное дерево | - | T9,<br> алгоритм [Ахо–Корасик](https://en.wikipedia.org/wiki/Aho%E2%80%93Corasick_algorithm),<br> алгоритм [LZW](https://en.wikipedia.org/wiki/Lempel%E2%80%93Ziv%E2%80%93Welch) |  | key | key | key |  |
-
-### Array (массив)  
-Object type that can only hold numbers of a predefined type.
+Хранит переменные определенного типа, поэтому, в отличие от списка, не требует создания нового объекта для каждой новой переменной. Выигрывает у списка в размерах. Можно сказать, что это тонкая обертка на Си-массивами. Bytes object is an immutable sequence of single bytes. Mutable version is called bytearray.
 
 
 ```python
@@ -135,10 +24,6 @@ print(a1.index(-4))  # Returns an index of a member or raises ValueError
     b'1234567890'
     3
     
-
-### Bytes
-
-Bytes object is an immutable sequence of single bytes. Mutable version is called bytearray.
 
 
 ```python
@@ -174,7 +59,9 @@ print(b6)
     b'\x01\x02\x03\x04'
     
 
-### List (список)
+### Список (list) <a name="basicdarray"></a>  
+
+Упорядоченные изменяемые коллекции объектов произвольных типов (почти как массив, но типы могут отличаться). Внутреннее строение списка - массив (точнее, vector) указателей, следовательно, список = динамический массив.
 
 
 ```python
@@ -221,12 +108,46 @@ a.clear()  # Очистка списка
     ['A', ' ', 'h', 'o', 'l', 'e', ' ', 's', 't', 'i', 'n', 'g'] r
     
 
-sorted_by_second = sorted(<collection>, key=lambda el: el[1])  
-sorted_by_both   = sorted(<collection>, key=lambda el: (el[1], el[0]))  
-flatter_list     = list(itertools.chain.from_iterable(<list>))  
-product_of_elems = functools.reduce(lambda out, el: out * el, <collection>)  
+### Tuple (кортеж)  
+Tuple is an immutable and hashable list
 
-### Dictionary (словарь)
+
+```python
+a = (2, 3)
+b = ("Boson", "Higgs", 1.56e-22)
+
+print(a, b)
+```
+
+    (2, 3) ('Boson', 'Higgs', 1.56e-22)
+    
+
+### Named Tuple (именованный кортеж)
+Subclass of tuple with named elements
+
+
+```python
+from collections import namedtuple
+
+rectangle = namedtuple('rectangle', 'length width')
+r = rectangle(length = 1, width = 2)
+
+print(r)
+print(r.length)
+print(r.width)
+print(r._fields)
+```
+
+    rectangle(length=1, width=2)
+    1
+    2
+    ('length', 'width')
+    
+
+### Словарь (dict) <a name="basichashtable"></a>  
+
+dict - реализация хеш-таблицы, поэтому в качестве ключа нельзя брать нехешируемый объект (например, список). Ключом словаря может быть любой неизменяемый объект: число, строка, datetime, функция и даже модуль. Такие объекты имеют метод __hash__(), который однозначно сопоставляет объект с некоторым числом. По этому числу словарь ищет значение для ключа.  
+Списки, словари и множества изменяемы и не имеют метода хеширования. При подстановке их в словарь возникнет ошибка.
 
 
 ```python
@@ -282,6 +203,33 @@ d.clear() # Очистка списка
     {'US': 'Hot-Dog', 'China': 'Dumplings'}
     
 
+### Решение проблемы вычисления хеша при работе со словарем<a name="basichashtableproblem"></a>  
+
+Любая хеш-таблица должна уметь решать проблему вычисления хеша. Для этого используются техники **open addressing** или **chaining**. Python [использует](https://stackoverflow.com/questions/9010222/why-can-a-python-dict-have-multiple-keys-with-the-same-hash) open addressing.
+
+```text
+# Logical model of Python Hash table
+-+-----------------+
+0| <hash|key|value>|
+-+-----------------+
+1|      ...        |
+-+-----------------+
+.|      ...        |
+-+-----------------+
+i|      ...        |
+-+-----------------+
+.|      ...        |
+-+-----------------+
+n|      ...        |
+-+-----------------+
+```
+
+Новый словарь инициализируется с 8 пустыми слотами.
+
+Интерпретатор сначала пытается добавить новую запись по адресу, зависящему от хеша ключа, i = hash(key) & mask, где mask = PyDictMINSIZE - 1. Если этот адрес занят, то интерпретатор проверяет (при помощи ==) хеш и ключ. Если оба совпадают, то, значит, запись уже существует. Тогда начинается зондирование свободных слотов, которое идет в псевдослучайном порядке (порядок зависит от значения ключа). Новая запись будет добавлена по первому свободному адресу.
+
+Чтение из словаря происходит аналогично, интерпретатор начинает поиск с позиции i и идет по тому же псевдослучайному пути, пока не прочитает нужную запись.
+
 ### defaultdict
 
 The *defaultdict* will create any items that you try to access (provided of course they do not exist yet) without throws a KeyError.
@@ -300,7 +248,7 @@ dd = {}  # "Обычный" словарь
     0
     
 
-### Counter (счетчик)
+### Счетчик (counter)
 
 A Counter is a dict subclass for counting hashable objects, it is a collection where elements are stored as dictionary keys and their counts are stored as dictionary values.
 
@@ -332,6 +280,8 @@ print(d)
     
 
 ### Set (множество)
+
+Nowadays, set and dict's implementations have diverged significantly, so the precise behaviors (e.g. arbitrary order vs. insertion order) and performance in various use cases differs; they're still implemented in terms of hashtables, so average case lookup and insertion remains O(1), but set is no longer just "dict, but with dummy/omitted keys".
 
 
 ```python
@@ -383,43 +333,111 @@ Frozen set is just an immutable and hashable version of a set object. Frozen set
 s = frozenset({"New-York", "Los Angeles", "Ottawa"})
 ```
 
-### Tuple (кортеж)  
-Tuple is an immutable and hashable list
+### Односвязный список <a name="basicslist"></a>  
+
+Односвязный список представляет набор связанных узлов, каждый из которых хранит собственно данные и ссылку на следующий узел. В практике применим редко, но его любят использовать интервьюеры на собеседованиях, чтобы кандидат мог блеснуть своими алгоритмическими знаниями. Встроенной реализации не имеет, можно или использовать deque (в основе которого лежит двусвязный список), или написать свою реализацию.
+
+### Двусвязный список (Deque)<a name="basicdlist"></a>  
+
+Ссылки в каждом узле указывают на предыдущий и на последующий узел в списке. Можно или использовать deque, или написать свою реализацию.
 
 
 ```python
-a = (2, 3)
-b = ("Boson", "Higgs", 1.56e-22)
+from collections import deque
+d = deque([1, 2, 3, 4], maxlen=1000)
 
+d.append(5)  # Add element to the right side of the deque
+d.appendleft(0)  # Add element to the left side of the deque by appending elements from iterable
+
+d.extend([6, 7])  # Extend the right side of the deque
+d.extendleft([-1, -2])  # Extend the left side of the deque
+print(d)
+
+a = d.pop()  # Remove and return an element from the right side of the deque. Can raise an IndexError
+b = d.popleft()  # Remove and return an element from the left side of the deque. Can raise an IndexError
 print(a, b)
+print(d)
 ```
 
-    (2, 3) ('Boson', 'Higgs', 1.56e-22)
+    deque([-2, -1, 0, 1, 2, 3, 4, 5, 6, 7], maxlen=1000)
+    7 -2
+    deque([-1, 0, 1, 2, 3, 4, 5, 6], maxlen=1000)
     
 
-### Named Tuple (именованный кортеж)
-Subclass of tuple with named elements
+### Бинарное дерево <a name="basicbinarytree"></a>  
 
+Иерархическая структура данных, в которой каждый узел имеет не более двух потомков. Встроенной реализации не имеет, нужно писать свою.
 
-```python
-from collections import namedtuple
+### Куча (heap)
 
-rectangle = namedtuple('rectangle', 'length width')
-r = rectangle(length = 1, width = 2)
+Бинарное дерево, удовлетворяющее свойство кучи: если B является узлом-потомком узла A, то ключ(A) ≥ ключ(B). Куча является максимально эффективной реализацией абстрактного типа данных, который называется очередью с приоритетом и поддерживающего две обязательные операции — добавить элемент и извлечь минмум (или максимум, в зависимости от реализации). В Python min-куча (наименьшее значение всегда лежит в корне) реализована на базе списка при помощи встроенного модуля heapq.
 
-print(r)
-print(r.length)
-print(r.width)
-print(r._fields)
-```
+### B-дерево (Би-дерево)<a name="basicbtree"></a>  
 
-    rectangle(length=1, width=2)
-    1
-    2
-    ('length', 'width')
-    
+Сбалансированное дерево, оптимизированное для доступа к относительно медленным элементам памяти (например, дисковым структурам или индексам баз данных), как ветви, так и листья представляют собой списки (для того, чтобы можно было считать такой список в один проход для дальнейшего разбора в ОЗУ), но обычно различаются по структуре. Нужно писать свою реализацию.
+
+### Красно-черное дерево <a name="basicrbtree"></a>  
+
+Самобалансирующееся двоичное дерево поиска, позволяющее быстро выполнять основные операции дерева поиска: добавление, удаление и поиск узла. Сбалансированность достигается за счёт введения дополнительного признака узла дерева — «цвета». Этот атрибут может принимать одно из двух возможных значений — «чёрный» или «красный». Листовые узлы КЧ деревьев не содержат данных, поэтому не требуют выделения памяти — достаточно просто записать в узле-предке нулевой указатель на потомка. Нужно писать свою реализацию.
+
+### АВЛ-дерево <a name="basicavltree"></a>  
+
+В АВЛ-деревьях операции вставки и удаления работают медленнее, чем в красно-черных деревьях (при том же количестве листьев красно-чёрное дерево может быть выше АВЛ-дерева, но не более чем в 1,388 раза). Поиск же в АВЛ-дереве выполняется быстрее (максимальная разница в скорости поиска составляет 39 %). Нужно писать свою реализацию.
+
+### Префиксное дерево <a name="basictrie"></a>  
+
+Структура данных, позволяющая хранить ассоциативный массив, ключами которого являются строки. Нужно писать свою реализацию.
+
+### Таблица выбора структуры данных <a name="basicstructselectiontable"></a>  
+
+В квадратных скобках показан худший случай.
+
+<style>
+table th:first-of-type {
+    width: 25%;
+}
+table th:nth-of-type(2) {
+    width: 25%;
+}
+table th:nth-of-type(3) {
+    width: 25%;
+}
+table th:nth-of-type(4) {
+    width: 5%;
+}
+table th:nth-of-type(5) {
+    width: 5%;
+}
+table th:nth-of-type(6) {
+    width: 5%;
+}
+table th:nth-of-type(7) {
+    width: 5%;
+}
+table th:nth-of-type(8) {
+    width: 5%;
+}
+</style>
+
+| Структура | Реализация | Применение | Индексация | Поиск | Вставка | Удаление | Память |
+| :- | :- | :- | :-: | :-: | :-: | :-: | :-: |
+| Массив | array, bytes, bytearray | Для хранения однотипных данных | 1 | n |  |  | n |
+| Динамический массив | list |  | 1 | n | n | n | n |
+| Односвязный список | - (~deque)|  | n | n | 1 | 1 | n |
+| Двусвязный список | deque|  | n | n | 1 | 1 | n |
+| Хэш таблица | dict, set |  |  | 1<br> [n] | 1<br> [n] | 1<br> [n] | n |
+| Бинарное дерево | - |  | logn<br> [n] | logn<br> [n] | logn<br> [n] | logn<br> [n] | n |
+| Куча | heapq |  |   | 1<br>(find min) | logn | logn<br>(del min) | n |
+| [B-дерево](https://en.wikipedia.org/wiki/B-tree)<br> (Би-дерево) | sqlite3 | Для памяти с медленным доступом | logn | logn | logn | logn | n |
+| КЧ дерево | - |   | logn | logn | logn | logn | n |
+| АВЛ дерево | - |  | logn | logn | logn | logn | n |
+| Префиксное дерево | - | T9,<br> алгоритм [Ахо–Корасик](https://en.wikipedia.org/wiki/Aho%E2%80%93Corasick_algorithm),<br> алгоритм [LZW](https://en.wikipedia.org/wiki/Lempel%E2%80%93Ziv%E2%80%93Welch) |  | key | key | key |  |
+
+## Где будет быстрее поиск, а где перебор и почему: dict, list, set, tuple?!!!
 
 ### Enum
+
+The properties of an enumeration are useful for defining an immutable, related set of constant values that may or may not have a semantic meaning.
 
 
 ```python
@@ -538,33 +556,6 @@ class User:
 
 ```
 
-### Deque
-
-A thread-safe list with efficient appends and pops from either side.
-
-
-```python
-from collections import deque
-d = deque([1, 2, 3, 4], maxlen=1000)
-
-d.append(5)  # Add element to the right side of the deque
-d.appendleft(0)  # Add element to the left side of the deque by appending elements from iterable
-
-d.extend([6, 7])  # Extend the right side of the deque
-d.extendleft([-1, -2])  # Extend the left side of the deque
-print(d)
-
-a = d.pop()  # Remove and return an element from the right side of the deque. Can raise an IndexError
-b = d.popleft()  # Remove and return an element from the left side of the deque. Can raise an IndexError
-print(a, b)
-print(d)
-```
-
-    deque([-2, -1, 0, 1, 2, 3, 4, 5, 6, 7], maxlen=1000)
-    7 -2
-    deque([-1, 0, 1, 2, 3, 4, 5, 6], maxlen=1000)
-    
-
 ### Queue
 
 The queue module implements multi-producer, multi-consumer FIFO queues. It is especially useful in threaded programming when information must be exchanged safely between multiple threads. For LIFO queue use LifoQueue. For a priority queue use PriorityQueue.
@@ -588,32 +579,6 @@ print(a, b, c, q.queue)
 
     deque(['eat', 'sleep', 'code', 'repeat'])
     eat sleep code deque(['repeat'])
-    
-
-### Struct
-
-Module that performs conversions between a sequence of numbers and a bytes object. System’s type sizes and byte order are used by default.
-
-
-```python
-from struct import pack, unpack, iter_unpack
-
-b = pack(">hhll", 1, 2, 3, 4)
-print(b)
-
-t = unpack(">hhll", b)
-print(t)
-
-i = pack("ii", 1, 2) * 5
-print(i)
-
-print(list(iter_unpack('ii', i)))
-```
-
-    b'\x00\x01\x00\x02\x00\x00\x00\x03\x00\x00\x00\x04'
-    (1, 2, 3, 4)
-    b'\x01\x00\x00\x00\x02\x00\x00\x00\x01\x00\x00\x00\x02\x00\x00\x00\x01\x00\x00\x00\x02\x00\x00\x00\x01\x00\x00\x00\x02\x00\x00\x00\x01\x00\x00\x00\x02\x00\x00\x00'
-    [(1, 2), (1, 2), (1, 2), (1, 2), (1, 2)]
     
 
 ## String (строка)
@@ -651,6 +616,526 @@ print(f"Reverse string: {sr}")
     Start index of 'rabbit' is -1, start index of 'sheep' is 17
     Translate string: xyz
     Reverse string: tibbar etihw eht wolloF
+    
+
+## Datetime
+
+Module *datetime* provides *date*, *time*, *datetime* and *timedelta*. All are immutable and hashable
+
+### Constructors
+
+
+```python
+from datetime import date, time, datetime, timedelta
+
+d: date = date(year=1964, month=9, day=2)
+t: time  = time(hour=12, minute=30, second=0, microsecond=0, tzinfo=None, fold=0)
+dt: datetime = datetime(year=1964, month=9, day=2, hour=10, minute=30, second=0)
+td: timedelta = timedelta(weeks=1, days=1, hours=12, minutes=13, seconds=14)
+
+print (f"{d}\n {t}\n {dt}\n {td}")
+```
+
+    1964-09-02
+     12:30:00
+     1964-09-02 10:30:00
+     8 days, 12:13:14
+    
+
+### Now
+
+
+```python
+from datetime import date, time, datetime
+import pytz
+
+d: date  = date.today()
+dt1: datetime = datetime.today()
+dt2: datetime = datetime.utcnow()
+dt3: datetime = datetime.now(pytz.timezone('US/Pacific'))
+
+print (f"{d}\n {dt1}\n {dt2}\n {dt3}")
+
+```
+
+    2022-09-06
+     2022-09-06 17:50:37.664312
+     2022-09-06 12:50:37.664311
+     2022-09-06 05:50:37.724181-07:00
+    
+
+### Timezone
+
+
+```python
+from datetime import date, time, datetime, timedelta, tzinfo
+from dateutil.tz import UTC, tzlocal, gettz, datetime_exists, resolve_imaginary
+
+tz1: tzinfo = UTC  # UTC timezone
+
+tz2: tzinfo = tzlocal()  # Local timezone
+tz3: tzinfo = gettz()  # Local timezone
+
+tz4: tzinfo = gettz("America/Chicago")  # "Asia/Kolkata" etc. See full list at en.wikipedia.org/wiki/List_of_tz_database_time_zones
+
+local_dt = datetime.today()
+utc_dt = local_dt.astimezone(UTC)  # Convert local datetime to UTC datetime
+
+print (f"{tz1}\n {tz2}\n {tz3}\n {tz4}\n {local_dt}\n {utc_dt}")
+```
+
+    tzutc()
+     tzlocal()
+     tzlocal()
+     tzfile('US/Central')
+     2022-09-06 17:50:37.895639
+     2022-09-06 12:50:37.895639+00:00
+    
+## 2. Обработка данных
+
+## Comprehension
+
+
+
+```python
+# Примеры Comprehension
+
+a = [i+1 for i in range(10)]  # list
+b  = {i for i in range(10) if i > 5}  # set
+c = (2*i+5 for i in range(10))  # iter
+d = {i: i**2 for i in range(10)}  # dict
+
+print(a,"\n", b, "\n", list(c), "\n", d)
+```
+
+    [1, 2, 3, 4, 5, 6, 7, 8, 9, 10] 
+     {8, 9, 6, 7} 
+     [5, 7, 9, 11, 13, 15, 17, 19, 21, 23] 
+     {0: 0, 1: 1, 2: 4, 3: 9, 4: 16, 5: 25, 6: 36, 7: 49, 8: 64, 9: 81}
+    
+
+### List comprehension
+An elegant approach to create a new list based on the values of an existing list.
+
+
+```python
+# new_list = [expression for member in iterable (if conditional)]
+
+fruits: list = ["Lemon", "Apple", "Banana", "Kiwi", "Watermelon", "Pear"]
+
+e_fruits = [fruit for fruit in fruits if "e" in fruit]
+#                                     ☝ if conditional
+print(e_fruits)
+
+upper_fruits = [fruit.upper() for fruit in fruits]
+#                     ☝ expression
+print(upper_fruits)
+
+# Split a list into equal sized chunks
+chunk_len = 2
+chunk_fruits = [fruits[i:i + chunk_len] for i in range(0, len(fruits), chunk_len)]
+print(chunk_fruits)
+
+```
+
+    ['Lemon', 'Apple', 'Watermelon', 'Pear']
+    ['LEMON', 'APPLE', 'BANANA', 'KIWI', 'WATERMELON', 'PEAR']
+    [['Lemon', 'Apple'], ['Banana', 'Kiwi'], ['Watermelon', 'Pear']]
+    
+
+### Dictionary comprehension
+Creating new dictionaries from existing dictionaries and iterables. A dictionary comprehension is very much like a list comprehension, but we get a dictionary at the end of it, so we need to be assigning key value pairs instead of only values.
+
+
+```python
+# new_dict = {expression for member in iterable (if conditional)}
+
+d: dict[str, str] = {"Italy": "Pizza", "US": "Hot-Dog", "China": "Dim Sum", "South Korea": "Kimchi"}  # Create a dictionary
+
+d2: dict[str, str] = {k: v for k, v in d.items() if "i" in v}  ## Select only elements that contain a letter "i" in value
+print(d2)
+
+```
+
+    {'Italy': 'Pizza', 'China': 'Dim Sum', 'South Korea': 'Kimchi'}
+    
+
+### Sum, Count, Min, Max
+
+
+```python
+a: list[int] = [1, 2, 3, 4, 5, 2, 2]
+
+s = sum(a)
+print(s)
+
+c = a.count(2)  # Returns number of occurrences
+print(c)
+
+mn = min(a)
+print(mn)
+
+mx = max(a)
+print(mx)
+```
+
+    19
+    3
+    1
+    5
+    
+
+### Map, Filter, Reduce
+ 
+<iter> = map(lambda x: x + 1, range(10))                  # (1, 2, ..., 10)  
+<iter> = filter(lambda x: x > 5, range(10))               # (6, 7, 8, 9)  
+<obj>  = reduce(lambda out, x: out + x, range(10))        # 45  
+ 
+Reduce must be imported from the functools module.  
+
+### Any, All
+ 
+<bool> = any(<collection>)                                # Is `bool(el)` True for any element.  
+<bool> = all(<collection>)                                # Is True for all elements or empty.  
+
+sorted_by_second = sorted(<collection>, key=lambda el: el[1])  
+sorted_by_both   = sorted(<collection>, key=lambda el: (el[1], el[0]))  
+flatter_list     = list(itertools.chain.from_iterable(<list>))  
+product_of_elems = functools.reduce(lambda out, el: out * el, <collection>)  
+
+### Itertools
+ 
+from itertools import count, repeat, cycle, chain, islice
+
+<iter> = count(start=0, step=1)             # Returns updated value endlessly. Accepts floats.  
+<iter> = repeat(<el> [, times])             # Returns element endlessly or 'times' times.  
+<iter> = cycle(<collection>)                # Repeats the sequence endlessly.  
+
+<iter> = chain(<coll_1>, <coll_2> [, ...])  # Empties collections in order (figuratively).  
+<iter> = chain.from_iterable(<collection>)  # Empties collections inside a collection in order.  
+
+<iter> = islice(<coll>, to_exclusive)       # Only returns first 'to_exclusive' elements.  
+<iter> = islice(<coll>, from_inclusive, …)  # `to_exclusive, step_size`.  
+
+ 
+>>> from collections.abc import Iterable, Collection, Sequence  
+>>> isinstance([1, 2, 3], Iterable)  
+True  
+
+ text
++------------------+------------+------------+------------+
+|                  |  Iterable  | Collection |  Sequence  |
++------------------+------------+------------+------------+
+| list, range, str |    yes     |    yes     |    yes     |
+| dict, set        |    yes     |    yes     |            |
+| iter             |    yes     |            |            |
++------------------+------------+------------+------------+
+
+>>> from numbers import Number, Complex, Real, Rational, Integral  
+>>> isinstance(123, Number)  
+True
+
+ text
++--------------------+----------+----------+----------+----------+----------+
+|                    |  Number  |  Complex |   Real   | Rational | Integral |
++--------------------+----------+----------+----------+----------+----------+
+| int                |   yes    |   yes    |   yes    |   yes    |   yes    |
+| fractions.Fraction |   yes    |   yes    |   yes    |   yes    |          |
+| float              |   yes    |   yes    |   yes    |          |          |
+| complex            |   yes    |   yes    |          |          |          |
+| decimal.Decimal    |   yes    |          |          |          |          |
++--------------------+----------+----------+----------+----------+----------+
+
+### Pairwise
+
+
+```python
+import itertools
+
+a = [1, 2, 3, 4, 5]
+p = itertools.pairwise(a)  # Returns successive overlapping pairs
+
+print(list(p))
+```
+
+    [(1, 2), (2, 3), (3, 4), (4, 5)]
+    
+
+### Statistics
+from statistics import mean, median, variance, stdev, quantiles, groupby
+
+Combinatorics
+-------------
+Every function returns an iterator.
+If you want to print the iterator, you need to pass it to the list() function first!
+
+from itertools import product, combinations, combinations_with_replacement, permutations
+
+>>> product([0, 1], repeat=3)
+[(0, 0, 0), (0, 0, 1), (0, 1, 0), (0, 1, 1), ..., (1, 1, 1)]
+
+>>> product('abc', 'abc')                    #   a  b  c
+[('a', 'a'), ('a', 'b'), ('a', 'c'),         # a x  x  x
+ ('b', 'a'), ('b', 'b'), ('b', 'c'),         # b x  x  x
+ ('c', 'a'), ('c', 'b'), ('c', 'c')]         # c x  x  x
+ 
+
+ 
+>>> combinations('abc', 2)                   #   a  b  c
+[('a', 'b'), ('a', 'c'),                     # a .  x  x
+ ('b', 'c')]                                 # b .  .  x
+
+>>> combinations_with_replacement('abc', 2)  #   a  b  c
+[('a', 'a'), ('a', 'b'), ('a', 'c'),         # a x  x  x
+ ('b', 'b'), ('b', 'c'),                     # b .  x  x
+ ('c', 'c')]                                 # c .  .  x
+
+>>> permutations('abc', 2)                   #   a  b  c
+[('a', 'b'), ('a', 'c'),                     # a .  x  x
+ ('b', 'a'), ('b', 'c'),                     # b x  .  x
+ ('c', 'a'), ('c', 'b')]                     # c x  x  .
+
+
+### Struct
+
+Module that performs conversions between a sequence of numbers and a bytes object. System’s type sizes and byte order are used by default.
+
+
+```python
+from struct import pack, unpack, iter_unpack
+
+b = pack(">hhll", 1, 2, 3, 4)
+print(b)
+
+t = unpack(">hhll", b)
+print(t)
+
+i = pack("ii", 1, 2) * 5
+print(i)
+
+print(list(iter_unpack('ii', i)))
+```
+
+    b'\x00\x01\x00\x02\x00\x00\x00\x03\x00\x00\x00\x04'
+    (1, 2, 3, 4)
+    b'\x01\x00\x00\x00\x02\x00\x00\x00\x01\x00\x00\x00\x02\x00\x00\x00\x01\x00\x00\x00\x02\x00\x00\x00\x01\x00\x00\x00\x02\x00\x00\x00\x01\x00\x00\x00\x02\x00\x00\x00'
+    [(1, 2), (1, 2), (1, 2), (1, 2), (1, 2)]
+    
+
+### bisect и бинарный поиск
+
+
+```python
+import bisect
+
+a: list[int] = [12, 6, 8, 19, 1, 33]
+
+a.sort()
+print(f"Sorted: {a}")
+
+print(bisect.bisect(a, 19))  # Locate the insertion point for value in a list to maintain sorted order
+
+bisect.insort(a, 15)  # Insert value in a list in sorted order
+print(a)
+
+# Binary search
+
+from bisect import bisect_left
+
+def binary_search(a, x, lo=0, hi=None):
+    if hi is None:
+        hi = len(a)
+
+    pos = bisect_left(a, x, lo, hi)
+    return pos if pos != hi and a[pos] == x else -1
+
+print(binary_search(a, 15))
+```
+
+    Sorted: [1, 6, 8, 12, 19, 33]
+    5
+    [1, 6, 8, 12, 15, 19, 33]
+    4
+    
+
+### datetime encode
+
+Python uses the Unix Epoch: "1970-01-01 00:00 UTC"
+
+
+```python
+from datetime import datetime
+from dateutil.tz import tzlocal
+
+dt1: datetime = datetime.fromisoformat("2021-10-04 00:05:23.555+00:00")  # Raises ValueError
+dt2: datetime = datetime.strptime("21/10/04 17:30", "%d/%m/%y %H:%M")   # Datetime from str, according to format (https://docs.python.org/3/library/datetime.html#strftime-and-strptime-format-codes)
+dt3: datetime = datetime.fromordinal(100000)  # 100000th day after 1.1.0001
+dt4: datetime = datetime.fromtimestamp(20_000_000.01)  # Local datetime from seconds since the Epoch
+
+tz2: tzinfo = tzlocal()
+dt5: datetime = datetime.fromtimestamp(300_000_000, tz2)  # Aware datetime from seconds since the Epoch
+
+print (f"{dt1}\n {dt2}\n {dt3}\n {dt4}\n {dt5}")
+```
+
+    2021-10-04 00:05:23.555000+00:00
+     2004-10-21 17:30:00
+     0274-10-16 00:00:00
+     1970-08-20 16:33:20.010000
+     1979-07-05 10:20:00+05:00
+    
+
+### datetime decode
+
+
+```python
+from datetime import datetime
+
+dt1: datetime = datetime.today()
+
+s1: str = dt1.isoformat()
+s2: str = dt1.strftime("%d/%m/%y %H:%M")  # Outputting datetime object to string (format: https://docs.python.org/3/library/datetime.html#strftime-and-strptime-format-codes)
+i: int = dt1.toordinal()  # Days since Gregorian NYE 1, ignoring time and tz
+a: float = dt1.timestamp()  # Seconds since the Epoch
+
+print (f"{dt1}\n {s1}\n {s2}\n {i}\n {a}")
+```
+
+    2022-09-06 17:50:38.041159
+     2022-09-06T17:50:38.041159
+     06/09/22 17:50
+     738404
+     1662468638.041159
+    
+
+### Арифметика datetime
+
+
+```python
+from datetime import date, time, datetime, timedelta
+from dateutil.tz import UTC, tzlocal, gettz, datetime_exists, resolve_imaginary
+
+d: date  = date.today()
+dt1: datetime = datetime.today()
+dt2: datetime = datetime(year=1981, month=12, day=2)
+td1: timedelta = timedelta(days=5)
+td2: timedelta = timedelta(days=1)
+
+d = d + td1  # date = date ± timedelta
+dt3 = dt1 - td1  # datetime = datetime ± timedelta
+
+td3 = dt1 - dt2  # timedelta = datetime - datetime
+
+td4 = 10 * td1  # timedelta = const * timedelta
+c: float = td1/td2  # timedelta/timedelta
+
+print (f"{d}\n {dt3}\n {td3}\n {td4}\n {c}")
+```
+
+    2022-09-11
+     2022-09-01 17:50:38.132916
+     14888 days, 17:50:38.132916
+     50 days, 0:00:00
+     5.0
+    
+
+## Математика
+
+### Базовая математика
+
+
+```python
+from math import pi
+
+a: float = pi ** 2  # Or pow(pi, 2)
+print(f"Power: {a}")
+
+b: float = round(pi, 2)
+print(f"Round: {b}")
+
+c: int = round(256, -2)
+print(f"Int round: {c}")
+
+d: float = abs(-pi)
+print(f"Abs: {d}")
+
+e: float = abs(10+10j)  # Or e: float = abs(complex(real=10, imag=10))
+print(f"Complex abs: {e}")
+
+```
+
+    Power: 9.869604401089358
+    Round: 3.14
+    Int round: 300
+    Abs: 3.141592653589793
+    Complex abs: 14.142135623730951
+    
+
+### Побитовые операции
+
+
+```python
+a: int = 0b01010101
+b: int = 0b10101010
+
+print(f"And: 0b{a&b:08b}")
+print(f"Or: 0b{a|b:08b}")
+print(f"Xor: 0b{a^b:08b}")
+print(f"Left shift: 0b{a << 4:08b}")
+print(f"Right shift: 0b{b >> 4:08b}")
+print(f"Not: 0b{~a:08b}")
+```
+
+    And: 0b00000000
+    Or: 0b11111111
+    Xor: 0b11111111
+    Left shift: 0b10101010000
+    Right shift: 0b00001010
+    Not: 0b-1010110
+    
+
+### Подсчет битов
+
+
+```python
+a: int = 4242
+print(f"{a} in binary format: 0b{a:b}")
+
+c = a.bit_count()  # Returns the number of ones in the binary representation of the absolute value of the integer
+print(f"Bit count: {c}")
+```
+
+    4242 in binary format: 0b1000010010010
+    Bit count: 4
+    
+
+### Fractions
+
+
+```python
+from fractions import Fraction
+
+f = Fraction("0.2").as_integer_ratio()
+
+print(f)
+```
+
+    (1, 5)
+    
+
+### Евклидово расстояние между двумя точками
+
+
+```python
+import math
+
+p1 = (0.22, 1, 12)
+p2 = (-0.12, 3, 7)
+
+print(math.dist(p1, p2))
+```
+
+    5.39588732276722
     
 
 ### lower(), upper(), capitalize() и title()
@@ -774,570 +1259,74 @@ for num in nums:
     33 -> !
     
 
-## Datetime
+## Regex
 
-Module *datetime* provides *date*, *time*, *datetime* and *timedelta*. All are immutable and hashable
-
-### Constructors
+Argument flags=re.IGNORECASE can be used with all functions
 
 
 ```python
-from datetime import date, time, datetime, timedelta
+import re
 
-d: date = date(year=1964, month=9, day=2)
-t: time  = time(hour=12, minute=30, second=0, microsecond=0, tzinfo=None, fold=0)
-dt: datetime = datetime(year=1964, month=9, day=2, hour=10, minute=30, second=0)
-td: timedelta = timedelta(weeks=1, days=1, hours=12, minutes=13, seconds=14)
+s1: str = "123 abc ABC 456"
 
-print (f"{d}\n {t}\n {dt}\n {td}")
+m1 = re.search("[aA]", s1)  # Searches for first occurrence of the pattern; search() return None if it can't find a match
+print(m1)
+print(m1.group(0))
+
+m2 = re.match("[aA]", s1)  # Searches at the beginning of the text; match() return None if it can't find a match
+print(m2)
+
+c1: list = re.findall("[aA]", s1)  # Returns all occurrences as strings
+print(c1)
+
+def replacer(s):  # replacer() can be a function that accepts a match object and returns a string
+    return chr(ord(s[0]) + 1)  # Next symbol in alphabet
+
+s2 = re.sub("\w", replacer, s1)  # Substitutes all occurrences with 'replacer'
+print(s2)
+
+c2 = re.split("\d", s1)
+print(c2)
+
+iter = re.finditer("\D", s1)  # Returns all occurrences as match objects
+
+for ch in iter:
+    print(ch.group(0), end= "")
 ```
 
-    1964-09-02
-     12:30:00
-     1964-09-02 10:30:00
-     8 days, 12:13:14
+    <re.Match object; span=(4, 5), match='a'>
+    a
+    None
+    ['a', 'A']
+    234 bcd BCD 567
+    ['', '', '', ' abc ABC ', '', '', '']
+     abc ABC 
+
+### Match Object
+
+
+```python
+import re
+
+m3 = re.match(r"(\w+) (\w+)", "John Connor, leader of the Resistance")
+
+s3: str = m3.group(0)  # Returns the whole match
+s4: str = m3.group(1)  # Returns part in the first bracket
+t1: tuple = m3.groups()  # Returns all bracketed parts
+start: int = m3.start()  # Returns start index of the match
+end: int = m3.end()  # Returns exclusive end index of the match
+t2: tuple[int, int] = m3.span()  # Return the 2-tuple (start, end)
+
+print (f"{s3}\n {s4}\n {t1}\n {start}\n {end}\n {t2}\n")
+```
+
+    John Connor
+     John
+     ('John', 'Connor')
+     0
+     11
+     (0, 11)
     
-
-### Now
-
-
-```python
-from datetime import date, time, datetime
-import pytz
-
-d: date  = date.today()
-dt1: datetime = datetime.today()
-dt2: datetime = datetime.utcnow()
-dt3: datetime = datetime.now(pytz.timezone('US/Pacific'))
-
-print (f"{d}\n {dt1}\n {dt2}\n {dt3}")
-
-```
-
-    2022-09-06
-     2022-09-06 17:50:37.664312
-     2022-09-06 12:50:37.664311
-     2022-09-06 05:50:37.724181-07:00
-    
-
-### Timezone
-
-
-```python
-from datetime import date, time, datetime, timedelta, tzinfo
-from dateutil.tz import UTC, tzlocal, gettz, datetime_exists, resolve_imaginary
-
-tz1: tzinfo = UTC  # UTC timezone
-
-tz2: tzinfo = tzlocal()  # Local timezone
-tz3: tzinfo = gettz()  # Local timezone
-
-tz4: tzinfo = gettz("America/Chicago")  # "Asia/Kolkata" etc. See full list at en.wikipedia.org/wiki/List_of_tz_database_time_zones
-
-local_dt = datetime.today()
-utc_dt = local_dt.astimezone(UTC)  # Convert local datetime to UTC datetime
-
-print (f"{tz1}\n {tz2}\n {tz3}\n {tz4}\n {local_dt}\n {utc_dt}")
-```
-
-    tzutc()
-     tzlocal()
-     tzlocal()
-     tzfile('US/Central')
-     2022-09-06 17:50:37.895639
-     2022-09-06 12:50:37.895639+00:00
-    
-
-## Где будет быстрее поиск, а где перебор и почему: dict, list, set, tuple?!!!
-## 2. Обработка данных
-
-### Sum, Count, Min, Max
-
-
-```python
-a: list[int] = [1, 2, 3, 4, 5, 2, 2]
-
-s = sum(a)
-print(s)
-
-c = a.count(2)  # Returns number of occurrences
-print(c)
-
-mn = min(a)
-print(mn)
-
-mx = max(a)
-print(mx)
-```
-
-    19
-    3
-    1
-    5
-    
-
-### Comprehensions
- 
-<list> = [i+1 for i in range(10)]                         # [1, 2, ..., 10]  
-<set>  = {i for i in range(10) if i > 5}                  # {6, 7, 8, 9}  
-<iter> = (i+5 for i in range(10))                         # (5, 6, ..., 14)  
-<dict> = {i: i*2 for i in range(10)}                      # {0: 0, 1: 2, ..., 9: 18}  
- 
-
- 
->>> [l+r for l in 'abc' for r in 'abc']  
-['aa', 'ab', 'ac', ..., 'cc']  
-
-### List comprehension
-An elegant approach to create a new list based on the values of an existing list.
-
-
-```python
-# new_list = [expression for member in iterable (if conditional)]
-
-fruits: list = ["Lemon", "Apple", "Banana", "Kiwi", "Watermelon", "Pear"]
-
-e_fruits = [fruit for fruit in fruits if "e" in fruit]
-#                                     ☝ if conditional
-print(e_fruits)
-
-upper_fruits = [fruit.upper() for fruit in fruits]
-#                     ☝ expression
-print(upper_fruits)
-
-# Split a list into equal sized chunks
-chunk_len = 2
-chunk_fruits = [fruits[i:i + chunk_len] for i in range(0, len(fruits), chunk_len)]
-print(chunk_fruits)
-
-```
-
-    ['Lemon', 'Apple', 'Watermelon', 'Pear']
-    ['LEMON', 'APPLE', 'BANANA', 'KIWI', 'WATERMELON', 'PEAR']
-    [['Lemon', 'Apple'], ['Banana', 'Kiwi'], ['Watermelon', 'Pear']]
-    
-
-### Dictionary comprehension
-Creating new dictionaries from existing dictionaries and iterables. A dictionary comprehension is very much like a list comprehension, but we get a dictionary at the end of it, so we need to be assigning key value pairs instead of only values.
-
-
-```python
-# new_dict = {expression for member in iterable (if conditional)}
-
-d: dict[str, str] = {"Italy": "Pizza", "US": "Hot-Dog", "China": "Dim Sum", "South Korea": "Kimchi"}  # Create a dictionary
-
-d2: dict[str, str] = {k: v for k, v in d.items() if "i" in v}  ## Select only elements that contain a letter "i" in value
-print(d2)
-
-```
-
-    {'Italy': 'Pizza', 'China': 'Dim Sum', 'South Korea': 'Kimchi'}
-    
-
-### Map, Filter, Reduce
- 
-<iter> = map(lambda x: x + 1, range(10))                  # (1, 2, ..., 10)  
-<iter> = filter(lambda x: x > 5, range(10))               # (6, 7, 8, 9)  
-<obj>  = reduce(lambda out, x: out + x, range(10))        # 45  
- 
-Reduce must be imported from the functools module.  
-
-### Any, All
- 
-<bool> = any(<collection>)                                # Is `bool(el)` True for any element.  
-<bool> = all(<collection>)                                # Is True for all elements or empty.  
-
-### bisect и бинарный поиск
-
-
-```python
-import bisect
-
-a: list[int] = [12, 6, 8, 19, 1, 33]
-
-a.sort()
-print(f"Sorted: {a}")
-
-print(bisect.bisect(a, 19))  # Locate the insertion point for value in a list to maintain sorted order
-
-bisect.insort(a, 15)  # Insert value in a list in sorted order
-print(a)
-
-# Binary search
-
-from bisect import bisect_left
-
-def binary_search(a, x, lo=0, hi=None):
-    if hi is None:
-        hi = len(a)
-
-    pos = bisect_left(a, x, lo, hi)
-    return pos if pos != hi and a[pos] == x else -1
-
-print(binary_search(a, 15))
-```
-
-    Sorted: [1, 6, 8, 12, 19, 33]
-    5
-    [1, 6, 8, 12, 15, 19, 33]
-    4
-    
-
-### Pairwise
-
-
-```python
-import itertools
-
-a = [1, 2, 3, 4, 5]
-p = itertools.pairwise(a)  # Returns successive overlapping pairs
-
-print(list(p))
-```
-
-    [(1, 2), (2, 3), (3, 4), (4, 5)]
-    
-
-### Itertools
- 
-from itertools import count, repeat, cycle, chain, islice
-
-<iter> = count(start=0, step=1)             # Returns updated value endlessly. Accepts floats.  
-<iter> = repeat(<el> [, times])             # Returns element endlessly or 'times' times.  
-<iter> = cycle(<collection>)                # Repeats the sequence endlessly.  
-
-<iter> = chain(<coll_1>, <coll_2> [, ...])  # Empties collections in order (figuratively).  
-<iter> = chain.from_iterable(<collection>)  # Empties collections inside a collection in order.  
-
-<iter> = islice(<coll>, to_exclusive)       # Only returns first 'to_exclusive' elements.  
-<iter> = islice(<coll>, from_inclusive, …)  # `to_exclusive, step_size`.  
-
- 
->>> from collections.abc import Iterable, Collection, Sequence  
->>> isinstance([1, 2, 3], Iterable)  
-True  
-
- text
-+------------------+------------+------------+------------+
-|                  |  Iterable  | Collection |  Sequence  |
-+------------------+------------+------------+------------+
-| list, range, str |    yes     |    yes     |    yes     |
-| dict, set        |    yes     |    yes     |            |
-| iter             |    yes     |            |            |
-+------------------+------------+------------+------------+
-
->>> from numbers import Number, Complex, Real, Rational, Integral  
->>> isinstance(123, Number)  
-True
-
- text
-+--------------------+----------+----------+----------+----------+----------+
-|                    |  Number  |  Complex |   Real   | Rational | Integral |
-+--------------------+----------+----------+----------+----------+----------+
-| int                |   yes    |   yes    |   yes    |   yes    |   yes    |
-| fractions.Fraction |   yes    |   yes    |   yes    |   yes    |          |
-| float              |   yes    |   yes    |   yes    |          |          |
-| complex            |   yes    |   yes    |          |          |          |
-| decimal.Decimal    |   yes    |          |          |          |          |
-+--------------------+----------+----------+----------+----------+----------+
-
-### Statistics
-from statistics import mean, median, variance, stdev, quantiles, groupby
-
-Combinatorics
--------------
-Every function returns an iterator.
-If you want to print the iterator, you need to pass it to the list() function first!
-
-from itertools import product, combinations, combinations_with_replacement, permutations
-
->>> product([0, 1], repeat=3)
-[(0, 0, 0), (0, 0, 1), (0, 1, 0), (0, 1, 1), ..., (1, 1, 1)]
-
->>> product('abc', 'abc')                    #   a  b  c
-[('a', 'a'), ('a', 'b'), ('a', 'c'),         # a x  x  x
- ('b', 'a'), ('b', 'b'), ('b', 'c'),         # b x  x  x
- ('c', 'a'), ('c', 'b'), ('c', 'c')]         # c x  x  x
- 
-
- 
->>> combinations('abc', 2)                   #   a  b  c
-[('a', 'b'), ('a', 'c'),                     # a .  x  x
- ('b', 'c')]                                 # b .  .  x
-
->>> combinations_with_replacement('abc', 2)  #   a  b  c
-[('a', 'a'), ('a', 'b'), ('a', 'c'),         # a x  x  x
- ('b', 'b'), ('b', 'c'),                     # b .  x  x
- ('c', 'c')]                                 # c .  .  x
-
->>> permutations('abc', 2)                   #   a  b  c
-[('a', 'b'), ('a', 'c'),                     # a .  x  x
- ('b', 'a'), ('b', 'c'),                     # b x  .  x
- ('c', 'a'), ('c', 'b')]                     # c x  x  .
-
-
-### Encode
-
-Python uses the Unix Epoch: "1970-01-01 00:00 UTC"
-
-
-```python
-from datetime import datetime
-from dateutil.tz import tzlocal
-
-dt1: datetime = datetime.fromisoformat("2021-10-04 00:05:23.555+00:00")  # Raises ValueError
-dt2: datetime = datetime.strptime("21/10/04 17:30", "%d/%m/%y %H:%M")   # Datetime from str, according to format (https://docs.python.org/3/library/datetime.html#strftime-and-strptime-format-codes)
-dt3: datetime = datetime.fromordinal(100000)  # 100000th day after 1.1.0001
-dt4: datetime = datetime.fromtimestamp(20_000_000.01)  # Local datetime from seconds since the Epoch
-
-tz2: tzinfo = tzlocal()
-dt5: datetime = datetime.fromtimestamp(300_000_000, tz2)  # Aware datetime from seconds since the Epoch
-
-print (f"{dt1}\n {dt2}\n {dt3}\n {dt4}\n {dt5}")
-```
-
-    2021-10-04 00:05:23.555000+00:00
-     2004-10-21 17:30:00
-     0274-10-16 00:00:00
-     1970-08-20 16:33:20.010000
-     1979-07-05 10:20:00+05:00
-    
-
-### Decode
-
-
-```python
-from datetime import datetime
-
-dt1: datetime = datetime.today()
-
-s1: str = dt1.isoformat()
-s2: str = dt1.strftime("%d/%m/%y %H:%M")  # Outputting datetime object to string (format: https://docs.python.org/3/library/datetime.html#strftime-and-strptime-format-codes)
-i: int = dt1.toordinal()  # Days since Gregorian NYE 1, ignoring time and tz
-a: float = dt1.timestamp()  # Seconds since the Epoch
-
-print (f"{dt1}\n {s1}\n {s2}\n {i}\n {a}")
-```
-
-    2022-09-06 17:50:38.041159
-     2022-09-06T17:50:38.041159
-     06/09/22 17:50
-     738404
-     1662468638.041159
-    
-
-### Арифметика datetime
-
-
-```python
-from datetime import date, time, datetime, timedelta
-from dateutil.tz import UTC, tzlocal, gettz, datetime_exists, resolve_imaginary
-
-d: date  = date.today()
-dt1: datetime = datetime.today()
-dt2: datetime = datetime(year=1981, month=12, day=2)
-td1: timedelta = timedelta(days=5)
-td2: timedelta = timedelta(days=1)
-
-d = d + td1  # date = date ± timedelta
-dt3 = dt1 - td1  # datetime = datetime ± timedelta
-
-td3 = dt1 - dt2  # timedelta = datetime - datetime
-
-td4 = 10 * td1  # timedelta = const * timedelta
-c: float = td1/td2  # timedelta/timedelta
-
-print (f"{d}\n {dt3}\n {td3}\n {td4}\n {c}")
-```
-
-    2022-09-11
-     2022-09-01 17:50:38.132916
-     14888 days, 17:50:38.132916
-     50 days, 0:00:00
-     5.0
-    
-
-### Шифрование и дешифрование
-
-
-```python
-# pip install pycryptodomex
-import hashlib
-
-from Cryptodome import Random
-from Cryptodome.Cipher import AES
-from Cryptodome.Util.Padding import pad
-from Cryptodome.Util.Padding import unpad
-
-def encrypt_data(password: str, raw_data: bytes) -> bytes:
-    res = bytes()
-    try:
-        key = hashlib.sha256(password.encode()).digest()
-        align_raw = pad(raw_data, AES.block_size)
-        iv = Random.new().read(AES.block_size)
-        cipher = AES.new(key, AES.MODE_CBC, iv)
-        ciphered_data = cipher.encrypt(align_raw)
-        res = iv + ciphered_data
-    except Exception as e:
-        print(f"Encrypt error: {str(e)}")
-    return res
-
-def decrypt_data(password: str, encrypted_data: bytes) -> bytes:
-    res = bytes()
-    try:
-        key = hashlib.sha256(password.encode()).digest()
-        iv = encrypted_data[:AES.block_size]
-        ciphered_data = encrypted_data[AES.block_size:]
-        cipher = AES.new(key, AES.MODE_CBC, iv)
-        decrypt_data = cipher.decrypt(ciphered_data)
-        res = unpad(decrypt_data, AES.block_size)
-    except Exception as e:
-        print(f"Decrypt error: {str(e)}")
-    return res
-
-def encrypt_file(src_file: str, dst_file: str, password: str) -> bool:
-    try:
-        with open(src_file, "rb") as reader, open(dst_file, "wb") as writer:
-            data = reader.read()
-            data_enc = encrypt_data(password, data)
-            writer.write(data_enc)
-            writer.flush()
-            print(f"{src_file} encrypted into {dst_file}")
-        return True
-    except Exception as e:
-        print(f"Encrypt_file error: {str(e)}")
-        return False
-
-def decrypt_file(src_file: str, dst_file: str, password: str) -> bool:
-    try:
-        with open(src_file, "rb") as reader, open(dst_file, "wb") as writer:
-            data = reader.read()
-            data_decrypt = decrypt_data(password, data)
-            writer.write(data_decrypt)
-            writer.flush()
-            print(f"{src_file} decrypted into {dst_file}")
-        return True
-    except Exception as e:
-        print(f"Decrypt file error: {str(e)}")
-        return False
-
-if __name__ == '__main__':
-    mes: bytes = bytes("A am the Message", "utf-8")
-    passw: str = "h3AC3TsU8TECvyCqd5Q5WUag5uXLjct2"
-    print(f"Original message: {mes}")
-
-    # Encrypt message
-    enc: bytes = encrypt_data(passw, mes)
-    print(f"Encrypted message: {enc}")
-
-    # Decrypt message
-    dec: bytes = decrypt_data(passw, enc)
-    print(f"Decrypted message: {dec}")
-
-```
-
-    Original message: b'A am the Message'
-    Encrypted message: b' E\x92\xbeH\x87\xdde\t\xd3\x9ap\x0cO\xc3\xf8\x84\xc7~\x1c\x90\xcd\x9a\xd3\x1bNd\xccDt\x1b\xfcZ\x91\xb5\xd78\x85\x91R\x1e]3\x9c\xec\xcbC\xd8'
-    Decrypted message: b'A am the Message'
-    
-
-## Математика
-
-### Базовая математика
-
-
-```python
-from math import pi
-
-a: float = pi ** 2  # Or pow(pi, 2)
-print(f"Power: {a}")
-
-b: float = round(pi, 2)
-print(f"Round: {b}")
-
-c: int = round(256, -2)
-print(f"Int round: {c}")
-
-d: float = abs(-pi)
-print(f"Abs: {d}")
-
-e: float = abs(10+10j)  # Or e: float = abs(complex(real=10, imag=10))
-print(f"Complex abs: {e}")
-
-```
-
-    Power: 9.869604401089358
-    Round: 3.14
-    Int round: 300
-    Abs: 3.141592653589793
-    Complex abs: 14.142135623730951
-    
-
-### Побитовые операции
-
-
-```python
-a: int = 0b01010101
-b: int = 0b10101010
-
-print(f"And: 0b{a&b:08b}")
-print(f"Or: 0b{a|b:08b}")
-print(f"Xor: 0b{a^b:08b}")
-print(f"Left shift: 0b{a << 4:08b}")
-print(f"Right shift: 0b{b >> 4:08b}")
-print(f"Not: 0b{~a:08b}")
-```
-
-    And: 0b00000000
-    Or: 0b11111111
-    Xor: 0b11111111
-    Left shift: 0b10101010000
-    Right shift: 0b00001010
-    Not: 0b-1010110
-    
-
-### Подсчет битов
-
-
-```python
-a: int = 4242
-print(f"{a} in binary format: 0b{a:b}")
-
-c = a.bit_count()  # Returns the number of ones in the binary representation of the absolute value of the integer
-print(f"Bit count: {c}")
-```
-
-    4242 in binary format: 0b1000010010010
-    Bit count: 4
-    
-
-### Fractions
-
-
-```python
-from fractions import Fraction
-
-f = Fraction("0.2").as_integer_ratio()
-
-print(f)
-```
-
-    (1, 5)
-    
-
-### Евклидово расстояние между двумя точками
-
-
-```python
-import math
-
-p1 = (0.22, 1, 12)
-p2 = (-0.12, 3, 7)
-
-print(math.dist(p1, p2))
-```
-
-    5.39588732276722
     
 
 ## File
@@ -1452,9 +1441,73 @@ print(s5, s6, t2)
     f .txt ('c:\\', 'Works', 'amaargiru', 'pycore', 'f.txt')
     
 
-NumPy
------
+### JSON
+
+Human-readable text format to store and transmit data objects.
+
+
+```python
+import json
+
+d: dict = {1: "Lemon", 2: "Apple", 3: "Banana!"}
+
+object_as_string: str = json.dumps(d, indent=2)
+print(object_as_string)
+
+restored_object = json.loads(object_as_string)
+
+# Write object to JSON file
+with open("1.json", 'w', encoding='utf-8') as file:
+    json.dump(d, file, indent=2)
+
+# Read object from JSON file
+with open("1.json", encoding='utf-8') as file:
+    restored_from_file = json.load(file)
+    
+print(restored_from_file)
+
+```
+
+    {
+      "1": "Lemon",
+      "2": "Apple",
+      "3": "Banana!"
+    }
+    {'1': 'Lemon', '2': 'Apple', '3': 'Banana!'}
+    
+
+### Pickle
+
+Бинарный формат для хранения и транспортировки структур данных.
+
+
+```python
+import pickle
+
+d: dict = {1: "Lemon", 2: "Apple", 3: "Banana!"}
+
+# Запись объекта в бинарный файл
+with open("1.bin", "wb") as file:
+    pickle.dump(d, file)
+
+# Чтение объекта из файла
+with open("1.bin", "rb") as file:
+    restored_from_file = pickle.load(file)
+
+print(restored_from_file)
+```
+
+    {1: 'Lemon', 2: 'Apple', 3: 'Banana!'}
+    
+
+### Protocol Buffers
+Если вы хотите передавать и хранить данные, используя универсальную структуру, одинаково хорошо понимаемую всеми языками программирования (как JSON) и занимающую мало места (как Pickle), то можно посмотреть в сторону Protocol Buffers ([Wikipedia](https://en.wikipedia.org/wiki/Protocol_Buffers), [примеры для Python](https://developers.google.com/protocol-buffers/docs/pythontutorial)). Есть еще альтернативы, например, [FlatBuffers](https://google.github.io/flatbuffers/), [Apache Avro](https://avro.apache.org/) или [Thrift](https://thrift.apache.org/).
+
+### NumPy
+
 Array manipulation mini-language. It can run up to one hundred times faster than the equivalent Python code. An even faster alternative that runs on a GPU is called CuPy.
+
+
 
  
 # $ pip3 install numpy
@@ -1550,9 +1603,11 @@ right = [[0.1, 0.6, 0.8], [0.1, 0.6, 0.8], [0.1, 0.6, 0.8]]  # Shape: (3, 3) <- 
 >>> distances.argmin(1)
 [1, 2, 1]
 
-Pandas
-------
- 
+### Pandas
+
+Библиотека обработки и анализа данных. Работа с данными строится поверх библиотеки NumPy.
+
+
 # $ pip3 install pandas
 import pandas as pd
 from pandas import Series, DataFrame
@@ -1828,157 +1883,21 @@ Object for rolling window calculations.
 <R_Sr/R_DF/R_GB> = <Sr/DF/GB>.rolling(window_size)  # Also: `min_periods=None, center=False`.
 <R_Sr/R_DF>      = <R_DF/R_GB>[column_key/s]        # Or: <R>.column_key
 <Sr/DF/DF>       = <R_Sr/R_DF/R_GB>.sum/max/mean()  # Or: <R>.apply/agg(<agg_func/str>)
-
-## Regex
-
-Argument flags=re.IGNORECASE can be used with all functions
-
-
-```python
-import re
-
-s1: str = "123 abc ABC 456"
-
-m1 = re.search("[aA]", s1)  # Searches for first occurrence of the pattern; search() return None if it can't find a match
-print(m1)
-print(m1.group(0))
-
-m2 = re.match("[aA]", s1)  # Searches at the beginning of the text; match() return None if it can't find a match
-print(m2)
-
-c1: list = re.findall("[aA]", s1)  # Returns all occurrences as strings
-print(c1)
-
-def replacer(s):  # replacer() can be a function that accepts a match object and returns a string
-    return chr(ord(s[0]) + 1)  # Next symbol in alphabet
-
-s2 = re.sub("\w", replacer, s1)  # Substitutes all occurrences with 'replacer'
-print(s2)
-
-c2 = re.split("\d", s1)
-print(c2)
-
-iter = re.finditer("\D", s1)  # Returns all occurrences as match objects
-
-for ch in iter:
-    print(ch.group(0), end= "")
-```
-
-    <re.Match object; span=(4, 5), match='a'>
-    a
-    None
-    ['a', 'A']
-    234 bcd BCD 567
-    ['', '', '', ' abc ABC ', '', '', '']
-     abc ABC 
-
-### Match Object
-
-
-```python
-import re
-
-m3 = re.match(r"(\w+) (\w+)", "John Connor, leader of the Resistance")
-
-s3: str = m3.group(0)  # Returns the whole match
-s4: str = m3.group(1)  # Returns part in the first bracket
-t1: tuple = m3.groups()  # Returns all bracketed parts
-start: int = m3.start()  # Returns start index of the match
-end: int = m3.end()  # Returns exclusive end index of the match
-t2: tuple[int, int] = m3.span()  # Return the 2-tuple (start, end)
-
-print (f"{s3}\n {s4}\n {t1}\n {start}\n {end}\n {t2}\n")
-```
-
-    John Connor
-     John
-     ('John', 'Connor')
-     0
-     11
-     (0, 11)
-    
-    
-
-### JSON
-
-Human-readable text format to store and transmit data objects.
-
-
-```python
-import json
-
-d: dict = {1: "Lemon", 2: "Apple", 3: "Banana!"}
-
-object_as_string: str = json.dumps(d, indent=2)
-print(object_as_string)
-
-restored_object = json.loads(object_as_string)
-
-# Write object to JSON file
-with open("1.json", 'w', encoding='utf-8') as file:
-    json.dump(d, file, indent=2)
-
-# Read object from JSON file
-with open("1.json", encoding='utf-8') as file:
-    restored_from_file = json.load(file)
-    
-print(restored_from_file)
-
-```
-
-    {
-      "1": "Lemon",
-      "2": "Apple",
-      "3": "Banana!"
-    }
-    {'1': 'Lemon', '2': 'Apple', '3': 'Banana!'}
-    
-
-### Pickle
-
-Бинарный формат для хранения и транспортировки структур данных.
-
-
-```python
-import pickle
-
-d: dict = {1: "Lemon", 2: "Apple", 3: "Banana!"}
-
-# Запись объекта в бинарный файл
-with open("1.bin", "wb") as file:
-    pickle.dump(d, file)
-
-# Чтение объекта из файла
-with open("1.bin", "rb") as file:
-    restored_from_file = pickle.load(file)
-
-print(restored_from_file)
-```
-
-    {1: 'Lemon', 2: 'Apple', 3: 'Banana!'}
-    
-
-### Protocol Buffers
-Если вы хотите передавать и хранить данные, используя универсальную структуру, одинаково хорошо понимаемую всеми языками программирования (как JSON) и занимающую мало места (как Pickle), то можно посмотреть в сторону Protocol Buffers ([Wikipedia](https://en.wikipedia.org/wiki/Protocol_Buffers), [примеры для Python](https://developers.google.com/protocol-buffers/docs/pythontutorial)). Есть еще альтернативы, например, [FlatBuffers](https://google.github.io/flatbuffers/), [Apache Avro](https://avro.apache.org/) или [Thrift](https://thrift.apache.org/).
 ## 3. Потоки данных
 
 ### Итераторы
-
-
-
-Iterator
---------
- 
+```python
 <iter> = iter(<collection>)                 # `iter(<iter>)` returns unmodified iterator.
 <iter> = iter(<function>, to_exclusive)     # A sequence of return values until 'to_exclusive'.
 <el>   = next(<iter> [, default])           # Raises StopIteration or returns 'default' on end.
 <list> = list(<iter>)                       # Returns a list of iterator's remaining elements.
+```
 
-Enumerate
----------
- 
+### Enumerate
+```text
 for i, el in enumerate(<collection> [, i_start]):
     ...
+```
 
 ### Generator (генератор)
 
@@ -2004,7 +1923,6 @@ print(next(c))
     120
     
 
-### Генераторы
 https://xakep.ru/2014/10/06/generatora-iteratory-python/  
 
 Итерация и генераторы
@@ -2028,7 +1946,6 @@ https://xakep.ru/2014/10/06/generatora-iteratory-python/
 Можно ли извлечь элемент генератора по индексу?
 
 Нет, будет ошибка. Генератор не поддерживает метод __getitem__.
-
 
 Здесь важно, чтобы кандидат понимал различие и мог с той или иной степенью погружения рассказать про эти различия. Если кратко, то итератор в Python – это любой объект, который использует метод next() для получения следующего значения последовательности. Генератор – функция, которая производит или выдает последовательность значений с использованием метода yield. Концептуально, итератор — это механизм поэлементного обхода данных, а генератор позволяет отложено создавать результат при итерации. Генератор может создавать результат на основе какого-то алгоритма или брать элементы из источника данных (коллекция, файлы, сетевое подключения и др.) и изменять их.
 
@@ -2078,6 +1995,7 @@ dashboard = auth_only(dashboard)
 
 Например, вам нужен декоратор для проверки прав. Логика проверки одинакова, но прав может быть много. Чтобы не плодить копипасту, напишем фабрику декораторов.
 
+```python
 from functools import wraps
 
 def has_perm(perm):
@@ -2094,6 +2012,8 @@ def has_perm(perm):
 @has_perm('view_user')
 def users(request):
     ...
+```
+
 Зачем нужен @wraps? functools.wraps
 
 wraps – декоратор из стандартной поставки Питона, модуль functools. Он назначает функции-врапперу те же поля __name__, __module__, __doc__, что и у исходной функции, которую вы декорируете. Это нужно для того, чтобы после декорирования функция-враппер не выглядела в стектрейсах как исходная функция.
@@ -2119,7 +2039,7 @@ def function_that_gets_passed_to_decorator():
 ### Debugger Example
 Decorator that prints function's name every time it gets called.
 
- 
+```python
 from functools import wraps
 
 def debug(func):
@@ -2132,6 +2052,7 @@ def debug(func):
 @debug
 def add(x, y):
     return x + y
+```
  
 Wraps is a helper decorator that copies the metadata of the passed function (func) to the function it is wrapping (out).
 Without it `'add.__name__'` would return `'out'`.
@@ -2140,19 +2061,21 @@ Without it `'add.__name__'` would return `'out'`.
 ### LRU Cache
 Decorator that caches function's return values. All function's arguments must be hashable.
 
- 
+```python 
 from functools import lru_cache
 
 @lru_cache(maxsize=None)
 def fib(n):
     return n if n < 2 else fib(n-2) + fib(n-1)
+```
  
-Default size of the cache is 128 values. Passing `'maxsize=None'` makes it unbounded.
-CPython interpreter limits recursion depth to 1000 by default. To increase it use `'sys.setrecursionlimit(<depth>)'`.
+Default size of the cache is 128 values. Passing 'maxsize=None' makes it unbounded.
+CPython interpreter limits recursion depth to 1000 by default. To increase it use 'sys.setrecursionlimit(<depth>)'.
 
 ### Parametrized Decorator
 A decorator that accepts arguments and returns a normal decorator that accepts a function.
- 
+
+```python
 from functools import wraps
 
 def debug(print_result=False):
@@ -2168,8 +2091,9 @@ def debug(print_result=False):
 @debug(print_result=True)
 def add(x, y):
     return x + y
+```
  
-Using only `'@debug'` to decorate the add() function would not work here, because debug would then receive the add() function as a 'print_result' argument. Decorators can however manually check if the argument they received is a function and act accordingly.
+Using only '@debug' to decorate the add() function would not work here, because debug would then receive the add() function as a 'print_result' argument. Decorators can however manually check if the argument they received is a function and act accordingly.
 
 ### Контекстный менеджер
 
@@ -2202,7 +2126,8 @@ Enter() should lock the resources and optionally return an object.
 Exit() should release the resources.
 Any exception that happens inside the with block is passed to the exit() method.
 If it wishes to suppress the exception it must return a true value.
- 
+
+```python
 class MyOpen:
     def __init__(self, filename):
         self.filename = filename
@@ -2211,6 +2136,7 @@ class MyOpen:
         return self.file
     def __exit__(self, exc_type, exception, traceback):
         self.file.close()
+```
 
 >>> with open('test.txt', 'w') as file:
 ...     file.write('Hello World!')
@@ -2487,7 +2413,7 @@ Deep Copy – рекурсивно копирует все значения от
 
 ## Что такое MRO? Какая разница между MRO2 и MR3 (diamond problem)?!!!
 
-Возможно ли множественное наследование? Что такое MRO?
+Что такое множественное наследование? Возможно ли множественное наследование? Что такое MRO?
 
 Да, можно указать более одного родителя в классе потомка.
 
@@ -2507,17 +2433,18 @@ Code that generates code.
 ### Type
 Type is the root class. If only passed an object it returns its type (class). Otherwise it creates a new class.
 
- 
+```
 <class> = type('<class_name>', <tuple_of_parents>, <dict_of_class_attributes>)
- 
+```
 
- 
+```
 >>> Z = type('Z', (), {'a': 'abcde', 'b': 12345})
 >>> z = Z()
+```
 
-## Метаклассы!!!  
+Singleton через метаклассы
 
-Что такое метакласс, переменная цикла?
+Что переменная цикла?
 Какие задачи решали с помощью метаклассов?
 
 ### Meta Class
@@ -2530,11 +2457,12 @@ def my_meta_class(name, parents, attrs):
  
 
 #### Or:
- 
+```python
 class MyMetaClass(type):
     def __new__(cls, name, parents, attrs):
         attrs['a'] = 'abcde'
         return type.__new__(cls, name, parents, attrs)
+```
  
 New() is a class method that gets called before init(). If it returns an instance of its class, then that instance gets passed to init() as a 'self' argument.
 It receives the same arguments as init(), except for the first one that specifies the desired type of the returned instance (MyMetaClass in our case).
@@ -2658,13 +2586,12 @@ riser = lambda x: raise Exception(x)
 <func> = lambda <arg_1>, <arg_2>: <return_value>
 
 ### Conditional Expression
- 
+```
 <obj> = <exp_if_true> if <condition> else <exp_if_false>
- 
-
  
 >>> [a if a else 'zero' for a in (0, 1, 2, 3)]
 ['zero', 1, 2, 3]
+```
 
 Closure
 
@@ -2672,18 +2599,18 @@ We have/get a closure in Python when:
 A nested function references a value of its enclosing function and then
 the enclosing function returns the nested function.
 
- 
+```python
 def get_multiplier(a):
     def out(b):
         return a * b
     return out
- 
+```
 
- 
+```
 >>> multiply_by_3 = get_multiplier(3)
 >>> multiply_by_3(10)
 30
- 
+```
 
 If multiple nested functions within enclosing function reference the same value, that value gets shared.
 To dynamically access function's first free variable use `'<function>.__closure__[0].cell_contents'`.
@@ -2945,29 +2872,33 @@ class MySequence:
 Inspecting code at runtime.
 
 ### Variables
- 
+
+```
 <list> = dir()                             # Names of local variables (incl. functions).
 <dict> = vars()                            # Dict of local variables. Also locals().
 <dict> = globals()                         # Dict of global variables.
- 
+``` 
 
 ### Attributes
- 
+
+```
 <list> = dir(<object>)                     # Names of object's attributes (incl. methods).
 <dict> = vars(<object>)                    # Dict of writable attributes. Also <obj>.__dict__.
 <bool> = hasattr(<object>, '<attr_name>')  # Checks if getattr() raises an AttributeError.
 value  = getattr(<object>, '<attr_name>')  # Raises AttributeError if attribute is missing.
 setattr(<object>, '<attr_name>', value)    # Only works on objects with '__dict__' attribute.
 delattr(<object>, '<attr_name>')           # Same. Also `del <object>.<attr_name>`.
- 
+```
 
 ### Parameters
- 
+
+```
 from inspect import signature
 <Sig>  = signature(<function>)             # Function's Signature object.
 <dict> = <Sig>.parameters                  # Dict of function's Parameter objects.
 <str>  = <Param>.name                      # Parameter's name.
 <memb> = <Param>.kind                      # Member of ParameterKind enum.
+```
 
 (использование dir(), dir, hasattr(), getattr())
 
@@ -2978,21 +2909,22 @@ from inspect import signature
 Operator
 --------
 Module of functions that provide the functionality of operators.
- 
+```
 import operator as op
 <el>      = op.add/sub/mul/truediv/floordiv/mod(<el>, <el>)  # +, -, *, /, //, %
 <int/set> = op.and_/or_/xor(<int/set>, <int/set>)            # &, |, ^
 <bool>    = op.eq/ne/lt/le/gt/ge(<sortable>, <sortable>)     # ==, !=, <, <=, >, >=
 <func>    = op.itemgetter/attrgetter/methodcaller(<obj>)     # [index/key], .name, .name()
- 
+ ```
 
- 
+```
 elementwise_sum  = map(op.add, list_a, list_b)
 sorted_by_second = sorted(<collection>, key=op.itemgetter(1))
 sorted_by_both   = sorted(<collection>, key=op.itemgetter(1, 0))
 product_of_elems = functools.reduce(op.mul, <collection>)
 union_of_sets    = functools.reduce(op.or_, <coll_of_sets>)
 first_element    = op.methodcaller('pop', 0)(<list>)
+```
  
 Binary operators require objects to have and(), or(), xor() and invert() special methods, unlike logical operators that work on all types of objects.
 Also: `'<bool> = <bool> &|^ <bool>'` and `'<int> = <bool> &|^ <int>'`.
@@ -3120,7 +3052,8 @@ Iterable Duck Types
 ### Iterable
 Only required method is iter(). It should return an iterator of object's items.
 Contains() automatically works on any object that has iter() defined.
- 
+
+```python
 class MyIterable:
     def __init__(self, a):
         self.a = a
@@ -3128,6 +3061,7 @@ class MyIterable:
         return iter(self.a)
     def __contains__(self, el):
         return el in self.a
+```
  
 >>> obj = MyIterable([1, 2, 3])
 >>> [el for el in obj]
@@ -3143,7 +3077,8 @@ Passing ABC Iterable to isinstance() or issubclass() checks whether object/class
 It's a richer interface than the basic sequence.
 Extending it generates iter(), contains(), reversed(), index() and count().
 Unlike `'abc.Iterable'` and `'abc.Collection'`, it is not a duck type. That is why `'issubclass(MySequence, abc.Sequence)'` would return False even if MySequence had all the methods defined.
- 
+
+```python
 from collections import abc
 
 class MyAbcSequence(abc.Sequence):
@@ -3153,9 +3088,10 @@ class MyAbcSequence(abc.Sequence):
         return len(self.a)
     def __getitem__(self, i):
         return self.a[i]
+```
 
 #### Table of required and automatically available special methods:
- text
+```text
 +------------+------------+------------+------------+--------------+
 |            |  Iterable  | Collection |  Sequence  | abc.Sequence |
 +------------+------------+------------+------------+--------------+
@@ -3167,64 +3103,71 @@ class MyAbcSequence(abc.Sequence):
 | index()    |            |            |            |     Yes      |
 | count()    |            |            |            |     Yes      |
 +------------+------------+------------+------------+--------------+
- 
+```
+
 Other ABCs that generate missing methods are: MutableSequence, Set, MutableSet, Mapping and MutableMapping.
 Names of their required methods are stored in `'<abc>.__abstractmethods__'`.
 ## 6. Многопоточность и многозадачность
 
 Threading
 ---------
-CPython interpreter can only run a single thread at a time.
-That is why using multiple threads won't result in a faster execution, unless at least one of the threads contains an I/O operation.
- 
+CPython interpreter can only run a single thread at a time. That is why using multiple threads won't result in a faster execution, unless at least one of the threads contains an I/O operation.
+
+```
 from threading import Thread, RLock, Semaphore, Event, Barrier
 from concurrent.futures import ThreadPoolExecutor
- 
+```
 
 ### Thread
- 
+
+```
 <Thread> = Thread(target=<function>)           # Use `args=<collection>` to set the arguments.
 <Thread>.start()                               # Starts the thread.
 <bool> = <Thread>.is_alive()                   # Checks if the thread has finished executing.
 <Thread>.join()                                # Waits for the thread to finish.
- 
+```
+
 Use `'kwargs=<dict>'` to pass keyword arguments to the function.
 Use `'daemon=True'`, or the program will not be able to exit while the thread is alive.**
 
 ### Lock
- 
+
+```
 <lock> = RLock()                               # Lock that can only be released by the owner.
 <lock>.acquire()                               # Waits for the lock to be available.
 <lock>.release()                               # Makes the lock available again.
- 
+```
 
 #### Or:
- 
+
+```
 with <lock>:                                   # Enters the block by calling acquire(),
     ...                                        # and exits it with release().
- 
+``` 
 
 ### Semaphore, Event, Barrier
- 
+
+```
 <Semaphore> = Semaphore(value=1)               # Lock that can be acquired by 'value' threads.
 <Event>     = Event()                          # Method wait() blocks until set() is called.
 <Barrier>   = Barrier(n_times)                 # Wait() blocks until it's called n_times.
- 
+```
 
 ### Thread Pool Executor
 Object that manages thread execution.
 An object with the same interface called ProcessPoolExecutor provides true parallelism by running a separate interpreter in each process. All arguments must be [pickable](#pickle).
 
- 
+```
 <Exec> = ThreadPoolExecutor(max_workers=None)  # Or: `with ThreadPoolExecutor() as <name>: …`
 <Exec>.shutdown(wait=True)                     # Blocks until all threads finish executing.
- 
+```
 
- 
+```
 <iter> = <Exec>.map(<func>, <args_1>, ...)     # A multithreaded and non-lazy map().
 <Futr> = <Exec>.submit(<func>, <arg_1>, ...)   # Starts a thread and returns its Future object.
 <bool> = <Futr>.done()                         # Checks if the thread has finished executing.
 <obj>  = <Futr>.result()                       # Waits for thread to finish and returns result.
+```
 
 
 ### Многопоточность
@@ -3324,7 +3267,9 @@ if __name__ ==  '__main__':
     print("Count time", end - start)
 ```
 
-## asyncio!!!
+Count time 2.0029137134552
+
+## asyncio
 
 В JavaScript async / await сделаны жадными как Promise. При вызове async функции автоматически создается задача и отправляется в очередь на исполнение в event loop. await, в свою очередь, просто ждёт результат.
 
@@ -3339,11 +3284,66 @@ await запускает корутину изнутри другой корут
 Для запуска корутины без ожидания (как это делает Promise) используется asyncio.create_task(coro). Либо asyncio.gather(*aws), если надо запустить сразу несколько. Нужно только следить, чтобы ссылка на возвращаемое значение сохранялась до конца вычисления, иначе его пожрет GC и все оборвется на самом интересном месте (промис бы отработал до конца не смотря ни на что).
 
 В JS только один event loop, поэтому было вполне разумно закопать его внутрь promise / async / await как деталь реализации, упростив работу прикладному программисту. В питоне отзеркалили более ранний вариант корутин на генераторах, дали возможность использовать разные event loop и выставили все кишки наружу.
-
-Count time 2.0029137134552
 ## 7. Популярные библиотеки
 
-## Profiling
+### Логгирование
+
+
+```python
+import pathlib
+import sys
+import logging
+from logging.handlers import RotatingFileHandler
+from colorlog import ColoredFormatter
+
+class TestLogger:
+
+    @staticmethod
+    def get_logger(path_to_log_file: str, max_file_size: int, max_file_count: int) -> logging.Logger:
+        logger = logging.getLogger("sample_logger")
+        logger.setLevel(logging.DEBUG)
+
+        # Форматирование при выводе в файл
+        flog_formatter = logging.Formatter("%(asctime)s.%(msecs)03d %(filename)-24s %(levelname)-8s  %(message)s",
+                                           datefmt="%a, %d %b %Y %H:%M:%S")
+        file_handler = RotatingFileHandler(filename=path_to_log_file, mode="a", maxBytes=max_file_size,
+                                           backupCount=max_file_count, encoding="utf-8", delay=False)
+        file_handler.setFormatter(flog_formatter)
+        logger.addHandler(file_handler)
+
+        # Форматирование при выводе в консоль
+        clog_formatter = ColoredFormatter("%(asctime)s.%(msecs)03d  %(filename)-24s :%(lineno)4d  "
+                                          "%(log_color)s%(levelname)-8s %(message)s%(reset)s",
+                                          datefmt="%a, %d %b %Y %H:%M:%S")
+        console_handler = logging.StreamHandler(sys.stdout)
+        console_handler.setFormatter(clog_formatter)
+        logger.addHandler(console_handler)
+
+        return logger
+
+log_file_max_size: int = 25 * 1024 ** 2  # Максимальный размер одного файла логов
+log_file_max_count: int = 10  # Максимальное количество файлов логов
+log_file_path: str = "logs/sample_logger.log"
+
+try:
+    path = pathlib.Path(log_file_path)  # Создаем путь к файлу логов, если он не существует
+    path.parent.mkdir(parents=True, exist_ok=True)
+    logger = TestLogger.get_logger(log_file_path, log_file_max_size, log_file_max_count)
+except Exception as err:
+    print(f"Ошибка при попытке создания файла лога: {str(err)}")
+    sys.exit()  # Аварийный выход
+
+logger.debug("Debug message")
+logger.info("Hello, world!")
+logger.error("Error!")
+```
+
+    Thu, 15 Sep 2022 17:37:36.754  1628851721.py            :  44  [37mDEBUG    Debug message[0m
+    Thu, 15 Sep 2022 17:37:36.755  1628851721.py            :  45  [32mINFO     Hello, world![0m
+    Thu, 15 Sep 2022 17:37:36.756  1628851721.py            :  46  [31mERROR    Error![0m
+    
+
+## Профилирование
 
 ### Stopwatch
 
@@ -3378,7 +3378,7 @@ duration = perf_counter() - start_time
 print(f"{duration} seconds")
 ```
 
-    2.3540456001646817 seconds
+    2.2668115999549627 seconds
     
 
 ### timeit
@@ -3391,14 +3391,17 @@ from timeit import timeit
 
 def long_pow():
     j: int = 0
-    for i in range(1000_000):  # Long operation
+    for i in range(1_000_000):  # Long operation
         j = i ** 2
 
 timeit("long_pow()", number=10, globals=globals(), setup='pass')
 ```
 
 
-    1.8552540000528097
+
+
+    1.8498943001031876
+
 
 
 ### Call Graph
@@ -3466,8 +3469,8 @@ print(f"List after shuffle: {a}")
     List after shuffle: [10, 4, 6, 5, 1, 8, 3, 9, 7, 2]
     
 
-Input
------
+### Input
+
 Reads a line from user input or pipe if present.
 
 <str> = input(prompt=None)
@@ -3476,15 +3479,15 @@ Trailing newline gets stripped.
 Prompt string is printed to the standard output before reading input.
 Raises EOFError when user hits EOF (ctrl-d/ctrl-z⏎) or input stream gets exhausted.
 
-Command Line Arguments
-----------------------
-
+### Command Line Arguments
+```
 import sys
 scripts_path = sys.argv[0]
 arguments    = sys.argv[1:]
+```
 
 ### Argument Parser
- 
+```
 from argparse import ArgumentParser, FileType
 p = ArgumentParser(description=<str>)
 p.add_argument('-<short_name>', '--<name>', action='store_true')  # Flag.
@@ -3494,28 +3497,33 @@ p.add_argument('<name>', type=<type>, nargs='+')                  # Remaining ar
 p.add_argument('<name>', type=<type>, nargs='*')                  # Optional arguments.
 args  = p.parse_args()                                            # Exits on error.
 value = args.<name>
-
+```
+```
 Use `'help=<str>'` to set argument description.
 Use `'default=<el>'` to set the default value.
 Use `'type=FileType(<mode>)'` for files.
+```
 
 Print
 -----
- 
+```
 print(<el_1>, ..., sep=' ', end='\n', file=sys.stdout, flush=False)
  
 Use `'file=sys.stderr'` for messages about errors.
 Use `'flush=True'` to forcibly flush the stream.
+```
 
 ### Pretty Print
- 
+
+```
 from pprint import pprint
 pprint(<collection>, width=80, depth=None, compact=False, sort_dicts=True)
+```
  
 Levels deeper than 'depth' get replaced by '...'.
 
-OS Commands
------------
+### OS Commands
+```
 import os, shutil, subprocess
 
 ### Files and Directories
@@ -3535,6 +3543,91 @@ os.replace(from, to)                # Same, but overwrites 'to' if it exists.
 os.remove(<path>)                   # Deletes the file.
 os.rmdir(<path>)                    # Deletes the empty directory.
 shutil.rmtree(<path>)               # Deletes the directory.
+```
+
+### Шифрование и дешифрование
+
+
+```python
+# pip install pycryptodomex
+import hashlib
+
+from Cryptodome import Random
+from Cryptodome.Cipher import AES
+from Cryptodome.Util.Padding import pad
+from Cryptodome.Util.Padding import unpad
+
+def encrypt_data(password: str, raw_data: bytes) -> bytes:
+    res = bytes()
+    try:
+        key = hashlib.sha256(password.encode()).digest()
+        align_raw = pad(raw_data, AES.block_size)
+        iv = Random.new().read(AES.block_size)
+        cipher = AES.new(key, AES.MODE_CBC, iv)
+        ciphered_data = cipher.encrypt(align_raw)
+        res = iv + ciphered_data
+    except Exception as e:
+        print(f"Encrypt error: {str(e)}")
+    return res
+
+def decrypt_data(password: str, encrypted_data: bytes) -> bytes:
+    res = bytes()
+    try:
+        key = hashlib.sha256(password.encode()).digest()
+        iv = encrypted_data[:AES.block_size]
+        ciphered_data = encrypted_data[AES.block_size:]
+        cipher = AES.new(key, AES.MODE_CBC, iv)
+        decrypt_data = cipher.decrypt(ciphered_data)
+        res = unpad(decrypt_data, AES.block_size)
+    except Exception as e:
+        print(f"Decrypt error: {str(e)}")
+    return res
+
+def encrypt_file(src_file: str, dst_file: str, password: str) -> bool:
+    try:
+        with open(src_file, "rb") as reader, open(dst_file, "wb") as writer:
+            data = reader.read()
+            data_enc = encrypt_data(password, data)
+            writer.write(data_enc)
+            writer.flush()
+            print(f"{src_file} encrypted into {dst_file}")
+        return True
+    except Exception as e:
+        print(f"Encrypt_file error: {str(e)}")
+        return False
+
+def decrypt_file(src_file: str, dst_file: str, password: str) -> bool:
+    try:
+        with open(src_file, "rb") as reader, open(dst_file, "wb") as writer:
+            data = reader.read()
+            data_decrypt = decrypt_data(password, data)
+            writer.write(data_decrypt)
+            writer.flush()
+            print(f"{src_file} decrypted into {dst_file}")
+        return True
+    except Exception as e:
+        print(f"Decrypt file error: {str(e)}")
+        return False
+
+if __name__ == '__main__':
+    mes: bytes = bytes("A am the Message", "utf-8")
+    passw: str = "h3AC3TsU8TECvyCqd5Q5WUag5uXLjct2"
+    print(f"Original message: {mes}")
+
+    # Encrypt message
+    enc: bytes = encrypt_data(passw, mes)
+    print(f"Encrypted message: {enc}")
+
+    # Decrypt message
+    dec: bytes = decrypt_data(passw, enc)
+    print(f"Decrypted message: {dec}")
+
+```
+
+    Original message: b'A am the Message'
+    Encrypted message: b' E\x92\xbeH\x87\xdde\t\xd3\x9ap\x0cO\xc3\xf8\x84\xc7~\x1c\x90\xcd\x9a\xd3\x1bNd\xccDt\x1b\xfcZ\x91\xb5\xd78\x85\x91R\x1e]3\x9c\xec\xcbC\xd8'
+    Decrypted message: b'A am the Message'
+    
 
 Разница между is и ==?  
 Как создается объект в Python, разница между __init __() и __new __()?  
@@ -3543,13 +3636,11 @@ shutil.rmtree(<path>)               # Deletes the directory.
 Что такое класс, итератор, генератор?  
 В чем разница между итераторами и генераторами?  
 В чем разница между staticmethod и classmethod?  
-Как работают dict comprehension, list comprehension и set comprehension?  
 
 
 Как работает thread locals?  
 Что такое type annotation?  
 Что такое @property?  
-Каким образом можно запустить код на Python параллельно?  
 Как работать с stdlib?  
 Что такое дескрипторы?  
 
@@ -3559,14 +3650,10 @@ shutil.rmtree(<path>)               # Deletes the directory.
 Что делает функция id()?  
 Для чего зарезервировано ключевое слово yield?  
 В чем разница между __iter__ и __next__?
-Что такое синхронный код? А асинхронный? Как написать асинхронное приложение?
 Что такое проверка типов? Какие есть типы в Python?
 
 Как можно расширить зону видимости глобальных переменных на другие модули?
 Как создать класс без инструкции class?
-
-Как внедрить в программу расширения, написанные на языках C или C++? Что позволяет использовать библиотеки C-языков, что дает возможность управления ресурсами на более низком уровне? Конечно же, кандидат должен знать, что за такое отвечает интерпретатор CPython.
-
 
 
 Почему def foo(bar=[]): плохо? Приведите пример плохого случая. Как исправить?
@@ -3609,17 +3696,19 @@ foo()
 Мануал для начинающих дата-сайентистов: [Joel Grus, "Data Science from Scratch"](https://github.com/joelgrus/data-science-from-scratch).  
 Руководство для начинающих: ["Python Notes for Professionals"](https://goalkicker.com/PythonBook/).  
 Руководство для опытных программистов: ["Python 3 Patterns, Recipes and Idioms"](https://python-3-patterns-idioms-test.readthedocs.io/en/latest/index.html).  
-## **PostgreSQL**
+## SQL
 
 ### Реляционная модель данных
 
 Реляционная модель данных (РМД) основана на математическом понятии отношение (relation), которое неформально можно толковать как "таблица". Соответственно, реляционную модель данных можно упрощенно воспринимать как "табличную модель данных", т. е. построенную на основе двумерных таблиц, состоящих из срок и столбцов.  
 Работая с реляционной БД, программисту не нужно заботиться о низкоуровневом доступе к данным, достаточно описать, *что* нужно получить, а *как* именно — описывать не нужно, эту работу берет на себя БД.
 
+
 ### Транзакция
 
-Транзакция — единая, неделимая последовательность действий, обеспечивает выполнение либо всех действий из последовательности, либо ни одного. Если в ходе выполнения транзакции произошел сбой, состояние системы должно быть возвращено к исходному, уже выполненные действия должны быть отменены.
+Транзакция — неделимая последовательность действий, обеспечивает выполнение либо всех действий из последовательности, либо ни одного. Если в ходе выполнения транзакции произошел сбой, состояние системы должно быть возвращено к исходному, уже выполненные действия должны быть отменены.
 Канонический пример — списывание денег с одного счета и зачисление на другой, для чего необходимы два процесса проведения изменений, которые гарантированно должны выполниться или не выполниться вместе.
+
 
 ### Проблемы параллельного доступа с использованием транзакций
 
@@ -3638,17 +3727,21 @@ foo()
 
 Стандарт SQL-92 определяет шкалу из четырёх уровней изоляции: Read uncommitted, Read committed, Repeatable read, Serializable. Первый из них является самым слабым, последний — самым сильным, каждый последующий включает в себя все предыдущие.
 
-Read uncommitted (чтение незафиксированных данных)  
+Read uncommitted (чтение незафиксированных данных)
+
 Низший (первый) уровень изоляции. Если несколько параллельных транзакций пытаются изменять одну и ту же строку таблицы, то в окончательном варианте строка будет иметь значение, определенное всем набором успешно выполненных транзакций. При этом возможно считывание не только логически несогласованных данных, но и данных, изменения которых ещё не зафиксированы, т. к. транзакции, выполняющие только чтение, при данном уровне изоляции никогда не блокируются. Данные блокируются на время выполнения команды записи, что гарантирует, что команды изменения одних и тех же строк, запущенные параллельно, фактически выполнятся последовательно, и ни одно из изменений не потеряется.
 
 Read committed (чтение фиксированных данных)  
+
 Большинство СУБД, в частности, Microsoft SQL Server, PostgreSQL и Oracle, по умолчанию используют именно этот уровень. На этом уровне обеспечивается защита от чтения промежуточных данных, тем не менее, в процессе работы одной транзакции другая может быть успешно завершена и сделанные ею изменения зафиксированы. В итоге первая транзакция будет работать с другим набором данных.  
 Метод read committed реализуется либо при помощи блокировки данных на чтение во время записи (теряем время), либо на хранении копии данных, снятой до начала записи (теряем ОЗУ).
 
 Repeatable read (повторяющееся чтение)  
+
 Уровень, при котором читающая транзакция блокирует изменения данных, которые были ею ранее прочитаны. При этом никакая другая транзакция не может изменять данные, читаемые текущей транзакцией, пока та не окончена.
 
 Serializable (упорядочивание)  
+
 Самый высокий уровень изолированности; транзакции полностью изолируются друг от друга, каждая выполняется так, как будто параллельных транзакций не существует. Только на этом уровне параллельные транзакции не подвержены эффекту «фантомного чтения».
 
 <style>
@@ -3680,59 +3773,10 @@ table th:nth-of-type(5) {
 ### Язык SQL
 
 SQL - декларативный (описательный, непроцедурный) язык, стандарт для работы с данными во всех реляционных СУБД.  
-Операторы SQL традиционно делят на:
-операторы определния данных (data definition language, DDL);
-операторы манипулирования данными (data manipulation language, DML) и
+Операторы SQL традиционно делят на:  
+операторы определения данных (data definition language, DDL),  
+операторы манипулирования данными (data manipulation language, DML) и  
 операторы управления привилегиями доступа (data control language, DCL).
-
-### Вложенные транзакции
-
-Механизм, который неявно задействован при создании точек сохранения и при обработке исключений.
-
-
-
-Что такое курсор и зачем он нужен?  
-Что делает оператор JOIN, какие виды бывают?  
-Что делает оператор HAVING, примеры?  
-В каких случаях вы бы предпочли нереляционную БД?  
-Что такое SQL-инъекции, какие меры против?  
-Что такое функциональный индекс?  
-
-Что такое проблема N + 1?
-
-### VACUUM
-
-Команда VACUUM высвобождает пространство, занимаемое «мертвыми» кортежами, что актуально для часто используемых таблиц. При обычных операциях в Postgres кортежи, удаленные или устаревшие в результаты обновления, физически не удаляются, а сохраняются в таблице до очистки.
-
-### EXPLAIN, EXPLAIN ANALYZE
-
-EXPLAIN ANALYZE – в отличие от просто EXPLAIN не только показывает план выполнения запроса, но и непосредственно выполняет запрос и показывает реальное время выполнения.
-
-### Server side cursor
-
-Способ работы с результатом запроса в базу данных, который позволяет не загружать весь объем данных в память, позволяет работать с большими объемами данных. Дополнительно углубленно можно поговорить про особенности работы в связке с pgbouncer.
-
-### Возможности PostgreSQL, отсутствующие в других БД
-
-Каскадные триггеры. Если триггерная функция выполняет команды SQL, эти команды могут заново запускать триггеры.
-
-hstore. Возможность создавать и манипулировать данными с функциональность словаря (dictionary).
-
-[JSONB](https://www.postgresql.org/docs/current/datatype-json.html). Парсинг JSON осуществляется однократно, во время записи. Более медленная однократная запись, но более быстрые многократные чтения. По умолчанию рекомендуется использовать JSONB, а не JSON.
-
-[Range Types](https://www.postgresql.org/docs/current/rangetypes.html). Никаких больше колонок planned_worktime_start и planned_worktime_end и пляски с операторами сравнения для нахождения других строк, у которых интервал, задаваемый этими колонками пересекается с этой строкой. Всё необходимое уже есть (включая constraints, про которые обещали рассказать в соседнем топике).
-
-Прочие нативные типы: interval, cidr и другие, со встроенными методами работы с ними.
-
-[Массивы](https://www.postgresql.org/docs/current/arrays.html) — нарушение 1-й нормальной формы, но когда всё, что необходимо — это сохранить несколько строчек, то горождение отдельной таблицы с перспективой JOIN'а с ней выглядит совсем непривлекательно.
-
-У PostgreSQL полностью транзакционный DDL, т.е. можно в транзакциях менять схему данных, и эти изменения буду транзакционными. Соответственно, возможны миграции без остановки записи.
-
-[PostGIS](https://postgis.net/). Бесплатное расширение для PostgreSQL с открытым исходным кодом для работы с географическими объектами, дополняющее встроенные возможности БД (point, gist). Работает с точками, ломаными линиями, полигонами, растрами, а также использует их для разных операций, например, поиска.
-
-PL/pgSQL. Процедурный язык для PostgreSQL. Функции PL/pgSQL могут использоваться везде, где допустимы встроенные функции. Например, можно создать функции со сложными вычислениями и условной логикой, а затем использовать их при определении операторов или в индексных выражениях.
-
-Полная SQL-совместимость.
 
 SQLite
 ------
@@ -3786,7 +3830,6 @@ with <conn>:                                    # Exits the block with commit() 
 [(1, 'Jean-Luc', 187)]
 
 
-
 ### MySQL
 **Has a very similar interface, with differences listed below.**
  
@@ -3812,13 +3855,59 @@ Memory View
 <mview> = <mview>.cast('<typecode>')           # Casts memoryview to the new format.
 <mview>.release()                              # Releases the object's memory buffer.
 
+### PostgreSQL
 
 
+### Возможности PostgreSQL, отсутствующие в других БД
+
+Каскадные триггеры. Если триггерная функция выполняет команды SQL, эти команды могут заново запускать триггеры.
+
+hstore. Возможность создавать и манипулировать данными с функциональность словаря (dictionary).
+
+[JSONB](https://www.postgresql.org/docs/current/datatype-json.html). Парсинг JSON осуществляется однократно, во время записи. Более медленная однократная запись, но более быстрые многократные чтения. По умолчанию рекомендуется использовать JSONB, а не JSON.
+
+[Range Types](https://www.postgresql.org/docs/current/rangetypes.html). Никаких больше колонок planned_worktime_start и planned_worktime_end и пляски с операторами сравнения для нахождения других строк, у которых интервал, задаваемый этими колонками пересекается с этой строкой. Всё необходимое уже есть (включая constraints, про которые обещали рассказать в соседнем топике).
+
+Прочие нативные типы: interval, cidr и другие, со встроенными методами работы с ними.
+
+[Массивы](https://www.postgresql.org/docs/current/arrays.html) — нарушение 1-й нормальной формы, но когда всё, что необходимо — это сохранить несколько строчек, то горождение отдельной таблицы с перспективой JOIN'а с ней выглядит совсем непривлекательно.
+
+У PostgreSQL полностью транзакционный DDL, т.е. можно в транзакциях менять схему данных, и эти изменения буду транзакционными. Соответственно, возможны миграции без остановки записи.
+
+[PostGIS](https://postgis.net/). Бесплатное расширение для PostgreSQL с открытым исходным кодом для работы с географическими объектами, дополняющее встроенные возможности БД (point, gist). Работает с точками, ломаными линиями, полигонами, растрами, а также использует их для разных операций, например, поиска.
+
+PL/pgSQL. Процедурный язык для PostgreSQL. Функции PL/pgSQL могут использоваться везде, где допустимы встроенные функции. Например, можно создать функции со сложными вычислениями и условной логикой, а затем использовать их при определении операторов или в индексных выражениях.
+
+Полная SQL-совместимость.
+
+
+### Вложенные транзакции
+
+Механизм, который неявно задействован при создании точек сохранения и при обработке исключений.
+
+Что такое курсор и зачем он нужен?  
+Что делает оператор JOIN, какие виды бывают?  
+Что делает оператор HAVING, примеры?  
+В каких случаях вы бы предпочли нереляционную БД?  
+Что такое SQL-инъекции, какие меры против?  
+Что такое функциональный индекс?  
+Что такое проблема N + 1?
+
+### VACUUM
+
+Команда VACUUM высвобождает пространство, занимаемое «мертвыми» кортежами, что актуально для часто используемых таблиц. При обычных операциях в Postgres кортежи, удаленные или устаревшие в результаты обновления, физически не удаляются, а сохраняются в таблице до очистки.
+
+### EXPLAIN, EXPLAIN ANALYZE
+
+EXPLAIN ANALYZE – в отличие от просто EXPLAIN не только показывает план выполнения запроса, но и непосредственно выполняет запрос и показывает реальное время выполнения.
+
+### Server side cursor
+
+Способ работы с результатом запроса в базу данных, который позволяет не загружать весь объем данных в память, позволяет работать с большими объемами данных. Дополнительно углубленно можно поговорить про особенности работы в связке с pgbouncer.
 
 ### Источники
 
 Е. П. Моргунов. PostgreSQL. Основы языка SQL.  
-
 ## **Архитектура**
 
 ### SOLID <a name="arcchsolid"></a>  
@@ -3911,13 +4000,7 @@ HTTP и HTTPS!!!
 
 CSRF-token!!!
 
-Singleton через метаклассы
-
 44 Авторизация и аутентификация
-
-
-
-5. Что такое множественное наследование?
 
 6. Какие есть семь этапов разработки продукта в Software Development lifecycle 
 
