@@ -1,8 +1,278 @@
+Небольшое отступление про формат Jupiter Notebook (на случай, если раньше вы с ним не работали). Ниже вы видите текст, который выглядит как обычная статья, но это только потому, что исходный Jupiter Notebook был сконвертирован в Markdown. На самом деле все примеры кода интерактивны, вы можете менять, дополнять их, крутить как угодно, разбираясь в тонкостях Python.  
+Исходные файлы лежат на [github/pycore](https://github.com/amaargiru/pycore). Для работы с Jupiter вы можете воспользоваться VS Code, JetBrains IntelliJ или каким-нибудь онлайн-инструментом, самым известным из которых являятся [Google Colab](https://colab.research.google.com/).
+
+
 ## 1. Структуры данных
+
+### Список (list) <a name="basicdarray"></a>  
+
+Список — самая универсальная и популярная структура данных в Python. Если вы пока точно не определились, какая структура данных понадобится в вашем проекте, просто возьмите список, с него достаточно просто мигрировать на что-нибудь более специализированное.  
+Список представляет собой упорядоченную изменяемую коллекцию объектов произвольных типов (почти как массив, но типы могут отличаться). Внутреннее строение списка - массив (точнее, vector) указателей, т. е. список является динамическим массивом.
+
+
+```python
+a = []  # Создаем пустой список
+
+a: list[int] = [10, 20]
+b: list[int] = [30, 40]
+a.append(50)  # Добавляем значение в конец списка
+b.insert(2, 60)  # Вставляем значение по определенному индексу
+print(a, b)
+
+a += b
+print(f"Add: {a}")
+
+a.reverse()
+b = list(reversed(a))  # reversed() возвращает итератор, а не список
+print(f"Reverse: {a}, {b}")
+
+b = sorted(a)  # Возвращает новый отсортированный список
+a.sort()  # Модифицирует исходный список и не возвращает ничего
+print(f"Sort: {a}, {b}")
+
+s: str = "A whole string"
+list_of_chars: list = list(s)
+print(list_of_chars)
+list_of_words: list = s.split()
+print(list_of_words)
+
+i: int = list_of_chars.index("w")  # Возвращает индекс первого вхождения искомого элемента или вызывает исключение ValueError
+print(i)
+list_of_chars.remove("w")  # Удаляет первое вхождение искомого элемента или вызывает исключение ValueError
+e = list_of_chars.pop(9)  # Удаляет и возвращает значение, расположенное по индексу. pop() (без аргумента) удалит и вернет последний элемент списка
+print(list_of_chars, e)
+a.clear()  # Очистка списка
+```
+
+    [10, 20, 50] [30, 40, 60]
+    Add: [10, 20, 50, 30, 40, 60]
+    Reverse: [60, 40, 30, 50, 20, 10], [10, 20, 50, 30, 40, 60]
+    Sort: [10, 20, 30, 40, 50, 60], [10, 20, 30, 40, 50, 60]
+    ['A', ' ', 'w', 'h', 'o', 'l', 'e', ' ', 's', 't', 'r', 'i', 'n', 'g']
+    ['A', 'whole', 'string']
+    2
+    ['A', ' ', 'h', 'o', 'l', 'e', ' ', 's', 't', 'i', 'n', 'g'] r
+    
+
+### Кортеж (tuple)  
+Кортеж — тоже список, только неизменяемый (immutable) и хэшируемый (hashable).
+
+
+```python
+# Кортеж, содержащий те же данные, что и список, занимает меньше места
+
+a = (2, 3, "Boson", "Higgs", 1.56e-22)
+b = [2, 3, "Boson", "Higgs", 1.56e-22]
+
+print(f"Tuple: {a.__sizeof__()} bytes")
+print(f"List: {b.__sizeof__()} bytes")
+```
+
+    Tuple: 64 bytes
+    List: 104 bytes
+    
+
+### Именованный кортеж (named tuple)
+В соответствии с названием, имеет именованные поля. Удобно!
+
+
+```python
+from collections import namedtuple
+
+rectangle = namedtuple('rectangle', 'length width')
+r = rectangle(length = 1, width = 2)
+
+print(r)
+print(r.length)
+print(r.width)
+print(r._fields)
+```
+
+    rectangle(length=1, width=2)
+    1
+    2
+    ('length', 'width')
+    
+
+### Словарь (dict) <a name="basichashtable"></a>  
+
+Словарь — вторая по частоте использования структура данных в Python. dict - реализация хеш-таблицы, поэтому в качестве ключа нельзя брать нехешируемый объект, например, список (тут-то нам и может пригодиться кортеж). Ключом словаря может быть любой неизменяемый объект: число, строка, datetime, функция и даже модуль. Такие объекты имеют метод __hash__(), который однозначно сопоставляет объект с некоторым числом. По этому числу словарь ищет значение для ключа.
+
+Списки, словари и множества (которые мы рассмотрим чуть ниже) изменяемы и не имеют метода хеширования, при попытке подставить их в словарь возникнет ошибка.
+
+
+```python
+d = {}  # Создаем пустой словарь
+
+d: dict[str, str] = {"Italy": "Pizza", "US": "Hot-Dog", "China": "Dim Sum"}  # Непосредственное создание словаря
+
+k = ["Italy", "US", "China"]
+v = ["Pizza", "Hot-Dog", "Dim Sum"]
+d = dict(zip(k, v))  # Создание словаря из двух коллекций при помощи zip
+
+k = d.keys()  # Коллекция ключей. Отражает изменения в основном словаре
+v = d.values()  # Коллекция значений. Тоже отражает изменения в основном словаре
+k_v = d.items()  # Кортежи ключ-значение, которые тоже отражают изменения в основном словаре
+
+print(d)
+print(k)
+print(v)
+print(k_v)
+
+print(f"Mapping: {k.mapping['Italy']}")
+
+d.update({"China": "Dumplings"})  # Добавление значение. При совпадении ключа старое значение будет перезаписано
+print(f"Replace item: {d}")
+
+c = d["China"]  # Читаем значение
+print(f"Read item: {c}")
+
+try:
+    v = d.pop("Spain")  # Удаляет значение или вызывает исключение KeyError
+except KeyError:
+    print("Dictionary key doesn't exist")
+
+# Примеры dict comprehension
+b = {k: v for k, v in d.items() if "a" in k}  # Вернет новый словарь, отфильтрованный по значению ключа
+print(b)
+
+c = {k: v for k, v in d.items() if len(v) >= 7}  # Вернет новый словарь, отфильтрованный по длине значений
+print(c)
+
+d.clear() # Очистка списка
+```
+
+    {'Italy': 'Pizza', 'US': 'Hot-Dog', 'China': 'Dim Sum'}
+    dict_keys(['Italy', 'US', 'China'])
+    dict_values(['Pizza', 'Hot-Dog', 'Dim Sum'])
+    dict_items([('Italy', 'Pizza'), ('US', 'Hot-Dog'), ('China', 'Dim Sum')])
+    Mapping: Pizza
+    Replace item: {'Italy': 'Pizza', 'US': 'Hot-Dog', 'China': 'Dumplings'}
+    Read item: Dumplings
+    Dictionary key doesn't exist
+    {'Italy': 'Pizza', 'China': 'Dumplings'}
+    {'US': 'Hot-Dog', 'China': 'Dumplings'}
+    
+
+### Решение проблемы вычисления хеша при работе со словарем<a name="hashtableproblem"></a>  
+
+Любая хеш-таблица, в том числе и питоновский словарь, должна уметь решать проблему вычисления хеша. Для этого используются техники **open addressing** или **chaining**. Python [использует](https://stackoverflow.com/questions/9010222/why-can-a-python-dict-have-multiple-keys-with-the-same-hash) open addressing.
+
+Новый словарь инициализируется с 8 пустыми слотами.
+
+Интерпретатор сначала пытается добавить новую запись по адресу, зависящему от хеша ключа, i = hash(key) & mask, где mask = PyDictMINSIZE - 1. Если этот адрес занят, то интерпретатор проверяет (при помощи ==) хеш и ключ. Если оба совпадают, то, значит, запись уже существует. Тогда начинается зондирование свободных слотов, которое идет в псевдослучайном порядке (порядок зависит от значения ключа). Новая запись будет добавлена по первому свободному адресу.
+
+Чтение из словаря происходит аналогично, интерпретатор начинает поиск с позиции i и идет по тому же псевдослучайному пути, пока не прочитает нужную запись.
+
+### defaultdict
+
+Если попытаться прочитать из словаря значение ключа, которого там нет, то будет выброшено исключение KeyError. defaultdict позволяет не писать обработчик исключений, а просто воспринимает чтение несуществующего ключа как команду записать в этот ключ и вернуть значение по умолчанию; например, defaultdict(int) вернет 0.
+
+
+```python
+from collections import defaultdict
+
+dd = defaultdict(int)  # defaultdict
+print(dd[10])  # Печать int, будет выведен ноль, значение по умолчанию
+
+dd = {}  # "Обычный" словарь
+# print(dd[10])  # вызовет исключение KeyError
+```
+
+    0
+    
+
+### Счетчик (counter)
+
+Счетчик подсчитывает передаваемые ему объекты. Иногда очень удобно просто бухнуть в счетчик какой-нибудь список и сразу получить структуру данных с подсчитанными элементами.
+
+
+```python
+from collections import Counter
+
+shirts_colors = ["red", "white", "blue", "white", "white", "black", "black"]
+c = Counter(shirts_colors)
+print(c)
+
+c["blue"] += 1
+print(f"After shopping: {c}")
+
+# We can explain how Counter() works with defaultdict():
+from collections import defaultdict
+
+d = defaultdict(int)
+for shirt in shirts_colors:
+    d[shirt] += 1
+d["blue"] += 1
+
+print(d)
+```
+
+    Counter({'white': 3, 'black': 2, 'red': 1, 'blue': 1})
+    After shopping: Counter({'white': 3, 'blue': 2, 'black': 2, 'red': 1})
+    defaultdict(<class 'int'>, {'red': 1, 'white': 3, 'blue': 2, 'black': 2})
+    
+
+### Множество (set)
+
+Третья по распространенности питоновская структура данных. Когда-то, когда Python был молод, множества представляли собой несколько редуцированные словари, но со временем их судьбы (и реализации) стали расходиться. Однако, множество всё-таки является хеш-таблицей с соответсвующим быстродействием на разных типах операций.
+
+
+```python
+big_cities: set["str"] = {"New-York", "Los Angeles", "Ottawa"}
+american_cities: set["str"] = {"Chicago", "New-York", "Los Angeles"}
+
+big_cities |= {"Sydney"}  # Add item (or you can use add())
+american_cities |= {"Salt Lake City", "Seattle"}  # Add set (or you can use update())
+
+print(big_cities, american_cities)
+
+union_cities: set["str"] = big_cities | american_cities  # Or union()
+intersected_cities: set["str"] = big_cities & american_cities  # Or intersection()
+dif_cities: set["str"] = big_cities - american_cities  # Or difference()
+symdif_cities: set["str"] = big_cities ^ american_cities  # Or symmetric_difference()
+
+issub: bool = big_cities <= union_cities  # Or issubset()
+issuper: bool = american_cities >= dif_cities  # Or issuperset()
+
+print(union_cities)
+print(intersected_cities)
+print(dif_cities)
+print(symdif_cities)
+
+print(issub, issuper)
+
+big_cities.add("London")  # Add items
+
+big_cities.remove("Ottawa")  # Removes an item from the set if it is present or raises KeyError
+big_cities.discard("Los Angeles")  # Remove an item from the set if it is present without raising KeyError
+big_cities.pop()  # Remove and return a random item from the set or raises KeyError
+big_cities.clear()  # Removes all items from the set
+```
+
+    {'New-York', 'Los Angeles', 'Sydney', 'Ottawa'} {'New-York', 'Seattle', 'Chicago', 'Los Angeles', 'Salt Lake City'}
+    {'Ottawa', 'Salt Lake City', 'Chicago', 'New-York', 'Seattle', 'Sydney', 'Los Angeles'}
+    {'New-York', 'Los Angeles'}
+    {'Ottawa', 'Sydney'}
+    {'Seattle', 'Ottawa', 'Chicago', 'Salt Lake City', 'Sydney'}
+    True False
+    
+
+### Иммутабельное множество (frozen set)
+
+Frozen set — то же множество, только иммутабельное и хешируемое. Напоминает разницу между списком и кортежем, не правда ли?
+
+
+```python
+a = frozenset({"New-York", "Los Angeles", "Ottawa"})
+```
 
 ### Массив (array, bytes, bytearray) <a name="array"></a>  
 
-Хранит переменные определенного типа, поэтому, в отличие от списка, не требует создания нового объекта для каждой новой переменной. Выигрывает у списка в размерах. Можно сказать, что это тонкая обертка на Си-массивами. Bytes object is an immutable sequence of single bytes. Mutable version is called bytearray.
+Я перешел на Python с языков, более приближенных к «железу» (ассемблер, C, C#) и сначала немного удивлялся, что обычный массив, в котором всё так удобно лежит на своих местах, используется относительно редко. Массив в Python не является структурой данных, выбираемой по умолчанию и используется только в случаях, когда начинают играть решающую роль размер структуры и скорость её обработки.
+Массив хранит переменные определенного типа, поэтому, в отличие от списка, не требует создания нового объекта для каждой новой переменной и выигрывает у списка в размерах. Можно сказать, что это тонкая обёртка над Си-массивами.
+
+Bytes object is an immutable sequence of single bytes. Mutable version is called bytearray.
 
 
 ```python
@@ -59,280 +329,6 @@ print(b6)
     b'\x01\x02\x03\x04'
     
 
-### Список (list) <a name="basicdarray"></a>  
-
-Упорядоченные изменяемые коллекции объектов произвольных типов (почти как массив, но типы могут отличаться). Внутреннее строение списка - массив (точнее, vector) указателей, следовательно, список = динамический массив.
-
-
-```python
-a = []  # Создаем пустой список
-
-a: list[int] = [10, 20]
-b: list[int] = [30, 40]
-a.append(50)  # Добавляем значение в конец списка
-b.insert(2, 60)  # Вставляем значение по определенному индексу
-print(a, b)
-
-a += b
-print(f"Add: {a}")
-
-a.reverse()
-b = list(reversed(a))  # reversed() возвращает итератор, а не список
-print(f"Reverse: {a}, {b}")
-
-b = sorted(a)  # Возвращает новый отсортированный список
-a.sort()  # Модифицирует исходный список и не возвращает ничего
-print(f"Sort: {a}, {b}")
-
-s: str = "A whole string"
-list_of_chars: list = list(s)
-print(list_of_chars)
-list_of_words: list = s.split()
-print(list_of_words)
-
-i: int = list_of_chars.index("w")  # Возвращает индекс первого вхождения искомого элемента или вызывает исключение ValueError
-print(i)
-list_of_chars.remove("w")  # Удаляет первое вхождение искомого элемента или вызывает исключение ValueError
-e = list_of_chars.pop(9)  # Удаляет и возвращает значение, расположенное по индексу. pop() (без аргумента) удалит и вернет последний элемент списка
-print(list_of_chars, e)
-a.clear()  # Очистка списка
-```
-
-    [10, 20, 50] [30, 40, 60]
-    Add: [10, 20, 50, 30, 40, 60]
-    Reverse: [60, 40, 30, 50, 20, 10], [10, 20, 50, 30, 40, 60]
-    Sort: [10, 20, 30, 40, 50, 60], [10, 20, 30, 40, 50, 60]
-    ['A', ' ', 'w', 'h', 'o', 'l', 'e', ' ', 's', 't', 'r', 'i', 'n', 'g']
-    ['A', 'whole', 'string']
-    2
-    ['A', ' ', 'h', 'o', 'l', 'e', ' ', 's', 't', 'i', 'n', 'g'] r
-    
-
-### Tuple (кортеж)  
-Tuple is an immutable and hashable list
-
-
-```python
-a = (2, 3)
-b = ("Boson", "Higgs", 1.56e-22)
-
-print(a, b)
-```
-
-    (2, 3) ('Boson', 'Higgs', 1.56e-22)
-    
-
-### Named Tuple (именованный кортеж)
-Subclass of tuple with named elements
-
-
-```python
-from collections import namedtuple
-
-rectangle = namedtuple('rectangle', 'length width')
-r = rectangle(length = 1, width = 2)
-
-print(r)
-print(r.length)
-print(r.width)
-print(r._fields)
-```
-
-    rectangle(length=1, width=2)
-    1
-    2
-    ('length', 'width')
-    
-
-### Словарь (dict) <a name="basichashtable"></a>  
-
-dict - реализация хеш-таблицы, поэтому в качестве ключа нельзя брать нехешируемый объект (например, список). Ключом словаря может быть любой неизменяемый объект: число, строка, datetime, функция и даже модуль. Такие объекты имеют метод __hash__(), который однозначно сопоставляет объект с некоторым числом. По этому числу словарь ищет значение для ключа.  
-Списки, словари и множества изменяемы и не имеют метода хеширования. При подстановке их в словарь возникнет ошибка.
-
-
-```python
-d = {}  # Создаем пустой словарь
-
-d: dict[str, str] = {"Italy": "Pizza", "US": "Hot-Dog", "China": "Dim Sum"}  # Непосредственное создание словаря
-
-k = ["Italy", "US", "China"]
-v = ["Pizza", "Hot-Dog", "Dim Sum"]
-d = dict(zip(k, v))  # Создание словаря из двух коллекций при помощи zip
-
-k = d.keys()  # Коллекция ключей. Отражает изменения в основном словаре
-v = d.values()  # Коллекция значений. Тоже отражает изменения в основном словаре
-k_v = d.items()  # Кортежи ключ-значение, которые тоже отражают изменения в основном словаре
-
-print(d)
-print(k)
-print(v)
-print(k_v)
-
-print(f"Mapping: {k.mapping['Italy']}")
-
-d.update({"China": "Dumplings"})  # Добавление значение. При совпадении ключа старое значение будет перезаписано
-print(f"Replace item: {d}")
-
-c = d["China"]  # Читаем значение
-print(f"Read item: {c}")
-
-try:
-    v = d.pop("Spain")  # Удаляет значение или вызывает исключение KeyError
-except KeyError:
-    print("Dictionary key doesn't exist")
-
-# Примеры dict comprehension
-b = {k: v for k, v in d.items() if "a" in k}  # Вернет новый словарь, отфильтрованный по значению ключа
-print(b)
-
-c = {k: v for k, v in d.items() if len(v) >= 7}  # Вернет новый словарь, отфильтрованный по длине значений
-print(c)
-
-d.clear() # Очистка списка
-```
-
-    {'Italy': 'Pizza', 'US': 'Hot-Dog', 'China': 'Dim Sum'}
-    dict_keys(['Italy', 'US', 'China'])
-    dict_values(['Pizza', 'Hot-Dog', 'Dim Sum'])
-    dict_items([('Italy', 'Pizza'), ('US', 'Hot-Dog'), ('China', 'Dim Sum')])
-    Mapping: Pizza
-    Replace item: {'Italy': 'Pizza', 'US': 'Hot-Dog', 'China': 'Dumplings'}
-    Read item: Dumplings
-    Dictionary key doesn't exist
-    {'Italy': 'Pizza', 'China': 'Dumplings'}
-    {'US': 'Hot-Dog', 'China': 'Dumplings'}
-    
-
-### Решение проблемы вычисления хеша при работе со словарем<a name="basichashtableproblem"></a>  
-
-Любая хеш-таблица должна уметь решать проблему вычисления хеша. Для этого используются техники **open addressing** или **chaining**. Python [использует](https://stackoverflow.com/questions/9010222/why-can-a-python-dict-have-multiple-keys-with-the-same-hash) open addressing.
-
-```text
-# Logical model of Python Hash table
--+-----------------+
-0| <hash|key|value>|
--+-----------------+
-1|      ...        |
--+-----------------+
-.|      ...        |
--+-----------------+
-i|      ...        |
--+-----------------+
-.|      ...        |
--+-----------------+
-n|      ...        |
--+-----------------+
-```
-
-Новый словарь инициализируется с 8 пустыми слотами.
-
-Интерпретатор сначала пытается добавить новую запись по адресу, зависящему от хеша ключа, i = hash(key) & mask, где mask = PyDictMINSIZE - 1. Если этот адрес занят, то интерпретатор проверяет (при помощи ==) хеш и ключ. Если оба совпадают, то, значит, запись уже существует. Тогда начинается зондирование свободных слотов, которое идет в псевдослучайном порядке (порядок зависит от значения ключа). Новая запись будет добавлена по первому свободному адресу.
-
-Чтение из словаря происходит аналогично, интерпретатор начинает поиск с позиции i и идет по тому же псевдослучайному пути, пока не прочитает нужную запись.
-
-### defaultdict
-
-The *defaultdict* will create any items that you try to access (provided of course they do not exist yet) without throws a KeyError.
-
-
-```python
-from collections import defaultdict
-
-dd = defaultdict(int)  # defaultdict
-print(dd[10])  # Печать int, будет выведен ноль, значение по умолчанию
-
-dd = {}  # "Обычный" словарь
-# print(dd[10])  # вызовет исключение KeyError
-```
-
-    0
-    
-
-### Счетчик (counter)
-
-A Counter is a dict subclass for counting hashable objects, it is a collection where elements are stored as dictionary keys and their counts are stored as dictionary values.
-
-
-```python
-from collections import Counter
-
-shirts_colors = ["red", "white", "blue", "white", "white", "black", "black"]
-c = Counter(shirts_colors)
-print(c)
-
-c["blue"] += 1
-print(f"After shopping: {c}")
-
-# We can explain how Counter() works with defaultdict():
-from collections import defaultdict
-
-d = defaultdict(int)
-for shirt in shirts_colors:
-    d[shirt] += 1
-d["blue"] += 1
-
-print(d)
-```
-
-    Counter({'white': 3, 'black': 2, 'red': 1, 'blue': 1})
-    After shopping: Counter({'white': 3, 'blue': 2, 'black': 2, 'red': 1})
-    defaultdict(<class 'int'>, {'red': 1, 'white': 3, 'blue': 2, 'black': 2})
-    
-
-### Set (множество)
-
-Nowadays, set and dict's implementations have diverged significantly, so the precise behaviors (e.g. arbitrary order vs. insertion order) and performance in various use cases differs; they're still implemented in terms of hashtables, so average case lookup and insertion remains O(1), but set is no longer just "dict, but with dummy/omitted keys".
-
-
-```python
-big_cities: set["str"] = {"New-York", "Los Angeles", "Ottawa"}
-american_cities: set["str"] = {"Chicago", "New-York", "Los Angeles"}
-
-big_cities |= {"Sydney"}  # Add item (or you can use add())
-american_cities |= {"Salt Lake City", "Seattle"}  # Add set (or you can use update())
-
-print(big_cities, american_cities)
-
-union_cities: set["str"] = big_cities | american_cities  # Or union()
-intersected_cities: set["str"] = big_cities & american_cities  # Or intersection()
-dif_cities: set["str"] = big_cities - american_cities  # Or difference()
-symdif_cities: set["str"] = big_cities ^ american_cities  # Or symmetric_difference()
-
-issub: bool = big_cities <= union_cities  # Or issubset()
-issuper: bool = american_cities >= dif_cities  # Or issuperset()
-
-print(union_cities)
-print(intersected_cities)
-print(dif_cities)
-print(symdif_cities)
-
-print(issub, issuper)
-
-big_cities.add("London")  # Add items
-
-big_cities.remove("Ottawa")  # Removes an item from the set if it is present or raises KeyError
-big_cities.discard("Los Angeles")  # Remove an item from the set if it is present without raising KeyError
-big_cities.pop()  # Remove and return a random item from the set or raises KeyError
-big_cities.clear()  # Removes all items from the set
-```
-
-    {'New-York', 'Los Angeles', 'Sydney', 'Ottawa'} {'New-York', 'Seattle', 'Chicago', 'Los Angeles', 'Salt Lake City'}
-    {'Ottawa', 'Salt Lake City', 'Chicago', 'New-York', 'Seattle', 'Sydney', 'Los Angeles'}
-    {'New-York', 'Los Angeles'}
-    {'Ottawa', 'Sydney'}
-    {'Seattle', 'Ottawa', 'Chicago', 'Salt Lake City', 'Sydney'}
-    True False
-    
-
-### Frozen Set
-
-Frozen set is just an immutable and hashable version of a set object. Frozen set can be used as key in Dictionary or as element of another set.
-
-
-```python
-s = frozenset({"New-York", "Los Angeles", "Ottawa"})
-```
-
 ### Односвязный список <a name="basicslist"></a>  
 
 Односвязный список представляет набор связанных узлов, каждый из которых хранит собственно данные и ссылку на следующий узел. В практике применим редко, но его любят использовать интервьюеры на собеседованиях, чтобы кандидат мог блеснуть своими алгоритмическими знаниями. Встроенной реализации не имеет, можно или использовать deque (в основе которого лежит двусвязный список), или написать свою реализацию.
@@ -363,6 +359,33 @@ print(d)
     7 -2
     deque([-1, 0, 1, 2, 3, 4, 5, 6], maxlen=1000)
     
+
+### Queue
+
+The queue module implements multi-producer, multi-consumer FIFO queues. It is especially useful in threaded programming when information must be exchanged safely between multiple threads. For LIFO queue use LifoQueue. For a priority queue use PriorityQueue.
+
+
+```python
+from queue import Queue
+q = Queue(maxsize=1000)
+
+q.put("eat", block=True, timeout=10)  # Put an element to the queue with 10 seconds timeuot, block if necessary until a free slot is available
+q.put("sleep")  # Default values block=True, timeout=None
+q.put("code")
+q.put_nowait("repeat")  # Equivalent to put("repeat", block=False). Put an element on the queue if a free slot is immediately available, else raise the queue.Full exception
+print(q.queue)
+
+a = q.get(block=True, timeout=10)  # Remove and return an item from the queue
+b = q.get()  # Default values block=True, timeout=None
+c = q.get_nowait()  # Equivalent to get(False)
+print(a, b, c, q.queue)
+```
+
+    deque(['eat', 'sleep', 'code', 'repeat'])
+    eat sleep code deque(['repeat'])
+    
+
+Пробежимся коротенько по остальным структурам данных, которые не имеют встроенной реализации, но, тем не менее, могут весьма пригодиться в реальном проекте.
 
 ### Бинарное дерево <a name="basicbinarytree"></a>  
 
@@ -421,11 +444,11 @@ table th:nth-of-type(8) {
 
 | Структура | Реализация | Применение | Индексация | Поиск | Вставка | Удаление | Память |
 | :- | :- | :- | :-: | :-: | :-: | :-: | :-: |
-| Массив | array, bytes, bytearray | Для хранения однотипных данных | 1 | n |  |  | n |
 | Динамический массив | list |  | 1 | n | n | n | n |
+| Хэш таблица | dict, set |  |  | 1<br> [n] | 1<br> [n] | 1<br> [n] | n |
+| Массив | array, bytes, bytearray | Для хранения однотипных данных | 1 | n | n | n | n |
 | Односвязный список | - (~deque)|  | n | n | 1 | 1 | n |
 | Двусвязный список | deque|  | n | n | 1 | 1 | n |
-| Хэш таблица | dict, set |  |  | 1<br> [n] | 1<br> [n] | 1<br> [n] | n |
 | Бинарное дерево | - |  | logn<br> [n] | logn<br> [n] | logn<br> [n] | logn<br> [n] | n |
 | Куча | heapq |  |   | 1<br>(find min) | logn | logn<br>(del min) | n |
 | [B-дерево](https://en.wikipedia.org/wiki/B-tree)<br> (Би-дерево) | sqlite3 | Для памяти с медленным доступом | logn | logn | logn | logn | n |
@@ -433,11 +456,9 @@ table th:nth-of-type(8) {
 | АВЛ дерево | - |  | logn | logn | logn | logn | n |
 | Префиксное дерево | - | T9,<br> алгоритм [Ахо–Корасик](https://en.wikipedia.org/wiki/Aho%E2%80%93Corasick_algorithm),<br> алгоритм [LZW](https://en.wikipedia.org/wiki/Lempel%E2%80%93Ziv%E2%80%93Welch) |  | key | key | key |  |
 
-## Где будет быстрее поиск, а где перебор и почему: dict, list, set, tuple?!!!
+### Enum, IntEnum
 
-### Enum
-
-The properties of an enumeration are useful for defining an immutable, related set of constant values that may or may not have a semantic meaning.
+Удобные конструкции для определения заранее известных перечислений.
 
 
 ```python
@@ -555,31 +576,6 @@ class User:
     account: int
 
 ```
-
-### Queue
-
-The queue module implements multi-producer, multi-consumer FIFO queues. It is especially useful in threaded programming when information must be exchanged safely between multiple threads. For LIFO queue use LifoQueue. For a priority queue use PriorityQueue.
-
-
-```python
-from queue import Queue
-q = Queue(maxsize=1000)
-
-q.put("eat", block=True, timeout=10)  # Put an element to the queue with 10 seconds timeuot, block if necessary until a free slot is available
-q.put("sleep")  # Default values block=True, timeout=None
-q.put("code")
-q.put_nowait("repeat")  # Equivalent to put("repeat", block=False). Put an element on the queue if a free slot is immediately available, else raise the queue.Full exception
-print(q.queue)
-
-a = q.get(block=True, timeout=10)  # Remove and return an item from the queue
-b = q.get()  # Default values block=True, timeout=None
-c = q.get_nowait()  # Equivalent to get(False)
-print(a, b, c, q.queue)
-```
-
-    deque(['eat', 'sleep', 'code', 'repeat'])
-    eat sleep code deque(['repeat'])
-    
 
 ## String (строка)
 
