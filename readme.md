@@ -761,6 +761,85 @@ print(b, "\n",
     
     
 
+### Сортировка (sort, sorted)
+
+В сортировке всё самое интересное спрятано под капотом (мы ненадолго вернемся к этой теме чуть ниже, в разделе «Алгоритмы»), пока рассмотрим только Python-специфичный синтаксис.  
+Надо различать методы sort() и sorted(), первый сортирует данные in-place, второй порождает новую структуру.
+
+
+```python
+a: list = [5, 2, 3, 1, 4]
+
+b: list = sorted(a)
+print(a, b)
+
+a.sort()
+print(a)
+```
+
+    [5, 2, 3, 1, 4] [1, 2, 3, 4, 5]
+    [1, 2, 3, 4, 5]
+    
+
+И sort(), и sorted() имеют параметр key для указания функции, которая будет вызываться на каждом элементе. Если вам больше по нраву сортировка при помощи функции, принимающей два аргумента (или вы привыкли к cmp в Python 2), присмотритесь к functools.cmp_to_key().
+
+
+```python
+# Регистрозависимое сравнение строк
+
+dinos: str = "Dinosaurs were Big and small"
+a = sorted(dinos.split())
+print(a)
+
+# Регистронезависимое сравнение строк
+
+dinos: str = "Dinosaurs were Big and small"
+b = sorted(dinos.split(), key=str.lower)
+print(b)
+```
+
+    ['Big', 'Dinosaurs', 'and', 'small', 'were']
+    ['and', 'Big', 'Dinosaurs', 'small', 'were']
+    
+
+Сложносочиненные структуры данных можно сортировать по key=lambda el: el[1] или даже, например по key=lambda el: (el[1], el[0]).
+
+### bisect и бинарный поиск
+
+Бинарный поиск существенно быстрее, чем обычный (см. раздел «Алгоритмы»), но требует предварительной сортировки коллекции, по которой осуществляется поиск.
+
+
+```python
+import bisect
+
+a: list[int] = [12, 6, 8, 19, 1, 33]
+
+a.sort()
+print(f"Sorted: {a}")
+
+print(bisect.bisect(a, 20))  # Найти индекс для потенциальной вставки
+
+bisect.insort(a, 15)  # Вставка значения в отсортированную последовательность
+print(a)
+
+# Бинарный поиск
+
+def binary_search(a, x, lo=0, hi=None):
+    if hi is None:
+        hi = len(a)
+
+    pos = bisect.bisect_left(a, x, lo, hi)
+    return pos if pos != hi and a[pos] == x else -1
+
+print(binary_search(a, 15))
+```
+
+    Sorted: [1, 6, 8, 12, 19, 33]
+    5
+    [1, 6, 8, 12, 15, 19, 33]
+    4
+    
+
 ### Comprehension
 
 Comprehension, которое переводится то как списковое включение, то как абстракция списков ([Википедия](https://ru.wikipedia.org/wiki/%D0%A1%D0%BF%D0%B8%D1%81%D0%BA%D0%BE%D0%B2%D0%BE%D0%B5_%D0%B2%D0%BA%D0%BB%D1%8E%D1%87%D0%B5%D0%BD%D0%B8%D0%B5)), то вообще никак не переводится — способ компактного описания операций обработки списков (а примениительно к Python — еще и словарей, и множеств).
@@ -871,13 +950,13 @@ print(mx)
 
 Присмотритесь к [встроенным функциям](https://docs.python.org/3/library/functions.html), там есть еще кое-что, касающееся элементарной математики.
 
-### Функциональное программирование — Map, Filter, Reduce, Partial.
+### Функциональное программирование (Map, Filter, Reduce, Partial)
 
-На случай, если начиная с этого момента и до конца текущего жизненного цикла вы собираетесь к месту и не месту использовать приёмы функционального программирования, чтобы сделать свой код воистину «крутым», просто процитирую вам Джоэля Граса, автора книги «Data Science: Наука о данных с нуля»: «В первом издании этой книги были представлены функции partial, map, reduce и filter языка Python. На своем пути к просветлению я понял, что этих функций лучше избегать, и их использование в книге было заменено включениями в список, циклами и другими, более Python'овскими конструкциями». Такие дела...  
+На случай, если начиная с этого момента и до конца текущего жизненного цикла вы собираетесь к месту и не месту использовать приёмы функционального программирования, чтобы сделать свой код «воистину крутым», просто процитирую вам Джоэля Граса, автора книги «Data Science: Наука о данных с нуля»: «В первом издании этой книги были представлены функции partial, map, reduce и filter языка Python. На своем пути к просветлению я понял, что этих функций лучше избегать, и их использование в книге было заменено включениями в список, циклами и другими, более Python'овскими конструкциями». Такие дела...  
 
 
 ```python
-from functools import reduce
+import functools
 
 # Преобразует все входящие значения при помощи указанной функции
 iter1 = map(lambda x: x + 1, range(10))
@@ -888,7 +967,7 @@ iter2 = filter(lambda x: x > 5, range(10))
 print(list(iter2))
 
 # Применяет указанную функцию ко всей последовательности входных данных, сводя их к единственному значению
-a = reduce(lambda out, x: out + x, range(10))
+a = functools.reduce(lambda out, x: out + x, range(10))
 print(a)
 ```
 
@@ -912,101 +991,105 @@ print(add_const(5))
     15
     
 
-Если вам не сразу станет понятно, как работает partial (и зачем она нужна), не расстраивайтесь, вы не одиноки :). Вот, пожалуйста, тема на Stackoverflow: «[I am not able to get my head on how the partial works](https://stackoverflow.com/questions/15331726/how-does-functools-partial-do-what-it-does)». Там, кстати, есть совет, как partial могут быть полезны при организации pipe с включением функций, имеющих разное количество аргументов.
+Если вам не сразу станет понятно, как работает функция partial (и зачем она нужна), не расстраивайтесь, вы не одиноки :). Вот, пожалуйста, тема на Stackoverflow: «[I am not able to get my head on how the partial works](https://stackoverflow.com/questions/15331726/how-does-functools-partial-do-what-it-does)». Там, кстати, есть совет, как partial могут быть полезны при организации pipe с включением функций, имеющих разное количество аргументов.
 
 ### Any, All
 
- 
-<bool> = any(<collection>)                                # Is `bool(el)` True for any element.  
-<bool> = all(<collection>)                                # Is True for all elements or empty.  
-
-sorted_by_second = sorted(<collection>, key=lambda el: el[1])  
-sorted_by_both   = sorted(<collection>, key=lambda el: (el[1], el[0]))  
-flatter_list     = list(itertools.chain.from_iterable(<list>))  
-product_of_elems = functools.reduce(lambda out, el: out * el, <collection>)  
-
-### Itertools
- 
-from itertools import count, repeat, cycle, chain, islice
-
-<iter> = count(start=0, step=1)             # Returns updated value endlessly. Accepts floats.  
-<iter> = repeat(<el> [, times])             # Returns element endlessly or 'times' times.  
-<iter> = cycle(<collection>)                # Repeats the sequence endlessly.  
-
-<iter> = chain(<coll_1>, <coll_2> [, ...])  # Empties collections in order (figuratively).  
-<iter> = chain.from_iterable(<collection>)  # Empties collections inside a collection in order.  
-
-<iter> = islice(<coll>, to_exclusive)       # Only returns first 'to_exclusive' elements.  
-<iter> = islice(<coll>, from_inclusive, …)  # `to_exclusive, step_size`.  
-
- 
->>> from collections.abc import Iterable, Collection, Sequence  
->>> isinstance([1, 2, 3], Iterable)  
-True  
-
- text
-+------------------+------------+------------+------------+
-|                  |  Iterable  | Collection |  Sequence  |
-+------------------+------------+------------+------------+
-| list, range, str |    yes     |    yes     |    yes     |
-| dict, set        |    yes     |    yes     |            |
-| iter             |    yes     |            |            |
-+------------------+------------+------------+------------+
-
->>> from numbers import Number, Complex, Real, Rational, Integral  
->>> isinstance(123, Number)  
-True
-
- text
-+--------------------+----------+----------+----------+----------+----------+
-|                    |  Number  |  Complex |   Real   | Rational | Integral |
-+--------------------+----------+----------+----------+----------+----------+
-| int                |   yes    |   yes    |   yes    |   yes    |   yes    |
-| fractions.Fraction |   yes    |   yes    |   yes    |   yes    |          |
-| float              |   yes    |   yes    |   yes    |          |          |
-| complex            |   yes    |   yes    |          |          |          |
-| decimal.Decimal    |   yes    |          |          |          |          |
-+--------------------+----------+----------+----------+----------+----------+
-
-### Pairwise
+any() вернет True, если хотя бы один элемент итерируемой коллекции истинен, all() вернет True только в случае истинности всех элементов коллекции.
 
 
 ```python
-import itertools
+animals = ["Squirrel", "Beaver", "Fox"]
+sentence = "Bison likes squirrels and beavers"
 
-a = [1, 2, 3, 4, 5]
-p = itertools.pairwise(a)  # Returns successive overlapping pairs
+any_animal: bool = any(animal.lower() in sentence.lower() for animal in animals)
+print(any_animal)
 
-print(list(p))
+all_animal: bool = all(animal.lower() in sentence.lower() for animal in animals)
+print(all_animal)
 ```
 
-    [(1, 2), (2, 3), (3, 4), (4, 5)]
+    True
+    False
     
 
-### Комбинаторика
+### Itertools
+
+Методы модуля itertools возвращают *итераторы*. В «нормальные» данные итераторы перегоняются при помощи for, next или list(). Итераторы могут быть бесконечными (порождаются при помощи count(), cycle() или repeat()) и конечными (accumulate(), chain(), takewhile() и другие). Лучше изучить их все, хотя бы поверхностно, потому что даже относительно редко употребляемый метод, например, какой-нибудь zip_longest(), иногда весьма и весьма пригождается, идеально ложась на поставленную задачу.
+
+
+```python
+
+from itertools import count, repeat, cycle, pairwise, chain
+
+# Итератор, возвращающий равномерно распределенные значения
+i1 = count(start=0, step=.1)
+print(next(i1))
+print(next(i1))
+print(next(i1))
+
+# Итератор, возвращающий один и тот же объект бесконечно, если не указано значение аргумента times
+i2 = repeat("Wow!", times=3)
+print(list(i2))
+
+# Итератор, циклично и бесконечно возвращающий элементы итерируемого объекта
+i3 = cycle([1, 2])
+print(next(i3))
+print(next(i3))
+print(next(i3))
+
+# Возвращает элементы входной коллекции попарно
+i4 = pairwise([1, 2, 3, 4, 5])
+print(list(i4))
+
+# Итератор, формирующий из нескольких входных последовательностей одну общую
+i5 = chain(["A", "B", "C"],["D", "E", "F"],["G", "H", "I"])
+print(list(i5))
+# Кстати, такой же трюк можно провернуть при помощи обычной sum(), задав ей начальный параметр []
+a = sum([["A", "B", "C"],["D", "E", "F"],["G", "H", "I"]], [])
+print(a)
+```
+
+    0
+    0.1
+    0.2
+    ['Wow!', 'Wow!', 'Wow!']
+    1
+    2
+    1
+    [(1, 2), (2, 3), (3, 4), (4, 5)]
+    ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I']
+    ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I']
+    
+
+Комбинаторика
 
 
 ```python
 from itertools import product, combinations, combinations_with_replacement, permutations
 
-a = product([0, 1], repeat=3)
+# Создает множество, содержащее все упорядоченные пары элементов из входных множеств
+a = product("abc", "xyz")
 print(list(a))
 
-b = product("abc", "abc")
+b = product([0, 1], repeat=3)
 print(list(b))
 
-c = combinations("abc", 2)
+# Возвращает подпоследовательности длины r из элементов входного итерируемого объекта, повторяющиеся элементы не допускаются
+c = combinations("abc", r=2)
 print(list(c))
 
-d = combinations_with_replacement("abc", 2)
+# Возвращает подпоследовательности длины r из элементов входного итерируемого объекта, повторяющиеся элементы допустимы
+d = combinations_with_replacement("abc", r=2)
 print(list(d))
 
-e = permutations("abc", 2)
+# Выдает перестановки элементов итерируемого объекта
+e = permutations("abc", r=2)
 print(list(e))
 ```
 
+    [('a', 'x'), ('a', 'y'), ('a', 'z'), ('b', 'x'), ('b', 'y'), ('b', 'z'), ('c', 'x'), ('c', 'y'), ('c', 'z')]
     [(0, 0, 0), (0, 0, 1), (0, 1, 0), (0, 1, 1), (1, 0, 0), (1, 0, 1), (1, 1, 0), (1, 1, 1)]
-    [('a', 'a'), ('a', 'b'), ('a', 'c'), ('b', 'a'), ('b', 'b'), ('b', 'c'), ('c', 'a'), ('c', 'b'), ('c', 'c')]
     [('a', 'b'), ('a', 'c'), ('b', 'c')]
     [('a', 'a'), ('a', 'b'), ('a', 'c'), ('b', 'b'), ('b', 'c'), ('c', 'c')]
     [('a', 'b'), ('a', 'c'), ('b', 'a'), ('b', 'c'), ('c', 'a'), ('c', 'b')]
@@ -1036,42 +1119,6 @@ print(list(iter_unpack('ii', i)))
     (1, 2, 3, 4)
     b'\x01\x00\x00\x00\x02\x00\x00\x00\x01\x00\x00\x00\x02\x00\x00\x00\x01\x00\x00\x00\x02\x00\x00\x00\x01\x00\x00\x00\x02\x00\x00\x00\x01\x00\x00\x00\x02\x00\x00\x00'
     [(1, 2), (1, 2), (1, 2), (1, 2), (1, 2)]
-    
-
-### bisect и бинарный поиск
-
-
-```python
-import bisect
-
-a: list[int] = [12, 6, 8, 19, 1, 33]
-
-a.sort()
-print(f"Sorted: {a}")
-
-print(bisect.bisect(a, 19))  # Locate the insertion point for value in a list to maintain sorted order
-
-bisect.insort(a, 15)  # Insert value in a list in sorted order
-print(a)
-
-# Binary search
-
-from bisect import bisect_left
-
-def binary_search(a, x, lo=0, hi=None):
-    if hi is None:
-        hi = len(a)
-
-    pos = bisect_left(a, x, lo, hi)
-    return pos if pos != hi and a[pos] == x else -1
-
-print(binary_search(a, 15))
-```
-
-    Sorted: [1, 6, 8, 12, 19, 33]
-    5
-    [1, 6, 8, 12, 15, 19, 33]
-    4
     
 
 ### datetime encode
