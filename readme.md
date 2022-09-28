@@ -1,6 +1,5 @@
-Небольшое отступление про формат Jupiter Notebook (на случай, если раньше вы с ним не работали). Ниже вы видите текст, который выглядит как обычная статья, но это только потому, что исходный Jupiter Notebook был сконвертирован в Markdown. На самом деле все примеры кода интерактивны, вы можете менять, дополнять их, крутить как угодно, разбираясь в тонкостях Python; поэтому многие используемые методы не «разжеваны» (да такой задачи и не ставилось), Jupiter сам по себе лучший самоучитель.
-
-Исходные файлы лежат на [github/pycore](https://github.com/amaargiru/pycore). Для работы с Jupiter вы можете воспользоваться VS Code, JetBrains IntelliJ или каким-нибудь онлайн-инструментом, самым известным из которых являятся [Google Colab](https://colab.research.google.com/).
+Небольшое отступление про формат Jupiter Notebook (на случай, если раньше вам не приходилось иметь с ним дела). Ниже вы видите текст, который выглядит как обычная статья, но это только потому, что исходный Jupiter Notebook при помощи nbconvert был сконвертирован в Markdown. На самом деле все примеры кода интерактивны (исходные тексты лежат на [github/pycore](https://github.com/amaargiru/pycore)), вы можете менять, дополнять их, крутить как угодно, разбираясь в тонкостях Python; поэтому многие используемые методы не «разжеваны» (да такой задачи и не ставилось), Jupiter сам по себе лучший самоучитель.  
+Для работы с Jupiter вы можете воспользоваться VS Code, JetBrains IntelliJ или каким-нибудь онлайн-инструментом, самым известным из которых являятся [Google Colab](https://colab.research.google.com/).
 
 Не забывайте про прекрасную официальную документацию Python [docs.python.org](https://docs.python.org/).
 
@@ -57,21 +56,19 @@ a.clear()  # Очистка списка
     
 
 ### Кортеж (tuple)  
-Кортеж — тоже список, только неизменяемый (immutable) и хэшируемый (hashable).
+Кортеж — тоже список, только неизменяемый (immutable) и хэшируемый (hashable). Кортеж, содержащий те же данные, что и список, занимает меньше места:
 
 
 ```python
-# Кортеж, содержащий те же данные, что и список, занимает меньше места
+a = [2, 3, "Boson", "Higgs", 1.56e-22]
+b = (2, 3, "Boson", "Higgs", 1.56e-22)
 
-a = (2, 3, "Boson", "Higgs", 1.56e-22)
-b = [2, 3, "Boson", "Higgs", 1.56e-22]
-
-print(f"Tuple: {a.__sizeof__()} bytes")
-print(f"List: {b.__sizeof__()} bytes")
+print(f"List: {a.__sizeof__()} bytes")
+print(f"Tuple: {b.__sizeof__()} bytes")
 ```
 
-    Tuple: 64 bytes
     List: 104 bytes
+    Tuple: 64 bytes
     
 
 ### Именованный кортеж (named tuple)
@@ -141,7 +138,7 @@ print(b)
 c = {k: v for k, v in d.items() if len(v) >= 7}  # Вернет новый словарь, отфильтрованный по длине значений
 print(c)
 
-d.clear() # Очистка списка
+d.clear() # Очистка словаря
 ```
 
     {'Italy': 'Pizza', 'US': 'Hot-Dog', 'China': 'Dim Sum'}
@@ -166,7 +163,10 @@ d.clear() # Очистка списка
 
 ```python
 addr = hash(key) & mask,
-где mask = PyDictMINSIZE - 1
+```
+где
+```python
+mask = PyDictMINSIZE - 1
 ```
 
 Если этот адрес занят, то интерпретатор проверяет (при помощи ==) хеш и ключ. Если оба совпадают, то, значит, запись уже существует. Тогда начинается зондирование свободных слотов, которое идет в псевдослучайном порядке (порядок зависит от значения ключа). Новая запись будет добавлена по первому свободному адресу.
@@ -224,7 +224,7 @@ print(d)
 
 ### Множество (set)
 
-Третья по распространенности питоновская структура данных. Когда-то, когда Python был молод, множества представляли собой несколько редуцированные словари, но со временем их судьбы (и реализации) стали расходиться. Однако, множество всё-таки является хеш-таблицей с соответсвующим быстродействием на разных типах операций.
+Третья по распространенности питоновская структура данных. Когда-то, когда Python был молод, множества представляли собой несколько редуцированные словари, но со временем их судьбы (и реализации) стали расходиться. Однако, множество всё-таки является хеш-таблицей с соответствующим быстродействием на разных типах операций.
 
 
 ```python
@@ -308,26 +308,26 @@ print(a1.index(-4))  # Returns an index of a member or raises ValueError
 ```python
 
 ### Encode
-b1 = bytes([1, 2, 3, 4])  # Ints must be in range from 0 to 255
+b1 = bytes([1, 2, 3, 4])  # Целые числа должны быть в диапазоне от 0 to 255
 b2 = "The String".encode('utf-8')
-b3 = (-1024).to_bytes(4, byteorder='big', signed=True)  # byteorder="big"/"little"/"sys.byteorder", signed=False/True
-b4 = bytes.fromhex('FEADCA')  # Hex pairs can be separated by spaces
+b3 = (-1024).to_bytes(4, byteorder='big', signed=True)  # byteorder = "big"/"little"/"sys.byteorder", signed = False/True
+b4 = bytes.fromhex('FEADCA')  # Для большей читаемости hex-значения могут быть разделены пробелами
 b5 = bytes(range(10,30,2))
 
 print(b1, b2, b3, b4, b5)
 
 ### Decode
-c: list = list(b"\xfc\x00\x00\x00\x00\x01")  # Returns ints in range from 0 to 255
+c: list = list(b"\xfc\x00\x00\x00\x00\x01")
 s: str = b'The String'.decode("utf-8")
-b: int = int.from_bytes(b"\xfc\x00", byteorder='big', signed=False)  # byteorder="big"/"little"/"sys.byteorder", signed=False/True
-s2: str = b"\xfc\x00\x00\x00\x00\x01".hex(" ")  # Returns a string of hexadecimal pairs, hex pairs can be separated by spaces
+b: int = int.from_bytes(b"\xfc\x00", byteorder='big', signed=False)  # byteorder = "big"/"little"/"sys.byteorder", signed = False/True
+s2: str = b"\xfc\x00\x00\x00\x00\x01".hex(" ")
 
 print(c, s, b, s2)
 
-with open("1.bin", "wb") as file:  # Write bytes to file
+with open("1.bin", "wb") as file:  # Байтовая запись в файл
     file.write(b1)
 
-with open("1.bin", "rb") as file:  # Read bytes from file
+with open("1.bin", "rb") as file:  # Чтение из файла
     b6 = file.read()
 
 print(b6)
@@ -340,7 +340,7 @@ print(b6)
 
 ### Односвязный список <a name="basicslist"></a>  
 
-Односвязный список представляет набор связанных узлов, каждый из которых хранит собственно данные и ссылку на следующий узел. В практике применим редко, но его любят использовать интервьюеры на собеседованиях, чтобы кандидат мог блеснуть своими алгоритмическими знаниями. В Python встроенной реализации не имеет, можно или использовать deque (в основе которого лежит двусвязный список), или написать свою реализацию.
+Односвязный список представляет набор связанных узлов, каждый из которых хранит собственные данные и ссылку на следующий узел. В практике применим редко, но его любят использовать интервьюеры на собеседованиях, чтобы кандидат мог блеснуть своими алгоритмическими знаниями. В Python встроенной реализации не имеет, можно или использовать deque (в основе которого лежит двусвязный список), или написать свою реализацию.
 
 ### Двусвязный список (Deque)<a name="basicdlist"></a>  
 
@@ -378,21 +378,25 @@ Queue реализует FIFO со множественными поставщи
 from queue import Queue
 q = Queue(maxsize=1000)
 
-q.put("eat", block=True, timeout=10)  # Put an element to the queue with 10 seconds timeuot, block if necessary until a free slot is available
-q.put("sleep")  # Default values block=True, timeout=None
+q.put("eat", block=True, timeout=10)
+q.put("sleep")  # По умолчанию block=True, timeout=None
 q.put("code")
-q.put_nowait("repeat")  # Equivalent to put("repeat", block=False). Put an element on the queue if a free slot is immediately available, else raise the queue.Full exception
+q.put_nowait("repeat")  # Эквивалент put("repeat", block=False). Если свободный слот не будет предоставлен немедленно, будет вызвано исключение queue.Full
 print(q.queue)
 
-a = q.get(block=True, timeout=10)  # Remove and return an item from the queue
-b = q.get()  # Default values block=True, timeout=None
-c = q.get_nowait()  # Equivalent to get(False)
+a = q.get(block=True, timeout=10)  # Удалить и возвратить элемент из FIFO
+b = q.get()  # По умолчанию block=True, timeout=None
+c = q.get_nowait()  # Эквивалент get(False)
 print(a, b, c, q.queue)
 ```
 
     deque(['eat', 'sleep', 'code', 'repeat'])
     eat sleep code deque(['repeat'])
     
+
+### Бинарное дерево <a name="basicbinarytree"></a>  
+
+Иерархическая структура данных, в которой каждый узел имеет не более двух потомков. Встроенной реализации не имеет, нужно писать свою.
 
 ### Куча (heap)
 
@@ -423,17 +427,14 @@ print(h, m)
 
 Пробежимся коротенько по остальным структурам данных, которые не имеют встроенной реализации, но, тем не менее, могут весьма пригодиться в реальном проекте.
 
-### Бинарное дерево <a name="basicbinarytree"></a>  
-
-Иерархическая структура данных, в которой каждый узел имеет не более двух потомков. Встроенной реализации не имеет, нужно писать свою.
-
 ### Би-дерево (B-tree)<a name="btree"></a>  
 
-Сбалансированное дерево, оптимизированное для доступа к относительно медленным элементам памяти (например, дисковым структурам или индексам баз данных), как ветви, так и листья представляют собой списки (для того, чтобы можно было считать такой список в один проход для дальнейшего разбора в ОЗУ), но обычно различаются по структуре. Нужно писать свою реализацию.
+Сбалансированное дерево, оптимизированное для доступа к относительно медленным элементам памяти (например, дисковым структурам или индексам баз данных); как ветви, так и листья представляют собой списки (для того, чтобы можно было считать такой список в один проход для дальнейшего быстрого разбора в ОЗУ). Нужно писать свою реализацию. Либо — воспользоваться встроенной в Python поддержкой базы данных sqlite3, эта БД как раз реализована на би-дереве.
 
 ### Красно-черное дерево <a name="basicrbtree"></a>  
 
-Самобалансирующееся двоичное дерево поиска, позволяющее быстро выполнять основные операции дерева поиска: добавление, удаление и поиск узла. Сбалансированность достигается за счёт введения дополнительного признака узла дерева — «цвета». Этот атрибут может принимать одно из двух возможных значений — «чёрный» или «красный». Листовые узлы КЧ деревьев не содержат данных, поэтому не требуют выделения памяти — достаточно просто записать в узле-предке нулевой указатель на потомка. Нужно писать свою реализацию.
+Самобалансирующееся двоичное дерево поиска, позволяющее быстро выполнять основные операции: добавление, удаление и поиск узла. Сбалансированность достигается за счёт введения дополнительного признака узла дерева — «цвета». Этот атрибут может принимать одно из двух возможных значений — «чёрный» или «красный». Листовые узлы КЧ деревьев не содержат данных, поэтому не требуют выделения памяти — достаточно просто записать в узле-предке нулевой указатель на потомка. Нужно писать свою реализацию.  
+Возможно, вы читали о том, что при собеседовании в FAANG претендентов «заставляют крутить красно-черное дерево на доске». Это «кружение» и есть балансировка, после операции вставки или удаления элемента дерево нужно отбалансировать, с примерным объемом кода вы можете ознакомиться [здесь](https://blog.boot.dev/python/red-black-tree-python/) или [здесь](https://codereview.stackexchange.com/questions/244971/red-black-tree-implementation-in-python).
 
 ### АВЛ-дерево <a name="basicavltree"></a>  
 
@@ -447,33 +448,6 @@ print(h, m)
 
 В квадратных скобках показан худший случай.
 
-<style>
-table th:first-of-type {
-    width: 25%;
-}
-table th:nth-of-type(2) {
-    width: 25%;
-}
-table th:nth-of-type(3) {
-    width: 25%;
-}
-table th:nth-of-type(4) {
-    width: 5%;
-}
-table th:nth-of-type(5) {
-    width: 5%;
-}
-table th:nth-of-type(6) {
-    width: 5%;
-}
-table th:nth-of-type(7) {
-    width: 5%;
-}
-table th:nth-of-type(8) {
-    width: 5%;
-}
-</style>
-
 | Структура | Реализация | Применение | Индексация | Поиск | Вставка | Удаление | Память |
 | :- | :- | :- | :-: | :-: | :-: | :-: | :-: |
 | Динамический массив | list |  | 1 | n | n | n | n |
@@ -483,7 +457,7 @@ table th:nth-of-type(8) {
 | Двусвязный список | deque|  | n | n | 1 | 1 | n |
 | Бинарное дерево | - |  | logn<br> [n] | logn<br> [n] | logn<br> [n] | logn<br> [n] | n |
 | Куча | heapq |  |   | 1<br>(find min) | logn | logn<br>(del min) | n |
-| [B-дерево](https://en.wikipedia.org/wiki/B-tree)<br> (Би-дерево) | sqlite3 | Для памяти с медленным доступом | logn | logn | logn | logn | n |
+| B-tree (Би-дерево) |   | Для памяти с медленным доступом | logn | logn | logn | logn | n |
 | КЧ дерево | - |   | logn | logn | logn | logn | n |
 | АВЛ дерево | - |  | logn | logn | logn | logn | n |
 | Префиксное дерево | - | T9,<br> алгоритм [Ахо–Корасик](https://en.wikipedia.org/wiki/Aho%E2%80%93Corasick_algorithm),<br> алгоритм [LZW](https://en.wikipedia.org/wiki/Lempel%E2%80%93Ziv%E2%80%93Welch) |  | key | key | key |  |
@@ -502,15 +476,13 @@ class Currency(Enum):
     us_dollar = 2
     yuan = auto()
 
-# If there are no numeric values before auto(), it returns 1, otherwise it returns an increment of the last numeric value
-
-local_currency = Currency.us_dollar  # Returns a member
+local_currency = Currency.us_dollar
 print(local_currency)
 
-local_currency = Currency["us_dollar"]  # Returns a member or raises KeyError
+local_currency = Currency["us_dollar"]  # Может вызвать исключение KeyError
 print(local_currency)
 
-local_currency = Currency(2)  # Returns a member or raises ValueError
+local_currency = Currency(2)  # Может вызвать исключение ValueError
 print(local_currency)
 
 print(local_currency.name)
@@ -618,28 +590,28 @@ class User:
 
 
 ```python
-se: str = ""  # Empty string
-si: str = str(12345)  # Creates the string from int
-sj: str = " ".join(["Follow", "the", "white", "rabbit"])  # Joins items using string as a separator
+se: str = ""  # Пустая строка
+si: str = str(12345)  # Создает строку из числа
+sj: str = " ".join(["Follow", "the", "white", "rabbit"])  # Собирает строку из кусочков, используя указанный сепаратор
 print(f"Joined string: {sj}")
 
-is_contains: bool = "rabbit" in sj  # Checks if string contains a substring
+is_contains: bool = "rabbit" in sj  # Проверка наличия подстроки
 is_startswith = sj.startswith("Foll")
 is_endswith = sj.endswith("bbit")
 print(f"is_contains = {is_contains}, is_startswith = {is_startswith}, is_endswith = {is_endswith}")
 
-sr: str  = sj.replace("rabbit", "sheep")  # Replaces substrings. Also you can use times:  sr: str  = sj.replace("rabbit", "sheep", times)
+sr: str  = sj.replace("rabbit", "sheep")  # Замена подстроки. Можно указать количество замен: sr: str  = sj.replace("rabbit", "sheep", times)
 print(f"After replace: {sr}")
 
-i1 = sr.find("rabbit")  # Returns start index of the first match or -1. Also rfind()
-i2 = sr.index("sheep")  #  Returns start index of the first match or raises ValueError. Also rindex()   
+i1 = sr.find("rabbit")  # Возвращает стартовый индекс первого вхождения или -1. Есть еще rfind(), начинающий искать с конца строки
+i2 = sr.index("sheep")  #  Возвращает стартовый индекс первого вхождения или выкидывает ValueError. Есть еще rindex(), начинающий искать с конца строки
 print(f"Start index of 'rabbit' is {i1}, start index of 'sheep' is {i2}")
 
 d = str.maketrans({"a" : "x", "b" : "y", "c" : "z"})
 st  = "abc".translate(d)
 print(f"Translate string: {st}")
 
-sr = sj[::-1]  # Reverse (Explanation: stackoverflow.com/questions/931092/reverse-a-string-in-python)
+sr = sj[::-1]  # Реверс через slice с отрицательным шагом
 print(f"Reverse string: {sr}")
 ```
 
@@ -653,7 +625,7 @@ print(f"Reverse string: {sr}")
 
 ## Datetime
 
-Для работы с датами и временем в *datetime* есть типы *date*, *time*, *datetime* and *timedelta*. Все они хешируемы и иимутабельны.
+Для работы с датами и временем в *datetime* есть типы *date*, *time*, *datetime* и *timedelta*. Все они хешируемы и иммутабельны.
 
 ### Конструкторы
 
@@ -677,42 +649,52 @@ print (f"{d}\n {t}\n {dt}\n {td}")
 
 ### Now
 
+Получение текущей даты или даты/времени.
+
 
 ```python
-from datetime import date, time, datetime
+from datetime import date, datetime
 import pytz
+import time
 
 d: date  = date.today()
 dt1: datetime = datetime.today()
 dt2: datetime = datetime.utcnow()
 dt3: datetime = datetime.now(pytz.timezone('US/Pacific'))
 
-print (f"{d}\n {dt1}\n {dt2}\n {dt3}")
+t1 = time.time()  # Unix epoch time
+t2 = time.ctime()
+
+print (f"{d}\n {dt1}\n {dt2}\n {dt3}\n {t1}\n {t2}")
 
 ```
 
-    2022-09-06
-     2022-09-06 17:50:37.664312
-     2022-09-06 12:50:37.664311
-     2022-09-06 05:50:37.724181-07:00
+    2022-09-27
+     2022-09-27 09:47:02.430474
+     2022-09-27 04:47:02.430474
+     2022-09-26 21:47:02.430474-07:00
+     1664254022.4304743
+     Tue Sep 27 09:47:02 2022
     
 
 ### Timezone
+
+Часовые пояса.
 
 
 ```python
 from datetime import date, time, datetime, timedelta, tzinfo
 from dateutil.tz import UTC, tzlocal, gettz, datetime_exists, resolve_imaginary
 
-tz1: tzinfo = UTC  # UTC timezone
+tz1: tzinfo = UTC  # Часовой пояс UTC
 
-tz2: tzinfo = tzlocal()  # Local timezone
-tz3: tzinfo = gettz()  # Local timezone
+tz2: tzinfo = tzlocal()  # Местный часовой пояс
+tz3: tzinfo = gettz()  # Местный часовой пояс
 
-tz4: tzinfo = gettz("America/Chicago")  # "Asia/Kolkata" etc. See full list at en.wikipedia.org/wiki/List_of_tz_database_time_zones
+tz4: tzinfo = gettz("America/Chicago")  # Или, например, "Asia/Kolkata". Полный список: en.wikipedia.org/wiki/List_of_tz_database_time_zones
 
 local_dt = datetime.today()
-utc_dt = local_dt.astimezone(UTC)  # Convert local datetime to UTC datetime
+utc_dt = local_dt.astimezone(UTC)  # Конвертация местного часового пояса в часовой пояс UTC
 
 print (f"{tz1}\n {tz2}\n {tz3}\n {tz4}\n {local_dt}\n {utc_dt}")
 ```
@@ -721,8 +703,8 @@ print (f"{tz1}\n {tz2}\n {tz3}\n {tz4}\n {local_dt}\n {utc_dt}")
      tzlocal()
      tzlocal()
      tzfile('US/Central')
-     2022-09-06 17:50:37.895639
-     2022-09-06 12:50:37.895639+00:00
+     2022-09-27 09:19:35.399362
+     2022-09-27 04:19:35.399362+00:00
     
 ## 2. Обработка данных
 
@@ -783,7 +765,7 @@ print(b, "\n",
 
 Comprehension, которое переводится то как списковое включение, то как абстракция списков ([Википедия](https://ru.wikipedia.org/wiki/%D0%A1%D0%BF%D0%B8%D1%81%D0%BA%D0%BE%D0%B2%D0%BE%D0%B5_%D0%B2%D0%BA%D0%BB%D1%8E%D1%87%D0%B5%D0%BD%D0%B8%D0%B5)), то вообще никак не переводится — способ компактного описания операций обработки списков (а примениительно к Python — еще и словарей, и множеств).
 
-Проще говоря, если вам нужно получить из списка другой список, включающий только те значения, которые удовлетворяют какому-то определенному условию, или вычисляемый из первого списка по каким-то определенным правилам, то comprehension — претендент на решение этой задачи № 1.
+Проще говоря, если вам нужно получить из списка другой список, включающий только те значения, которые удовлетворяют какому-то определенному условию, или вычисляемые из первого списка по каким-то определенным правилам, то comprehension — претендент на решение этой задачи № 1.
 
 
 ```python
@@ -816,14 +798,14 @@ print(a,"\n", b, "\n", list(c), "\n", d)
 fruits: list = ["Lemon", "Apple", "Banana", "Kiwi", "Watermelon", "Pear"]
 
 e_fruits = [fruit for fruit in fruits if "e" in fruit]
-#                                     ☝ if conditional
+#                                     ☝ условие
 print(e_fruits)
 
 upper_fruits = [fruit.upper() for fruit in fruits]
-#                     ☝ expression
+#                     ☝ выражение
 print(upper_fruits)
 
-# Split a list into equal sized chunks
+# Пример разбиения списка на фрагменты одинаковой длины
 chunk_len = 2
 chunk_fruits = [fruits[i:i + chunk_len] for i in range(0, len(fruits), chunk_len)]
 print(chunk_fruits)
@@ -841,7 +823,7 @@ Dict comprehension:
 ```python
 # new_dict = {expression for member in iterable (if conditional)}
 
-d: dict = {"Italy": "Pizza", "US": "Hot-Dog", "China": "Dim Sum", "South Korea": "Kimchi"}  # Create a dictionary
+d: dict = {"Italy": "Pizza", "US": "Hot-Dog", "China": "Dim Sum", "South Korea": "Kimchi"}
 print(d)
 
 a: dict = {k: v for k, v in d.items() if "i" in v}  # Вернет новый словарь, отфильтрованный по значению
@@ -860,7 +842,9 @@ print(c)
     {'US': 'Hot-Dog', 'China': 'Dim Sum'}
     
 
-### Sum, Count, Min, Max
+Попробуйте самостоятельно поиграться с set comprehension. Не забывайте, что set «переваривает» только уникальные значения, поэтому в результате вы можете получить не совсем то, на что рассчитывали.
+
+### Простейшие вычисления — Sum, Count, Min, Max
 
 
 ```python
@@ -869,7 +853,7 @@ a: list[int] = [1, 2, 3, 4, 5, 2, 2]
 s = sum(a)
 print(s)
 
-c = a.count(2)  # Returns number of occurrences
+c = a.count(2)  # Вернет количество вхождений
 print(c)
 
 mn = min(a)
@@ -885,15 +869,53 @@ print(mx)
     5
     
 
-### Map, Filter, Reduce
- 
-<iter> = map(lambda x: x + 1, range(10))                  # (1, 2, ..., 10)  
-<iter> = filter(lambda x: x > 5, range(10))               # (6, 7, 8, 9)  
-<obj>  = reduce(lambda out, x: out + x, range(10))        # 45  
- 
-Reduce must be imported from the functools module.  
+Присмотритесь к [встроенным функциям](https://docs.python.org/3/library/functions.html), там есть еще кое-что, касающееся элементарной математики.
+
+### Функциональное программирование — Map, Filter, Reduce, Partial.
+
+На случай, если начиная с этого момента и до конца текущего жизненного цикла вы собираетесь к месту и не месту использовать приёмы функционального программирования, чтобы сделать свой код воистину «крутым», просто процитирую вам Джоэля Граса, автора книги «Data Science: Наука о данных с нуля»: «В первом издании этой книги были представлены функции partial, map, reduce и filter языка Python. На своем пути к просветлению я понял, что этих функций лучше избегать, и их использование в книге было заменено включениями в список, циклами и другими, более Python'овскими конструкциями». Такие дела...  
+
+
+```python
+from functools import reduce
+
+# Преобразует все входящие значения при помощи указанной функции
+iter1 = map(lambda x: x + 1, range(10))
+print(list(iter1))
+
+# Передает в выходной итератор только значения, удовлетворяющие условию
+iter2 = filter(lambda x: x > 5, range(10))
+print(list(iter2))
+
+# Применяет указанную функцию ко всей последовательности входных данных, сводя их к единственному значению
+a = reduce(lambda out, x: out + x, range(10))
+print(a)
+```
+
+    [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+    [6, 7, 8, 9]
+    45
+    
+
+
+```python
+import functools
+
+def sum(a,b):
+    return a + b
+
+add_const = functools.partial(sum, 10)
+
+print(add_const(5))
+```
+
+    15
+    
+
+Если вам не сразу станет понятно, как работает partial (и зачем она нужна), не расстраивайтесь, вы не одиноки :). Вот, пожалуйста, тема на Stackoverflow: «[I am not able to get my head on how the partial works](https://stackoverflow.com/questions/15331726/how-does-functools-partial-do-what-it-does)». Там, кстати, есть совет, как partial могут быть полезны при организации pipe с включением функций, имеющих разное количество аргументов.
 
 ### Any, All
+
  
 <bool> = any(<collection>)                                # Is `bool(el)` True for any element.  
 <bool> = all(<collection>)                                # Is True for all elements or empty.  
