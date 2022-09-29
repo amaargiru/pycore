@@ -1,8 +1,9 @@
+### Jupiter Notebook
+
 Небольшое отступление про формат Jupiter Notebook (на случай, если раньше вам не приходилось иметь с ним дела). Ниже вы видите текст, который выглядит как обычная статья, но это только потому, что исходный Jupiter Notebook при помощи nbconvert был сконвертирован в Markdown. На самом деле все примеры кода интерактивны (исходные тексты лежат на [github/pycore](https://github.com/amaargiru/pycore)), вы можете менять, дополнять их, крутить как угодно, разбираясь в тонкостях Python; поэтому многие используемые методы не «разжеваны» (да такой задачи и не ставилось), Jupiter сам по себе лучший самоучитель.  
 Для работы с Jupiter вы можете воспользоваться VS Code, JetBrains IntelliJ или каким-нибудь онлайн-инструментом, самым известным из которых являятся [Google Colab](https://colab.research.google.com/).
 
 Не забывайте про прекрасную официальную документацию Python [docs.python.org](https://docs.python.org/).
-
 ## 1. Структуры данных
 
 ### Список (list) <a name="basicdarray"></a>  
@@ -131,7 +132,7 @@ try:
 except KeyError:
     print("Dictionary key doesn't exist")
 
-# Примеры dict comprehension
+# Примеры dict comprehension (более подробно comprehension будет рассмотрено ниже)
 b = {k: v for k, v in d.items() if "a" in k}  # Вернет новый словарь, отфильтрованный по значению ключа
 print(b)
 
@@ -181,7 +182,7 @@ mask = PyDictMINSIZE - 1
 ```python
 from collections import defaultdict
 
-dd = defaultdict(int)  # defaultdict
+dd = defaultdict(int)
 print(dd[10])  # Печать int, будет выведен ноль, значение по умолчанию
 
 dd = {}  # "Обычный" словарь
@@ -206,20 +207,28 @@ print(c)
 c["blue"] += 1
 print(f"After shopping: {c}")
 
-# Объяснение работы Counter() при помощи defaultdict():
-from collections import defaultdict
-
-d = defaultdict(int)
-for shirt in shirts_colors:
-    d[shirt] += 1
-d["blue"] += 1
-
-print(d)
 ```
 
     Counter({'white': 3, 'black': 2, 'red': 1, 'blue': 1})
     After shopping: Counter({'white': 3, 'blue': 2, 'black': 2, 'red': 1})
-    defaultdict(<class 'int'>, {'red': 1, 'white': 3, 'blue': 2, 'black': 2})
+    
+
+Объяснение работы Counter() при помощи defaultdict():
+
+
+```python
+from collections import defaultdict
+
+shirts_colors = ["red", "white", "blue", "white", "white", "black", "black"]
+
+d = defaultdict(int)
+for shirt in shirts_colors:
+    d[shirt] += 1
+
+print(d)
+```
+
+    defaultdict(<class 'int'>, {'red': 1, 'white': 3, 'blue': 1, 'black': 2})
     
 
 ### Множество (set)
@@ -231,18 +240,18 @@ print(d)
 big_cities: set["str"] = {"New-York", "Los Angeles", "Ottawa"}
 american_cities: set["str"] = {"Chicago", "New-York", "Los Angeles"}
 
-big_cities |= {"Sydney"}  # Add item (or you can use add())
-american_cities |= {"Salt Lake City", "Seattle"}  # Add set (or you can use update())
+big_cities |= {"Sydney"}  # Добавить значение (или add())
+american_cities |= {"Salt Lake City", "Seattle"}  # Сложить множества (или update())
 
 print(big_cities, american_cities)
 
-union_cities: set["str"] = big_cities | american_cities  # Or union()
-intersected_cities: set["str"] = big_cities & american_cities  # Or intersection()
-dif_cities: set["str"] = big_cities - american_cities  # Or difference()
-symdif_cities: set["str"] = big_cities ^ american_cities  # Or symmetric_difference()
+union_cities: set["str"] = big_cities | american_cities  # Или union()
+intersected_cities: set["str"] = big_cities & american_cities  # Или intersection()
+dif_cities: set["str"] = big_cities - american_cities  # Или difference()
+symdif_cities: set["str"] = big_cities ^ american_cities  # Или symmetric_difference()
 
-issub: bool = big_cities <= union_cities  # Or issubset()
-issuper: bool = american_cities >= dif_cities  # Or issuperset()
+issub: bool = big_cities <= union_cities  # Или issubset()
+issuper: bool = american_cities >= dif_cities  # Или issuperset()
 
 print(union_cities)
 print(intersected_cities)
@@ -251,12 +260,12 @@ print(symdif_cities)
 
 print(issub, issuper)
 
-big_cities.add("London")  # Add items
+big_cities.add("London")
 
-big_cities.remove("Ottawa")  # Removes an item from the set if it is present or raises KeyError
-big_cities.discard("Los Angeles")  # Remove an item from the set if it is present without raising KeyError
-big_cities.pop()  # Remove and return a random item from the set or raises KeyError
-big_cities.clear()  # Removes all items from the set
+big_cities.remove("Ottawa")  # Удаляет значение, если оно имеется или выбрасывает KeyError
+big_cities.discard("Los Angeles")  # Удаляет значение без выбрасывания KeyError
+big_cities.pop()  # Возвращает и удаляет случайное значение (порядок в set неопределен) или выбрасывает KeyError
+big_cities.clear()  # Очищает множество
 ```
 
     {'New-York', 'Los Angeles', 'Sydney', 'Ottawa'} {'New-York', 'Seattle', 'Chicago', 'Los Angeles', 'Salt Lake City'}
@@ -306,8 +315,8 @@ print(a1.index(-4))  # Returns an index of a member or raises ValueError
 
 
 ```python
-
 ### Encode
+
 b1 = bytes([1, 2, 3, 4])  # Целые числа должны быть в диапазоне от 0 to 255
 b2 = "The String".encode('utf-8')
 b3 = (-1024).to_bytes(4, byteorder='big', signed=True)  # byteorder = "big"/"little"/"sys.byteorder", signed = False/True
@@ -317,6 +326,7 @@ b5 = bytes(range(10,30,2))
 print(b1, b2, b3, b4, b5)
 
 ### Decode
+
 c: list = list(b"\xfc\x00\x00\x00\x00\x01")
 s: str = b'The String'.decode("utf-8")
 b: int = int.from_bytes(b"\xfc\x00", byteorder='big', signed=False)  # byteorder = "big"/"little"/"sys.byteorder", signed = False/True
@@ -400,7 +410,7 @@ print(a, b, c, q.queue)
 
 ### Куча (heap)
 
-Бинарное дерево, удовлетворяющее свойство кучи: если B является узлом-потомком узла A, то ключ(A) ≥ ключ(B). Куча является максимально эффективной реализацией абстрактного типа данных, который называется очередью с приоритетом и поддерживающего две обязательные операции — добавить элемент и извлечь минмум (или максимум, в зависимости от реализации).
+Бинарное дерево, удовлетворяющее свойство кучи: если B является узлом-потомком узла A, то ключ(A) ≥ ключ(B). Куча является максимально эффективной реализацией абстрактного типа данных, который называется очередью с приоритетом и поддерживающего две обязательные операции — добавить элемент и извлечь минимум (или максимум, в зависимости от реализации).
 
 В Python min-куча (наименьшее значение всегда лежит в корне) реализована на базе списка при помощи встроенного модуля heapq. Если вам нужна max-куча, с максимальным значением в корне, можете воспользоваться советами со [Stackoverflow](https://stackoverflow.com/questions/2501457/what-do-i-use-for-a-max-heap-implementation-in-python).
 
@@ -454,10 +464,10 @@ print(h, m)
 | Хэш таблица | dict, set |  |  | 1<br> [n] | 1<br> [n] | 1<br> [n] | n |
 | Массив | array, bytes, bytearray | Для хранения однотипных данных | 1 | n | n | n | n |
 | Односвязный список | - (~deque)|  | n | n | 1 | 1 | n |
-| Двусвязный список | deque|  | n | n | 1 | 1 | n |
+| Двусвязный список | deque| FIFO, LIFO | n | n | 1 | 1 | n |
 | Бинарное дерево | - |  | logn<br> [n] | logn<br> [n] | logn<br> [n] | logn<br> [n] | n |
-| Куча | heapq |  |   | 1<br>(find min) | logn | logn<br>(del min) | n |
-| B-tree (Би-дерево) |   | Для памяти с медленным доступом | logn | logn | logn | logn | n |
+| Куча | heapq | Очередь с приоритетом |   | 1<br>(find min) | logn | logn<br>(del min) | n |
+| B-tree (Би-дерево) | ~sqlite | Для памяти с медленным доступом | logn | logn | logn | logn | n |
 | КЧ дерево | - |   | logn | logn | logn | logn | n |
 | АВЛ дерево | - |  | logn | logn | logn | logn | n |
 | Префиксное дерево | - | T9,<br> алгоритм [Ахо–Корасик](https://en.wikipedia.org/wiki/Aho%E2%80%93Corasick_algorithm),<br> алгоритм [LZW](https://en.wikipedia.org/wiki/Lempel%E2%80%93Ziv%E2%80%93Welch) |  | key | key | key |  |
@@ -581,8 +591,34 @@ from dataclasses import dataclass
 class User:
     name: str
     account: int
-
 ```
+
+### Struct
+
+Запаковка (и распаковка, разумеется) данных в байтовые последовательности с предопределенными размероми каждого элемента данных, их порядка в структуре, а также порядка байт для многобайтовых типов данных. Позволяет превращать Python-овский int в, например, short int или long int ([подробности про систему типов языка Си](https://ru.wikipedia.org/wiki/%D0%A1%D0%B8%D1%81%D1%82%D0%B5%D0%BC%D0%B0_%D1%82%D0%B8%D0%BF%D0%BE%D0%B2_%D0%A1%D0%B8)).  
+При работе со структурами вам нужно будет знать, что такое little-endian и big-endian, а также не забывать, что размер типа данных в Си бывает разным.
+
+
+```python
+from struct import pack, unpack, iter_unpack
+
+b = pack(">hhll", 1, 2, 3, 4)
+print(b)
+
+t = unpack(">hhll", b)
+print(t)
+
+i = pack("ii", 1, 2) * 5
+print(i)
+
+print(list(iter_unpack('ii', i)))
+```
+
+    b'\x00\x01\x00\x02\x00\x00\x00\x03\x00\x00\x00\x04'
+    (1, 2, 3, 4)
+    b'\x01\x00\x00\x00\x02\x00\x00\x00\x01\x00\x00\x00\x02\x00\x00\x00\x01\x00\x00\x00\x02\x00\x00\x00\x01\x00\x00\x00\x02\x00\x00\x00\x01\x00\x00\x00\x02\x00\x00\x00'
+    [(1, 2), (1, 2), (1, 2), (1, 2), (1, 2)]
+    
 
 ## Строка (string)
 
@@ -623,7 +659,7 @@ print(f"Reverse string: {sr}")
     Reverse string: tibbar etihw eht wolloF
     
 
-## Datetime
+### Datetime
 
 Для работы с датами и временем в *datetime* есть типы *date*, *time*, *datetime* и *timedelta*. Все они хешируемы и иммутабельны.
 
@@ -662,7 +698,7 @@ dt1: datetime = datetime.today()
 dt2: datetime = datetime.utcnow()
 dt3: datetime = datetime.now(pytz.timezone('US/Pacific'))
 
-t1 = time.time()  # Unix epoch time
+t1 = time.time()  # Эпоха Unix
 t2 = time.ctime()
 
 print (f"{d}\n {dt1}\n {dt2}\n {dt3}\n {t1}\n {t2}")
@@ -923,33 +959,6 @@ print(c)
 
 Попробуйте самостоятельно поиграться с set comprehension. Не забывайте, что set «переваривает» только уникальные значения, поэтому в результате вы можете получить не совсем то, на что рассчитывали.
 
-### Простейшие вычисления — Sum, Count, Min, Max
-
-
-```python
-a: list[int] = [1, 2, 3, 4, 5, 2, 2]
-
-s = sum(a)
-print(s)
-
-c = a.count(2)  # Вернет количество вхождений
-print(c)
-
-mn = min(a)
-print(mn)
-
-mx = max(a)
-print(mx)
-```
-
-    19
-    3
-    1
-    5
-    
-
-Присмотритесь к [встроенным функциям](https://docs.python.org/3/library/functions.html), там есть еще кое-что, касающееся элементарной математики.
-
 ### Функциональное программирование (Map, Filter, Reduce, Partial)
 
 На случай, если начиная с этого момента и до конца текущего жизненного цикла вы собираетесь к месту и не месту использовать приёмы функционального программирования, чтобы сделать свой код «воистину крутым», просто процитирую вам Джоэля Граса, автора книги «Data Science: Наука о данных с нуля»: «В первом издании этой книги были представлены функции partial, map, reduce и filter языка Python. На своем пути к просветлению я понял, что этих функций лучше избегать, и их использование в книге было заменено включениями в список, циклами и другими, более Python'овскими конструкциями». Такие дела...  
@@ -1095,48 +1104,22 @@ print(list(e))
     [('a', 'b'), ('a', 'c'), ('b', 'a'), ('b', 'c'), ('c', 'a'), ('c', 'b')]
     
 
-### Struct
-
-Module that performs conversions between a sequence of numbers and a bytes object. System’s type sizes and byte order are used by default.
-
-
-```python
-from struct import pack, unpack, iter_unpack
-
-b = pack(">hhll", 1, 2, 3, 4)
-print(b)
-
-t = unpack(">hhll", b)
-print(t)
-
-i = pack("ii", 1, 2) * 5
-print(i)
-
-print(list(iter_unpack('ii', i)))
-```
-
-    b'\x00\x01\x00\x02\x00\x00\x00\x03\x00\x00\x00\x04'
-    (1, 2, 3, 4)
-    b'\x01\x00\x00\x00\x02\x00\x00\x00\x01\x00\x00\x00\x02\x00\x00\x00\x01\x00\x00\x00\x02\x00\x00\x00\x01\x00\x00\x00\x02\x00\x00\x00\x01\x00\x00\x00\x02\x00\x00\x00'
-    [(1, 2), (1, 2), (1, 2), (1, 2), (1, 2)]
-    
-
 ### datetime encode
 
-Python uses the Unix Epoch: "1970-01-01 00:00 UTC"
+Python использует Unix Epoch: "1970-01-01 00:00 UTC"
 
 
 ```python
 from datetime import datetime
 from dateutil.tz import tzlocal
 
-dt1: datetime = datetime.fromisoformat("2021-10-04 00:05:23.555+00:00")  # Raises ValueError
-dt2: datetime = datetime.strptime("21/10/04 17:30", "%d/%m/%y %H:%M")   # Datetime from str, according to format (https://docs.python.org/3/library/datetime.html#strftime-and-strptime-format-codes)
-dt3: datetime = datetime.fromordinal(100000)  # 100000th day after 1.1.0001
-dt4: datetime = datetime.fromtimestamp(20_000_000.01)  # Local datetime from seconds since the Epoch
+dt1: datetime = datetime.fromisoformat("2021-10-04 00:05:23.555+00:00")  # Может вызвать ValueError
+dt2: datetime = datetime.strptime("21/10/04 17:30", "%d/%m/%y %H:%M")   # Подробнее про форматы - https://docs.python.org/3/library/datetime.html#strftime-and-strptime-format-codes
+dt3: datetime = datetime.fromordinal(100_000)  # 100000-й день от 1.1.0001
+dt4: datetime = datetime.fromtimestamp(20_000_000.01)  # Время в секундах с начала Unix Epoch
 
-tz2: tzinfo = tzlocal()
-dt5: datetime = datetime.fromtimestamp(300_000_000, tz2)  # Aware datetime from seconds since the Epoch
+tz = tzlocal()
+dt5: datetime = datetime.fromtimestamp(20_000_000.01, tz)  # С учетом часового пояса
 
 print (f"{dt1}\n {dt2}\n {dt3}\n {dt4}\n {dt5}")
 ```
@@ -1145,7 +1128,7 @@ print (f"{dt1}\n {dt2}\n {dt3}\n {dt4}\n {dt5}")
      2004-10-21 17:30:00
      0274-10-16 00:00:00
      1970-08-20 16:33:20.010000
-     1979-07-05 10:20:00+05:00
+     1970-08-20 16:33:20.010000+05:00
     
 
 ### datetime decode
@@ -1157,9 +1140,9 @@ from datetime import datetime
 dt1: datetime = datetime.today()
 
 s1: str = dt1.isoformat()
-s2: str = dt1.strftime("%d/%m/%y %H:%M")  # Outputting datetime object to string (format: https://docs.python.org/3/library/datetime.html#strftime-and-strptime-format-codes)
-i: int = dt1.toordinal()  # Days since Gregorian NYE 1, ignoring time and tz
-a: float = dt1.timestamp()  # Seconds since the Epoch
+s2: str = dt1.strftime("%d/%m/%y %H:%M")  # https://docs.python.org/3/library/datetime.html#strftime-and-strptime-format-codes
+i: int = dt1.toordinal()
+a: float = dt1.timestamp()  # Секунды с начала Unix Epoch
 
 print (f"{dt1}\n {s1}\n {s2}\n {i}\n {a}")
 ```
@@ -1202,7 +1185,386 @@ print (f"{d}\n {dt3}\n {td3}\n {td4}\n {c}")
      5.0
     
 
-## Математика
+### Операции над строками. lower(), upper(), capitalize() и title()
+
+
+```python
+s: str = "camelCase string"
+
+print(s.lower())
+print(s.upper())
+print(s.capitalize())
+print(s.title())
+```
+
+    camelcase string
+    CAMELCASE STRING
+    Camelcase string
+    Camelcase String
+    
+
+### strip()
+
+
+```python
+s: str = "  ~~##A big blahblahblah##~~  "
+
+s = s.strip()  # Strips all whitespace characters from both ends
+print(s)
+
+s = s.strip("~#")  # Strips all passed characters from both ends
+print(s)
+
+s = s.lstrip(" A")  # Strips all passed characters from left end
+print(s)
+
+s = s.rstrip("habl")  # Strips all passed characters from right end
+print(s)
+
+```
+
+    ~~##A big blahblahblah##~~
+    A big blahblahblah
+    big blahblahblah
+    big 
+    
+
+### split()
+
+
+```python
+s1: str = "Follow the white rabbit, Neo"
+
+c1 = s1.split()  # Splits on one or more whitespace characters
+print(c1)
+
+c2 = s1.split(sep=", ", maxsplit=1)  # Splits on "sep" str at most "maxsplit" times
+print(c2)
+
+s2: str = "Beware the Jabberwock, my son!\n The jaws that bite, the claws that catch!"
+
+c3 = s2.splitlines(keepends=False)  # On [\n\r\f\v\x1c-\x1e\x85\u2028\u2029] and \r\n.
+print(c3)
+
+# split() vs rsplit()
+
+c4 = s2.split(maxsplit=2)
+c5 = s2.rsplit(maxsplit=2)
+
+print(c4, c5)
+```
+
+    ['Follow', 'the', 'white', 'rabbit,', 'Neo']
+    ['Follow the white rabbit', 'Neo']
+    ['Beware the Jabberwock, my son!', ' The jaws that bite, the claws that catch!']
+    ['Beware', 'the', 'Jabberwock, my son!\n The jaws that bite, the claws that catch!'] ['Beware the Jabberwock, my son!\n The jaws that bite, the claws', 'that', 'catch!']
+    
+
+### ord(), chr()
+
+
+```python
+s1: str = "abcABC!"
+
+for ch in s1:
+    print(f"{ch} -> {ord(ch)}")  # Returns an integer representing the Unicode character
+
+nums = [72, 101, 108, 108, 111, 33]
+
+for num in nums:
+    print(f"{num} -> {chr(num)}")
+```
+
+    a -> 97
+    b -> 98
+    c -> 99
+    A -> 65
+    B -> 66
+    C -> 67
+    ! -> 33
+    72 -> H
+    101 -> e
+    108 -> l
+    108 -> l
+    111 -> o
+    33 -> !
+    
+
+### Regex
+
+Регулярные выражения — отдельная область знаний, и весьма-весьма непростая область. Тут, пожалуй, самое время для бородатой шутки про то, что «если вы решили свою проблему при помощи регулярных выражений — теперь у вас две проблемы».  
+
+Регулярки похожи на вхождение в воду на пляже острова Гуам в сторону Марианской впадины — даже когда вы думаете, что погрузились *реально* глубоко, то, скорее всего, вы просто не видите впередилежащей бездны. Но — знать регулярные выражения, хотя бы на начальном уровне, необходимо для решения целого класса задач, а то, что вёрткие регулярки периодически поворачиваются к вам своими, кхм... новыми гранями, придется простить, переварить и побороть.  
+
+Вот [здесь](https://habr.com/ru/post/349860/) есть грамотное и методически выдержанное введение в тему, пока же посмотрим на основные возможности регулярных выражений.
+
+
+```python
+import re
+
+s1: str = "123 abc ABC 456"
+
+m1 = re.search("[aA]", s1)  # Ищет первое вхождение паттерна, при неудаче возвращает None
+print(m1, m1.group(0))
+
+m2 = re.fullmatch("[aA]", s1)  # Проверка, подходит ли строка под шаблон
+print(m2)
+
+c1: list = re.findall("[aA]", s1)  # Найти в строке все непересекающиеся шаблоны
+print(c1)
+
+def replacer(s):
+    return chr(ord(s[0]) + 1)  # Следующий символ из алфавита
+
+s2 = re.sub("\w", replacer, s1)  # Вы можете использовать функцию вместо шаблона
+print(s2)
+
+c2 = re.split("\d", s1)
+print(c2)
+
+iter = re.finditer("\D", s1)  # Итератор по непересекающимся шаблонам
+
+for ch in iter:
+    print(ch.group(0), end= "")
+```
+
+    <re.Match object; span=(4, 5), match='a'> a
+    None
+    ['a', 'A']
+    234 bcd BCD 567
+    ['', '', '', ' abc ABC ', '', '', '']
+     abc ABC 
+
+### Match Object
+
+
+```python
+import re
+
+m3 = re.match(r"(\w+) (\w+)", "John Connor, leader of the Resistance")
+
+s3: str = m3.group(0)  # Возвращает полное совпадение
+s4: str = m3.group(1)  # Возвращает часть в первых скобках
+t1: tuple = m3.groups()
+start: int = m3.start()  # Возвращает начальный индекс совпадения
+end: int = m3.end()  # Возвращает конечный индекс совпадения
+t2: tuple[int, int] = m3.span()  # Кортеж (start, end)
+
+print (f"{s3}\n {s4}\n {t1}\n {start}\n {end}\n {t2}\n")
+```
+
+    John Connor
+     John
+     ('John', 'Connor')
+     0
+     11
+     (0, 11)
+    
+    
+
+## File
+
+### Open
+
+Open the file and return a corresponding file object.
+
+
+```python
+f = open("f.txt", mode='r', encoding="utf-8", newline=None)
+
+print(f.read())
+```
+
+    Hello from file!
+    
+
+
+*encoding=None* means that the default encoding is used, which is platform dependent. Best practice is to use *encoding="utf-8"* whenever possible.  
+*newline=None* means all different end of line combinations are converted to '\n' on read, while on write all '\n' characters are converted to system's default line separator.  
+*newline=""* means no conversions take place, but input is still broken into chunks by readline() and readlines() on every "\n", "\r" and "\r\n".  
+
+### Режимы
+
+"r" - Read (default)  
+"w" - Write (truncate)  
+"x" - Write or fail if the file already exists  
+"a" - Append  
+"w+" - Read and write (truncate)  
+"r+" - Read and write from the start  
+"a+" - Read and write from the end  
+"t" - Text mode (default)  
+"b" - Binary mode (`'br'`, `'bw'`, `'bx'`, …)  
+
+### Исключения
+
+*FileNotFoundError* can be raised when reading with "r" or "r+".  
+*FileExistsError* can be raised when writing with "x".  
+*IsADirectoryError* and *PermissionError* can be raised by any.  
+*OSError* is the parent class of all listed exceptions.  
+
+### Чтение из файла
+
+Для работы с файлами лучше использовать менеджеры контекста (рассмотрены ниже), т. е. использовать конструкции вида "with open...".
+
+
+```python
+with open("f.txt", encoding="utf-8") as f:
+    chars = f.read(5)  # Reads chars/bytes or until EOF
+    print(chars)
+
+    f.seek(0)  # Moves to the start of the file. Also seek(offset) and seek(±offset, anchor), where anchor is 0 for start, 1 for current position and 2 for end
+
+    lines: list[str] = f.readlines()  # Also readline()
+    print(lines)
+```
+
+    Hello
+    ['Hello from file!']
+    
+
+### Запись в файл
+
+
+```python
+with open("f.txt", "w", encoding="utf-8") as f:
+    f.write("Hello from file!")  # Или f.writelines(<collection>)
+```
+
+### Пути (Paths)
+
+При работе с файлами не обойтись без манипулирования файловыми путями.
+
+
+```python
+from os import getcwd, path, listdir
+from pathlib import Path
+
+s1: str = getcwd()  # Возвращает текущую рабочую директорию
+print(s1)
+
+s2: str = path.abspath("f.txt")  # Возвращает полный путь
+print(s2)
+
+s3: str = path.basename(s2)  # Возвращает имя файла
+s4: str = path.dirname(s2)  # Возвращает путь без файла
+t1: tuple = path.splitext(s2)  # Возвращает кортеж из пути и имени файла
+print(s3, s4, t1)
+
+p = Path(s2)
+st = p.stat()
+print(st)
+
+b1: bool = p.exists()
+b2: bool = p.is_file()
+b3: bool = p.is_dir()
+print(b1, b2, b3)
+
+c: list = listdir(path=s1)  # Возвращает список имен файлов, находящихся по указанному пути
+print(c)
+
+s5: str = p.stem  # Возвращает имя файла без расширения
+s6: str  = p.suffix  # Возвращает расширение файла
+t2: tuple = p.parts  # Возвращает все элементы пути как отдельные строки
+print(s5, s6, t2)
+```
+
+    c:\Works\amaargiru\pycore
+    c:\Works\amaargiru\pycore\f.txt
+    f.txt c:\Works\amaargiru\pycore ('c:\\Works\\amaargiru\\pycore\\f', '.txt')
+    os.stat_result(st_mode=33206, st_ino=2251799814917120, st_dev=3628794147, st_nlink=1, st_uid=0, st_gid=0, st_size=16, st_atime=1662468638, st_mtime=1662468638, st_ctime=1661089564)
+    True True False
+    ['.git', '.gitignore', '.pytest_cache', '01_python.ipynb', '01_python.md', '02_postgre.md', '03_architecture.md', '04_algorithms.ipynb', '04_algorithms.md', '05_admin_devops.md', '06_pytest_mock.ipynb', '06_pytest_mock.md', '07_fastapi.md', '08_flask.md', '1.bin', '1.json', 'compose_readme.bat', 'coupling_vs_cohesion.svg', 'f.txt', 'gitflow.svg', 'graph_for_dfs.jpg', 'pycallgraph3.png', 'readme.md']
+    f .txt ('c:\\', 'Works', 'amaargiru', 'pycore', 'f.txt')
+    
+
+### JSON
+
+Человекочитаемый формат для хранения и передачи данных.
+
+
+```python
+import json
+
+d: dict = {1: "Lemon", 2: "Apple", 3: "Banana!"}
+
+object_as_string: str = json.dumps(d, indent=2)
+print(object_as_string)
+
+restored_object = json.loads(object_as_string)
+
+# Write object to JSON file
+with open("1.json", 'w', encoding='utf-8') as file:
+    json.dump(d, file, indent=2)
+
+# Read object from JSON file
+with open("1.json", encoding='utf-8') as file:
+    restored_from_file = json.load(file)
+    
+print(restored_from_file)
+
+```
+
+    {
+      "1": "Lemon",
+      "2": "Apple",
+      "3": "Banana!"
+    }
+    {'1': 'Lemon', '2': 'Apple', '3': 'Banana!'}
+    
+
+### Pickle
+
+Бинарный формат для хранения и передачи данных.
+
+
+```python
+import pickle
+
+d: dict = {1: "Lemon", 2: "Apple", 3: "Banana!"}
+
+# Запись объекта в бинарный файл
+with open("1.bin", "wb") as file:
+    pickle.dump(d, file)
+
+# Чтение объекта из файла
+with open("1.bin", "rb") as file:
+    restored_from_file = pickle.load(file)
+
+print(restored_from_file)
+```
+
+    {1: 'Lemon', 2: 'Apple', 3: 'Banana!'}
+    
+
+### Protocol Buffers
+Если вы хотите передавать и хранить данные, используя универсальную структуру, одинаково хорошо понимаемую всеми языками программирования (как JSON) и занимающую мало места (как Pickle), то можно посмотреть в сторону Protocol Buffers ([Wikipedia](https://en.wikipedia.org/wiki/Protocol_Buffers), [примеры для Python](https://developers.google.com/protocol-buffers/docs/pythontutorial)). Есть еще альтернативы, например, [FlatBuffers](https://google.github.io/flatbuffers/), [Apache Avro](https://avro.apache.org/) или [Thrift](https://thrift.apache.org/).
+
+### Простейшие вычисления — Sum, Count, Min, Max
+
+
+```python
+a: list[int] = [1, 2, 3, 4, 5, 2, 2]
+
+s = sum(a)
+print(s)
+
+c = a.count(2)  # Вернет количество вхождений
+print(c)
+
+mn = min(a)
+print(mn)
+
+mx = max(a)
+print(mx)
+```
+
+    19
+    3
+    1
+    5
+    
+
+Присмотритесь к [встроенным функциям](https://docs.python.org/3/library/functions.html), там есть еще кое-что, касающееся элементарной математики.
 
 ### Базовая математика
 
@@ -1301,397 +1663,29 @@ print(math.dist(p1, p2))
     5.39588732276722
     
 
-### lower(), upper(), capitalize() и title()
-
-
-```python
-s: str = "camelCase string"
-
-print(s.lower())
-print(s.upper())
-print(s.capitalize())
-print(s.title())
-```
-
-    camelcase string
-    CAMELCASE STRING
-    Camelcase string
-    Camelcase String
-    
-
-### Property Methods
-
-```text
-+---------------+----------+----------+----------+----------+----------+
-|               | [ !#$%…] | [a-zA-Z] |  [½¼¾]   |  [²³¹]   |  [0-9]   |
-+---------------+----------+----------+----------+----------+----------+
-| isprintable() |    +     |    +     |    +     |    +     |    +     |
-| isalnum()     |          |    +     |    +     |    +     |    +     |
-| isnumeric()   |          |          |    +     |    +     |    +     |
-| isdigit()     |          |          |          |    +     |    +     |
-| isdecimal()   |          |          |          |          |    +     |
-+---------------+----------+----------+----------+----------+----------+
-```
-
-### strip()
-
-
-```python
-s: str = "  ~~##A big blahblahblah##~~  "
-
-s = s.strip()  # Strips all whitespace characters from both ends
-print(s)
-
-s = s.strip("~#")  # Strips all passed characters from both ends
-print(s)
-
-s = s.lstrip(" A")  # Strips all passed characters from left end
-print(s)
-
-s = s.rstrip("habl")  # Strips all passed characters from right end
-print(s)
-
-```
-
-    ~~##A big blahblahblah##~~
-    A big blahblahblah
-    big blahblahblah
-    big 
-    
-
-### split()
-
-
-```python
-s1: str = "Follow the white rabbit, Neo"
-
-c1 = s1.split()  # Splits on one or more whitespace characters
-print(c1)
-
-c2 = s1.split(sep=", ", maxsplit=1)  # Splits on "sep" str at most "maxsplit" times
-print(c2)
-
-s2: str = "Beware the Jabberwock, my son!\n The jaws that bite, the claws that catch!"
-
-c3 = s2.splitlines(keepends=False)  # On [\n\r\f\v\x1c-\x1e\x85\u2028\u2029] and \r\n.
-print(c3)
-
-# split() vs rsplit()
-
-c4 = s2.split(maxsplit=2)
-c5 = s2.rsplit(maxsplit=2)
-
-print(c4, c5)
-```
-
-    ['Follow', 'the', 'white', 'rabbit,', 'Neo']
-    ['Follow the white rabbit', 'Neo']
-    ['Beware the Jabberwock, my son!', ' The jaws that bite, the claws that catch!']
-    ['Beware', 'the', 'Jabberwock, my son!\n The jaws that bite, the claws that catch!'] ['Beware the Jabberwock, my son!\n The jaws that bite, the claws', 'that', 'catch!']
-    
-
-### ord(), chr()
-
-
-```python
-s1: str = "abcABC!"
-
-for ch in s1:
-    print(f"{ch} -> {ord(ch)}")  # Returns an integer representing the Unicode character
-
-nums = [72, 101, 108, 108, 111, 33]
-
-for num in nums:
-    print(f"{num} -> {chr(num)}")
-```
-
-    a -> 97
-    b -> 98
-    c -> 99
-    A -> 65
-    B -> 66
-    C -> 67
-    ! -> 33
-    72 -> H
-    101 -> e
-    108 -> l
-    108 -> l
-    111 -> o
-    33 -> !
-    
-
-## Regex
-
-Argument flags=re.IGNORECASE can be used with all functions
-
-
-```python
-import re
-
-s1: str = "123 abc ABC 456"
-
-m1 = re.search("[aA]", s1)  # Searches for first occurrence of the pattern; search() return None if it can't find a match
-print(m1)
-print(m1.group(0))
-
-m2 = re.match("[aA]", s1)  # Searches at the beginning of the text; match() return None if it can't find a match
-print(m2)
-
-c1: list = re.findall("[aA]", s1)  # Returns all occurrences as strings
-print(c1)
-
-def replacer(s):  # replacer() can be a function that accepts a match object and returns a string
-    return chr(ord(s[0]) + 1)  # Next symbol in alphabet
-
-s2 = re.sub("\w", replacer, s1)  # Substitutes all occurrences with 'replacer'
-print(s2)
-
-c2 = re.split("\d", s1)
-print(c2)
-
-iter = re.finditer("\D", s1)  # Returns all occurrences as match objects
-
-for ch in iter:
-    print(ch.group(0), end= "")
-```
-
-    <re.Match object; span=(4, 5), match='a'>
-    a
-    None
-    ['a', 'A']
-    234 bcd BCD 567
-    ['', '', '', ' abc ABC ', '', '', '']
-     abc ABC 
-
-### Match Object
-
-
-```python
-import re
-
-m3 = re.match(r"(\w+) (\w+)", "John Connor, leader of the Resistance")
-
-s3: str = m3.group(0)  # Returns the whole match
-s4: str = m3.group(1)  # Returns part in the first bracket
-t1: tuple = m3.groups()  # Returns all bracketed parts
-start: int = m3.start()  # Returns start index of the match
-end: int = m3.end()  # Returns exclusive end index of the match
-t2: tuple[int, int] = m3.span()  # Return the 2-tuple (start, end)
-
-print (f"{s3}\n {s4}\n {t1}\n {start}\n {end}\n {t2}\n")
-```
-
-    John Connor
-     John
-     ('John', 'Connor')
-     0
-     11
-     (0, 11)
-    
-    
-
-## File
-
-### Open
-
-Open the file and return a corresponding file object.
-
-
-```python
-f = open("f.txt", mode='r', encoding="utf-8", newline=None)
-
-print(f.read())
-```
-
-    Hello from file!
-    
-
-
-*encoding=None* means that the default encoding is used, which is platform dependent. Best practice is to use *encoding="utf-8"* whenever possible.  
-*newline=None* means all different end of line combinations are converted to '\n' on read, while on write all '\n' characters are converted to system's default line separator.  
-*newline=""* means no conversions take place, but input is still broken into chunks by readline() and readlines() on every "\n", "\r" and "\r\n".  
-
-### Режимы
-
-"r" - Read (default)  
-"w" - Write (truncate)  
-"x" - Write or fail if the file already exists  
-"a" - Append  
-"w+" - Read and write (truncate)  
-"r+" - Read and write from the start  
-"a+" - Read and write from the end  
-"t" - Text mode (default)  
-"b" - Binary mode (`'br'`, `'bw'`, `'bx'`, …)  
-
-### Исключения
-
-*FileNotFoundError* can be raised when reading with "r" or "r+".  
-*FileExistsError* can be raised when writing with "x".  
-*IsADirectoryError* and *PermissionError* can be raised by any.  
-*OSError* is the parent class of all listed exceptions.  
-
-### Чтение из файла
-
-
-```python
-with open("f.txt", encoding="utf-8") as f:
-    chars = f.read(5)  # Reads chars/bytes or until EOF
-    print(chars)
-
-    f.seek(0)  # Moves to the start of the file. Also seek(offset) and seek(±offset, anchor), where anchor is 0 for start, 1 for current position and 2 for end
-
-    lines: list[str] = f.readlines()  # Also readline()
-    print(lines)
-```
-
-    Hello
-    ['Hello from file!']
-    
-
-### Запись в файл
-
-
-```python
-with open("f.txt", "w", encoding="utf-8") as f:
-    f.write("Hello from file!")  # Also f.writelines(<collection>)
-    # f.flush() for flushes write buffer; runs every 4096/8192 B
-```
-
-## Paths
-
-
-```python
-from os import getcwd, path, listdir
-from pathlib import Path
-
-s1: str = getcwd()  # Returns the current working directory
-print(s1)
-
-s2: str = path.abspath("f.txt")  # Returns absolute path
-print(s2)
-
-s3: str = path.basename(s2)  # Returns final component of the path
-s4: str = path.dirname(s2)  # Returns path without the final component
-t1: tuple = path.splitext(s2)  # Splits on last period of the final component
-print(s3, s4, t1)
-
-p = Path(s2)
-st = p.stat()
-print(st)
-
-b1: bool = p.exists()
-b2: bool = p.is_file()
-b3: bool = p.is_dir()
-print(b1, b2, b3)
-
-c: list = listdir(path=s1)  # Returns filenames located at path
-print(c)
-
-s5: str = p.stem  # Returns final component without extension
-s6: str  = p.suffix  # Returns final component's extension
-t2: tuple = p.parts  # Returns all components as strings
-print(s5, s6, t2)
-```
-
-    c:\Works\amaargiru\pycore
-    c:\Works\amaargiru\pycore\f.txt
-    f.txt c:\Works\amaargiru\pycore ('c:\\Works\\amaargiru\\pycore\\f', '.txt')
-    os.stat_result(st_mode=33206, st_ino=2251799814917120, st_dev=3628794147, st_nlink=1, st_uid=0, st_gid=0, st_size=16, st_atime=1662468638, st_mtime=1662468638, st_ctime=1661089564)
-    True True False
-    ['.git', '.gitignore', '.pytest_cache', '01_python.ipynb', '01_python.md', '02_postgre.md', '03_architecture.md', '04_algorithms.ipynb', '04_algorithms.md', '05_admin_devops.md', '06_pytest_mock.ipynb', '06_pytest_mock.md', '07_fastapi.md', '08_flask.md', '1.bin', '1.json', 'compose_readme.bat', 'coupling_vs_cohesion.svg', 'f.txt', 'gitflow.svg', 'graph_for_dfs.jpg', 'pycallgraph3.png', 'readme.md']
-    f .txt ('c:\\', 'Works', 'amaargiru', 'pycore', 'f.txt')
-    
-
-### JSON
-
-Human-readable text format to store and transmit data objects.
-
-
-```python
-import json
-
-d: dict = {1: "Lemon", 2: "Apple", 3: "Banana!"}
-
-object_as_string: str = json.dumps(d, indent=2)
-print(object_as_string)
-
-restored_object = json.loads(object_as_string)
-
-# Write object to JSON file
-with open("1.json", 'w', encoding='utf-8') as file:
-    json.dump(d, file, indent=2)
-
-# Read object from JSON file
-with open("1.json", encoding='utf-8') as file:
-    restored_from_file = json.load(file)
-    
-print(restored_from_file)
-
-```
-
-    {
-      "1": "Lemon",
-      "2": "Apple",
-      "3": "Banana!"
-    }
-    {'1': 'Lemon', '2': 'Apple', '3': 'Banana!'}
-    
-
-### Pickle
-
-Бинарный формат для хранения и транспортировки структур данных.
-
-
-```python
-import pickle
-
-d: dict = {1: "Lemon", 2: "Apple", 3: "Banana!"}
-
-# Запись объекта в бинарный файл
-with open("1.bin", "wb") as file:
-    pickle.dump(d, file)
-
-# Чтение объекта из файла
-with open("1.bin", "rb") as file:
-    restored_from_file = pickle.load(file)
-
-print(restored_from_file)
-```
-
-    {1: 'Lemon', 2: 'Apple', 3: 'Banana!'}
-    
-
-### Protocol Buffers
-Если вы хотите передавать и хранить данные, используя универсальную структуру, одинаково хорошо понимаемую всеми языками программирования (как JSON) и занимающую мало места (как Pickle), то можно посмотреть в сторону Protocol Buffers ([Wikipedia](https://en.wikipedia.org/wiki/Protocol_Buffers), [примеры для Python](https://developers.google.com/protocol-buffers/docs/pythontutorial)). Есть еще альтернативы, например, [FlatBuffers](https://google.github.io/flatbuffers/), [Apache Avro](https://avro.apache.org/) или [Thrift](https://thrift.apache.org/).
-
 ### NumPy
 
-Array manipulation mini-language. It can run up to one hundred times faster than the equivalent Python code. An even faster alternative that runs on a GPU is called CuPy.
+Мини-язык для манипулирования массивами. На удачных сценариях работает в сотни раз быстрее встроенных функций. Еще более быстрая альтернатива работает на GPU, называется [CuPy](https://github.com/cupy/cupy) и опять-таки [обещает](https://medium.com/rapids-ai/single-gpu-cupy-speedups-ea99cbbb0cbb) стократный прирост производительности, только уже по сравнению с NumPy. Так что если вам нужен какой-нибудь быстрый [FFT](https://en.wikipedia.org/wiki/Fast_Fourier_transform) или еще какой числогрыз, то вы знаете, что делать.
 
 
 
- 
-# $ pip3 install numpy
+```python
 import numpy as np
- 
+```
+
 
  
 <array> = np.array(<list/list_of_lists>)
 <array> = np.arange(from_inclusive, to_exclusive, ±step_size)
 <array> = np.ones(<shape>)
 <array> = np.random.randint(from_inclusive, to_exclusive, <shape>)
- 
 
- 
 <array>.shape = <shape>
 <view>  = <array>.reshape(<shape>)
 <view>  = np.broadcast_to(<array>, <shape>)
- 
 
- 
 <array> = <array>.sum(axis)
 indexes = <array>.argmin(axis)
- 
 
 Shape is a tuple of dimension sizes.
 Axis is an index of the dimension that gets collapsed. Leftmost dimension has index 0.
@@ -1701,19 +1695,16 @@ Axis is an index of the dimension that gets collapsed. Leftmost dimension has in
 <el>       = <2d_array>[row_index, column_index]
 <1d_view>  = <2d_array>[row_index]
 <1d_view>  = <2d_array>[:, column_index]
- 
 
  bash
 <1d_array> = <2d_array>[row_indexes, column_indexes]
 <2d_array> = <2d_array>[row_indexes]
 <2d_array> = <2d_array>[:, column_indexes]
  
-
  bash
 <2d_bools> = <2d_array> ><== <el>
 <1d_array> = <2d_array>[<2d_bools>]
  
-
 ### Broadcasting
 Broadcasting is a set of rules by which NumPy functions operate on arrays of different sizes and/or dimensions.
 
@@ -1721,7 +1712,6 @@ Broadcasting is a set of rules by which NumPy functions operate on arrays of dif
 left  = [[0.1], [0.6], [0.8]]        # Shape: (3, 1)
 right = [ 0.1 ,  0.6 ,  0.8 ]        # Shape: (3)
  
-
 #### 1. If array shapes differ in length, left-pad the shorter shape with ones:
  
 left  = [[0.1], [0.6], [0.8]]        # Shape: (3, 1)
@@ -1788,44 +1778,31 @@ Name: a, dtype: int64
 <Sr> = Series(<list>)                         # Assigns RangeIndex starting at 0.
 <Sr> = Series(<dict>)                         # Takes dictionary's keys for index.
 <Sr> = Series(<dict/Series>, index=<list>)    # Only keeps items with keys specified in index.
- 
 
- 
 <el> = <Sr>.loc[key]                          # Or: <Sr>.iloc[index]
 <Sr> = <Sr>.loc[keys]                         # Or: <Sr>.iloc[indexes]
 <Sr> = <Sr>.loc[from_key : to_key_inclusive]  # Or: <Sr>.iloc[from_i : to_i_exclusive]
- 
 
- 
 <el> = <Sr>[key/index]                        # Or: <Sr>.key
 <Sr> = <Sr>[keys/indexes]                     # Or: <Sr>[<key_range/range>]
 <Sr> = <Sr>[bools]                            # Or: <Sr>.i/loc[bools]
- 
 
- 
 <Sr> = <Sr> ><== <el/Sr>                      # Returns a Series of bools.
 <Sr> = <Sr> +-*/ <el/Sr>                      # Items with non-matching keys get value NaN.
- 
 
- 
 <Sr> = <Sr>.append(<Sr>)                      # Or: pd.concat(<coll_of_Sr>)
 <Sr> = <Sr>.combine_first(<Sr>)               # Adds items that are not yet present.
 <Sr>.update(<Sr>)                             # Updates items that are already present.
- 
 
- 
 <Sr>.plot.line/area/bar/pie/hist()            # Generates a Matplotlib plot.
 matplotlib.pyplot.show()                      # Displays the plot. Also savefig(<path>).
- 
 
 #### Series — Aggregate, Transform, Map:
- 
+
 <el> = <Sr>.sum/max/mean/idxmax/all()         # Or: <Sr>.agg(lambda <Sr>: <el>)
 <Sr> = <Sr>.rank/diff/cumsum/ffill/interpl()  # Or: <Sr>.agg/transform(lambda <Sr>: <Sr>)
 <Sr> = <Sr>.fillna(<el>)                      # Or: <Sr>.agg/transform/map(lambda <el>: <el>)
- 
 
- 
 >>> sr = Series([1, 2], index=['x', 'y'])
 x    1
 y    2
@@ -3856,7 +3833,7 @@ foo()
 Мануал для начинающих дата-сайентистов: [Joel Grus, "Data Science from Scratch"](https://github.com/joelgrus/data-science-from-scratch).  
 Руководство для начинающих: ["Python Notes for Professionals"](https://goalkicker.com/PythonBook/).  
 Руководство для опытных программистов: ["Python 3 Patterns, Recipes and Idioms"](https://python-3-patterns-idioms-test.readthedocs.io/en/latest/index.html).  
-## SQL
+## 8. SQL
 
 ### Реляционная модель данных
 
@@ -4068,7 +4045,7 @@ EXPLAIN ANALYZE – в отличие от просто EXPLAIN не тольк�
 ### Источники
 
 Е. П. Моргунов. PostgreSQL. Основы языка SQL.  
-## **Архитектура**
+## 8. Архитектура программного обеспечения
 
 ### SOLID <a name="arcchsolid"></a>  
 
@@ -4255,7 +4232,7 @@ class NowMixin(object):
 
 Источники:  
 [REST API Tutorial](https://restfulapi.net/)
-## **Алгоритмы**
+## 9. Алгоритмы
 
 ### FizzBuzz <a name="fizzbuzz"></a>  
 
@@ -4812,7 +4789,7 @@ def fact(N, acc=1):
 23. Метод проб и ошибок (Trial & Error)
 24. Система непересекающихся множеств (Union Find)
 25. Задача: найти уникальные маршруты (Unique Paths)
-## **Администрирование/DevOps**
+## 10. Администрирование/DevOps
 
 ### Git-flow
 
@@ -4873,7 +4850,7 @@ squash
 [Критика](https://habr.com/ru/company/flant/blog/491320/) git-flow  
 
 [GitHub flow](https://docs.github.com/en/get-started/quickstart/github-flow)  
-## pytest
+## 11. Тестирование, pytest
 
 Для работы с pytest внутри Jupiter notebook воспользуемся инструментом [ipytest](https://github.com/chmp/ipytest)
 
@@ -4953,6 +4930,10 @@ def test_fixture(my_fixture):
 ## Самодостаточность тестов
 
 К тестам нужно относиться как к функциональному программированию: при отправке одних и тех же аргументов, мы должны получать ровно тот же результат. Тесты должны быть самодостаточны, нельзя обуславливать вызов некоторого теста предварительным вызовом какого-то другого теста.
-## FastAPI
-## Flask
+## 12. FastAPI
+## 13. Flask
+## 14. SQLAlchemy
+### Выведение
+
+Ну что ж, дорогие мои мальчики и девочки, теперь, когда вы наконец узнали, как самостояетельно провести трансназальную эзофагогастродуоденоскопию в условиях пионерлагеря при помощи всего лишь... Эм, минуточку, это концовка для другой статьи... А, ну да; что ж, дорогие читатели, теперь, когда вы (возможно, обладая околонулевым опытом в програмировании) обозрели с высоты птичьего полета примерный свод знаний, потребный практикующему Python-программисту, то у вас, возможно, появилось множество вопросов. 
 
