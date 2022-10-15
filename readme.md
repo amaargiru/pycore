@@ -9,7 +9,7 @@
 
 Для работы с Jupiter вы можете воспользоваться [VS Code](https://code.visualstudio.com/), JetBrains [IntelliJ](https://www.jetbrains.com/ru-ru/idea/) или каким-нибудь онлайн-инструментом, самым известным из которых являятся [Google Colab](https://colab.research.google.com/).
 
-В этой стать 100 % есть ошибки, так что, если что-то углядите, не стесняйтесь выражаться в личку, в комментариях, на почту war4one@gmail.com, а если чувствуете в себе Силу — смело форкайте репу и пишите туда всё, что считаете нужным, все исправления и дополнения бурно приветствуются.
+В этой стать 100 % есть ошибки и неточности самых разных калибров, так что, если что-то углядите, не стесняйтесь выражаться в личку, в комментариях, на почту war4one@gmail.com, а если чувствуете в себе Силу — смело форкайте репу и пишите туда всё, что считаете нужным, все исправления и дополнения бурно приветствуются.
 
 Погружаясь в Python, не забывайте про прекрасную официальную документацию [docs.python.org](https://docs.python.org/). Изучив её, хотя бы по диагонали, и постепенно углубляясь в нужные разделы, вы сможете убедиться, что многие «хаки», «открытия» и прочие неочевидные вещи уже давно разжеваны, описаны и имеют подробные примеры применения.
 
@@ -1309,7 +1309,7 @@ for num in nums:
 
 Регулярные выражения — отдельная область знаний, и весьма-весьма непростая область. Тут, пожалуй, самое время для бородатой шутки про то, что «если вы решили свою проблему при помощи регулярных выражений — теперь у вас две проблемы».  
 
-Регулярки похожи на вхождение в воду на пляже острова Гуам в сторону Марианской впадины — даже когда вы думаете, что погрузились *реально* глубоко, то, скорее всего, вы просто не видите впередилежащей бездны. Но — знать регулярные выражения, хотя бы на начальном уровне, необходимо для решения целого класса задач, а то, что вёрткие регулярки периодически поворачиваются к вам своими, кхм... новыми гранями, придется простить, переварить и побороть.  
+Регулярки похожи на вхождение в воду на пляже острова Гуам в сторону Марианской впадины — даже когда вы думаете, что погрузились *реально* глубоко, то, скорее всего, вы просто не видите впередилежащей бездны. Но — знать регулярные выражения, хотя бы на начальном уровне, необходимо для решения целого класса задач, а то, что вёрткие регулярки периодически поворачиваются к вам своими, кхм... новыми гранями, придется простить, переварить и принять.  
 
 Вот [здесь](https://habr.com/ru/post/349860/) есть грамотное и методически выдержанное введение в тему, пока же посмотрим на основные возможности регулярных выражений.
 
@@ -1377,11 +1377,9 @@ print (f"{s3}\n {s4}\n {t1}\n {start}\n {end}\n {t2}\n")
     
     
 
-## File
+### Файлы
 
-### Open
-
-Open the file and return a corresponding file object.
+Файловые операции стоят немного особняком от остальных методов обработки данных, так как подразумевают взаимодействие с неким постоянным энергонезависимым хранилищем данных. Так что если вам нужно сохранить данные *на завтра*, или, наоборот, нужно прочитать данные, которые вам предоставили *неделю назад*, то вам, очевидно, нужно будет работать с файлами. В файлах же осядет информация, которую мы передаем базам данных, но эту тему мы рассмотри ниже.
 
 
 ```python
@@ -1393,33 +1391,34 @@ print(f.read())
     Hello from file!
     
 
+На всякий случай, если вы испытываете программистский зуд даже небольшой степени выраженности, напоминаю — эта статья в оригинале написана в Jupiter Notebook, все примеры кода интерактивны, не надо на них *смотреть*, их надо видоизменять, корректировать, дорабатывать.  
+Особенно это важно, если вам в приведенных сниппетах что-то непонятно. Обязательно запустите этот код в IDE, погоняйте пошаговый отладчик; только когда концы свяжутся, только когда вы поймете, как функционирует этот кусочек кода, только тогда промельнкнёт маленькая искорка и ваша квалификация как программиста немного подрастёт.  
+Исходный код скачивается [отсюда](https://github.com/amaargiru/pycore), VS Code лежит [здесь](https://code.visualstudio.com/download).
 
-*encoding=None* means that the default encoding is used, which is platform dependent. Best practice is to use *encoding="utf-8"* whenever possible.  
-*newline=None* means all different end of line combinations are converted to '\n' on read, while on write all '\n' characters are converted to system's default line separator.  
-*newline=""* means no conversions take place, but input is still broken into chunks by readline() and readlines() on every "\n", "\r" and "\r\n".  
+Режимы (mode):  
+"r" — чтение (поведение по умоолчанию)  
+"w" — запись (информация, ранее присутствующая в файле, будет стёрта)  
+"x" — эксклюзивное создание и запись; если файл уже существует, будет выброшено исключение FileExistsError  
+"a" — открытие с последующим добавлением в конец файла  
+"w+" — чтение и запись  
+"r+" — чтение и запись с начала файла  
+"a+" — чтение и запись с конца файла  
+"t" — текстовый режим ("rt", "wt" и т. д.; поведение по умолчанию)  
+"b" — двоичный режим ("rb", "wb", "xb" и т. д.)  
 
-### Режимы
+encoding=None — будет использована кодировка по умолчанию (зависит от системы). Если нет специальных требований, просто используйте везде encoding="utf-8".
 
-"r" - Read (default)  
-"w" - Write (truncate)  
-"x" - Write or fail if the file already exists  
-"a" - Append  
-"w+" - Read and write (truncate)  
-"r+" - Read and write from the start  
-"a+" - Read and write from the end  
-"t" - Text mode (default)  
-"b" - Binary mode (`'br'`, `'bw'`, `'bx'`, …)  
+newline=None — при чтении системные символы конца строки будут конвертированы в "\n"; при записи, наоборот, "\n" будут конвертированы в системные символы конца строки.
 
-### Исключения
-
-*FileNotFoundError* can be raised when reading with "r" or "r+".  
-*FileExistsError* can be raised when writing with "x".  
-*IsADirectoryError* and *PermissionError* can be raised by any.  
-*OSError* is the parent class of all listed exceptions.  
+Возможные исключения при работе с файлами:  
+*FileNotFoundError* при чтении в режиме "r" или "r+".  
+*FileExistsError* при записи в режиме "x".  
+*IsADirectoryError*, *PermissionError* — в любом режиме.  
 
 ### Чтение из файла
 
-Для работы с файлами лучше использовать менеджеры контекста (рассмотрены ниже), т. е. использовать конструкции вида "with open...".
+Открывает файл и возвращает файловый объект.  
+Для работы с файлами лучше использовать менеджеры контекста (рассмотрены ниже), т. е. конструкции вида "with open...". Даже если что-то пойдет не так, как задумано (например, вы не обработаете исключение во время работы с файлом), менеджер контекста «зачистит хвосты», и ваша оплошность не отразится, например, на файловой системе.
 
 
 ```python
@@ -1682,14 +1681,20 @@ print(math.dist(p1, p2))
 
 Мини-язык для манипулирования массивами. На удачных сценариях работает в сотни раз быстрее встроенных функций. Еще более быстрая альтернатива работает на GPU, называется [CuPy](https://github.com/cupy/cupy) и опять-таки [обещает](https://medium.com/rapids-ai/single-gpu-cupy-speedups-ea99cbbb0cbb) стократный прирост производительности, только уже по сравнению с NumPy. Так что если вам нужен какой-нибудь быстрый [FFT](https://en.wikipedia.org/wiki/Fast_Fourier_transform) или еще какой числогрыз, то вы знаете, что делать.
 
+Небольшое отступление.
+
+Во-первых, тут мы переходим границу между встроенной функциональность языка и внешними библиотеками. Надо понимать, что успех Python во многом основан именно на богатстве его экосистемы (хотя, впрочем, тоже самое можно сказать и про JavaScript, и про C#); сам язык предоставляет богатую, но всё же ограниченную функциональность, в то время как функционал внешних библиотек практически безграничен, это как бесконечно разнообразные кубики Лего. Соответственно, очень часто для решения задачи не нужно реализовывать алгоритм с нуля, на чистом Python'е, достаточно подобрать нужную библиотеку.
+
+Во-вторых, популярность разных библиотек Python (в том числе и конкурирующих) сильно разнится. Например, NumPy — очень популярная библиотека, но в мире существуют буквально миллионы Python-разработчиков, которые *никогда* не работали с NumPy, просто в силу своего круга функциональных обязанностей.
+
+Для начинающего разработчика это представляет собой довольно нешуточную проблему — как конкретно двигаться вперед, какие библиотеки изучать, ведь знания чистого Python, как правило, недостаточно для формирования актуального резюме.  
+Дам небольшой совет. Ежегодно компания JetBrains (делающая среди прочего очень классную IDE PyCharm) проводит всемирный опрос Python-разработчиков, а потом выкладывает полученные результаты в виде так называемого [Python Developers Survey Results](https://lp.jetbrains.com/python-developers-survey-2021/). Например, если вы почитаете результы последнего исследовния, то найдете там довольно чёткие ориентиры, например, в разделе «Data science frameworks and libraries» в топе находятся NumPy, Pandas (рассмотрен ниже) и Matplotlib, в тестировании с большим отрывом лидирует pytest (смотри ниже), в других областях вперед вырываются Flask (Django на втором месте с крошечным отрывом), SQLAlchemy (vs Django ORM) и PostgreSQL (vs SQLite), про них мы тоже еще поговорим. Так что в целом, общее направление развития определить можно.
 
 
 ```python
 import numpy as np
 ```
 
-
- 
 <array> = np.array(<list/list_of_lists>)
 <array> = np.arange(from_inclusive, to_exclusive, ±step_size)
 <array> = np.ones(<shape>)
@@ -1723,7 +1728,6 @@ Axis is an index of the dimension that gets collapsed. Leftmost dimension has in
 ### Broadcasting
 Broadcasting is a set of rules by which NumPy functions operate on arrays of different sizes and/or dimensions.
 
- 
 left  = [[0.1], [0.6], [0.8]]        # Shape: (3, 1)
 right = [ 0.1 ,  0.6 ,  0.8 ]        # Shape: (3)
  
@@ -1731,21 +1735,17 @@ right = [ 0.1 ,  0.6 ,  0.8 ]        # Shape: (3)
  
 left  = [[0.1], [0.6], [0.8]]        # Shape: (3, 1)
 right = [[0.1 ,  0.6 ,  0.8]]        # Shape: (1, 3) <- !
- 
 
 #### 2. If any dimensions differ in size, expand the ones that have size 1 by duplicating their elements:
  
 left  = [[0.1, 0.1, 0.1], [0.6, 0.6, 0.6], [0.8, 0.8, 0.8]]  # Shape: (3, 3) <- !
 right = [[0.1, 0.6, 0.8], [0.1, 0.6, 0.8], [0.1, 0.6, 0.8]]  # Shape: (3, 3) <- !
- 
 
 #### 3. If neither non-matching dimension has size 1, raise an error.
-
 
 ### Example
 #### For each point returns index of its nearest point (`[0.1, 0.6, 0.8] => [1, 2, 1]`):
 
- 
 >>> points = np.array([0.1, 0.6, 0.8])
  [ 0.1,  0.6,  0.8]
 >>> wrapped_points = points.reshape(3, 1)
@@ -1773,23 +1773,18 @@ right = [[0.1, 0.6, 0.8], [0.1, 0.6, 0.8], [0.1, 0.6, 0.8]]  # Shape: (3, 3) <- 
 
 Библиотека обработки и анализа данных. Работа с данными строится поверх библиотеки NumPy.
 
-
 # $ pip3 install pandas
 import pandas as pd
 from pandas import Series, DataFrame
- 
 
 ### Series
 Ordered dictionary with a name.
 
- 
 >>> Series([1, 2], index=['x', 'y'], name='a')
 x    1
 y    2
 Name: a, dtype: int64
- 
 
- 
 <Sr> = Series(<list>)                         # Assigns RangeIndex starting at 0.
 <Sr> = Series(<dict>)                         # Takes dictionary's keys for index.
 <Sr> = Series(<dict/Series>, index=<list>)    # Only keeps items with keys specified in index.
@@ -1822,7 +1817,6 @@ matplotlib.pyplot.show()                      # Displays the plot. Also savefig(
 x    1
 y    2
  
-
  text
 +-----------------+-------------+-------------+---------------+
 |                 |    'sum'    |   ['sum']   | {'s': 'sum'}  |
@@ -1844,42 +1838,30 @@ Last result has a hierarchical index. Use `'<Sr>[key_1, key_2]'` to get its valu
 ### DataFrame
 Table with labeled rows and columns.
 
- 
 >>> DataFrame([[1, 2], [3, 4]], index=['a', 'b'], columns=['x', 'y'])
    x  y
 a  1  2
 b  3  4
- 
 
- 
 <DF>    = DataFrame(<list_of_rows>)           # Rows can be either lists, dicts or series.
 <DF>    = DataFrame(<dict_of_columns>)        # Columns can be either lists, dicts or series.
- 
 
- 
 <el>    = <DF>.loc[row_key, column_key]       # Or: <DF>.iloc[row_index, column_index]
 <Sr/DF> = <DF>.loc[row_key/s]                 # Or: <DF>.iloc[row_index/es]
 <Sr/DF> = <DF>.loc[:, column_key/s]           # Or: <DF>.iloc[:, column_index/es]
 <DF>    = <DF>.loc[row_bools, column_bools]   # Or: <DF>.iloc[row_bools, column_bools]
- 
 
- 
 <Sr/DF> = <DF>[column_key/s]                  # Or: <DF>.column_key
 <DF>    = <DF>[row_bools]                     # Keeps rows as specified by bools.
 <DF>    = <DF>[<DF_of_bools>]                 # Assigns NaN to False values.
- 
 
- 
 <DF>    = <DF> ><== <el/Sr/DF>                # Returns DF of bools. Sr is treated as a row.
 <DF>    = <DF> +-*/ <el/Sr/DF>                # Items with non-matching keys get value NaN.
- 
 
- 
 <DF>    = <DF>.set_index(column_key)          # Replaces row keys with values from a column.
 <DF>    = <DF>.reset_index()                  # Moves row keys to a column named index.
 <DF>    = <DF>.sort_index(ascending=True)     # Sorts rows by row keys.
 <DF>    = <DF>.sort_values(column_key/s)      # Sorts rows by the passed column/s.
- 
 
 #### DataFrame — Merge, Join, Concat:
  
@@ -1891,7 +1873,6 @@ b  3  4
    y  z
 b  4  5
 c  6  7
- 
 
  text
 +------------------------+---------------+------------+------------+--------------------------+
@@ -1923,7 +1904,6 @@ c  6  7
 |                        | b  3   4   5  |            |            | items that contain NaN.  |
 |                        | c  .   6   7  |            |            | R must be a DataFrame.   |
 +------------------------+---------------+------------+------------+--------------------------+
- 
 
 #### DataFrame — Aggregate, Transform, Map:
  
@@ -1933,12 +1913,10 @@ c  6  7
  
 All operations operate on columns by default. Pass `'axis=1'` to process the rows instead.
 
- 
 >>> df = DataFrame([[1, 2], [3, 4]], index=['a', 'b'], columns=['x', 'y'])
    x  y
 a  1  2
 b  3  4
- 
 
  text
 +-----------------+-------------+-------------+---------------+
@@ -1965,24 +1943,18 @@ Use `'<DF>[col_key_1, col_key_2][row_key]'` to get the fifth result's values.
 import matplotlib.pyplot as plt
 <DF>.plot.line/bar/hist/scatter([x=column_key, y=column_key/s]); plt.show()
  
-
- 
 <DF> = pd.read_json/html('<str/path/url>')
 <DF> = pd.read_csv/pickle/excel('<path/url>')
 <DF> = pd.read_sql('<table_name/query>', <connection>)
 <DF> = pd.read_clipboard()
- 
-
  
 <dict> = <DF>.to_dict(['d/l/s/sp/r/i'])
 <str>  = <DF>.to_json/html/csv/markdown/latex([<path>])
 <DF>.to_pickle/excel(<path>)
 <DF>.to_sql('<table_name>', <connection>)
  
-
 ### GroupBy
 Object that groups together rows of a dataframe based on the value of the passed column.
-
  
 >>> df = DataFrame([[1, 2, 3], [4, 5, 6], [7, 8, 6]], index=list('abc'), columns=list('xyz'))
 >>> df.groupby('z').get_group(6)
@@ -1990,27 +1962,21 @@ Object that groups together rows of a dataframe based on the value of the passed
 b  4  5
 c  7  8
  
-
- 
 <GB> = <DF>.groupby(column_key/s)             # DF is split into groups based on passed column.
 <DF> = <GB>.apply(<func>)                     # Maps each group. Func can return DF, Sr or el.
 <GB> = <GB>[column_key]                       # A single column GB. All operations return a Sr.
  
-
 #### GroupBy — Aggregate, Transform, Map:
  
 <DF> = <GB>.sum/max/mean/idxmax/all()         # Or: <GB>.agg(lambda <Sr>: <el>)
 <DF> = <GB>.rank/diff/cumsum/ffill()          # Or: <GB>.transform(lambda <Sr>: <Sr>)
 <DF> = <GB>.fillna(<el>)                      # Or: <GB>.transform(lambda <Sr>: <Sr>)
  
-
- 
 >>> gb = df.groupby('z')
       x  y  z
 3: a  1  2  3
 6: b  4  5  6
    c  7  8  6
- 
 
  text
 +-----------------+-------------+-------------+-------------+---------------+
@@ -2027,12 +1993,10 @@ c  7  8
 |                 |  b  11  13  |   b  1  1   |             |               |
 |                 |  c  11  13  |   c  2  2   |             |               |
 +-----------------+-------------+-------------+-------------+---------------+
- 
 
 ### Rolling
 Object for rolling window calculations.
 
- 
 <R_Sr/R_DF/R_GB> = <Sr/DF/GB>.rolling(window_size)  # Also: `min_periods=None, center=False`.
 <R_Sr/R_DF>      = <R_DF/R_GB>[column_key/s]        # Or: <R>.column_key
 <Sr/DF/DF>       = <R_Sr/R_DF/R_GB>.sum/max/mean()  # Or: <R>.apply/agg(<agg_func/str>)
