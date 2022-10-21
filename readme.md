@@ -1697,8 +1697,8 @@ print(math.dist(p1, p2))
 ```python
 import numpy as np
 
-a1 = np.array([1, 2, 3, 4, 5])  # Получение массива из списка
-print(a1[0])
+a1 = np.array([1, 2, 3, 4, 5], float)  # Получение массива из списка
+print(a1[0:2])
 
 a2 = np.zeros(5)  # Массив, заполненный нулями
 print(a2)
@@ -1711,14 +1711,23 @@ print(a4)
 
 a5 = np.random.randint(6, size=(2, 5))  # Создание многомерного массива, содержащего случайные значения
 print(a5)
+
+print(a5.shape)  # Число строк и столбцов в массиве
+
+print(a5.dtype)  # Тип переменных
+
+print(1 in a5)  # Проверка наличия элемента
 ```
 
-    1
+    [1. 2.]
     [0. 0. 0. 0. 0.]
     [0 1 2 3 4 5]
-    [0 5 0 0 0 1 1 2 2 2]
-    [[4 3 4 1 0]
-     [1 2 5 4 2]]
+    [2 2 4 0 0 0 0 4 0 5]
+    [[1 0 3 5 0]
+     [3 1 4 2 2]]
+    (2, 5)
+    int32
+    True
     
 
 Базовые математические операции ([полный список](https://numpy.org/doc/stable/reference/routines.math.html)):
@@ -1755,7 +1764,10 @@ Sum, Min, Max
 
 
 ```python
-a1 = np.random.randint(6, size=(2, 10))
+import numpy as np
+
+a1 = np.random.randint(6, size=(2, 10))  # NumPy поддерживает несколько десятков видов распределений, например, Пуассона и Стьюдента
+print(a1)
 
 s = np.sum(a1)  # Сумма всех элементов
 print(s)
@@ -1766,79 +1778,129 @@ print(mn)
 mx = a1.max(axis=1)  # Наибольшие числа в каждой строке
 print(mx)
 
+amin = a1.argmin(axis=0)  # Индексы минимальных элементов в каждом столбце
+print(amin)
+
+amax = a1.argmax(axis=1)  # Индексы максимальных элементов в каждой строке
+print(amax)
+
+uniq = np.unique(a1)  # Извлечение уникальных элементов
+print(uniq)
 ```
 
-    48
-    [1 0 4 0 1 3 4 0 1 2]
+    [[3 0 4 1 0 5 4 0 1 3]
+     [0 3 4 0 0 1 4 0 5 4]]
+    42
+    [0 0 4 0 0 1 4 0 1 3]
     [5 5]
+    [1 0 0 1 0 1 0 0 0 0]
+    [5 8]
+    [0 1 3 4 5]
     
 
-В качестве домашнего задания попробуйте самостоятельно применить mean(), var() и std() и median().
+В качестве домашнего задания попробуйте самостоятельно применить prod(), mean(), var(), std(), median(), cov() и corrcoef().
 
-<array>.shape = <shape>
-<view>  = <array>.reshape(<shape>)
-<view>  = np.broadcast_to(<array>, <shape>)
+Форматирование массивов:
 
-indexes = <array>.argmin(axis)
 
-Shape is a tuple of dimension sizes.
-Axis is an index of the dimension that gets collapsed. Leftmost dimension has index 0.
+```python
+import numpy as np
 
-### Indexing
-<el>       = <2d_array>[row_index, column_index]
-<1d_view>  = <2d_array>[row_index]
-<1d_view>  = <2d_array>[:, column_index]
+a = np.random.randint(6, size=(3, 5))
+print(a)
 
-<1d_array> = <2d_array>[row_indexes, column_indexes]
-<2d_array> = <2d_array>[row_indexes]
-<2d_array> = <2d_array>[:, column_indexes]
- 
-<2d_bools> = <2d_array> ><== <el>
-<1d_array> = <2d_array>[<2d_bools>]
- 
-### Broadcasting
-Broadcasting is a set of rules by which NumPy functions operate on arrays of different sizes and/or dimensions.
+a1 = a.reshape((5, 3))  # Форматирование. Если есть возможность, создается новый view на те же самые данные
+print(a1)
 
-left  = [[0.1], [0.6], [0.8]]        # Shape: (3, 1)
-right = [ 0.1 ,  0.6 ,  0.8 ]        # Shape: (3)
- 
-#### 1. If array shapes differ in length, left-pad the shorter shape with ones:
- 
-left  = [[0.1], [0.6], [0.8]]        # Shape: (3, 1)
-right = [[0.1 ,  0.6 ,  0.8]]        # Shape: (1, 3) <- !
+a.shape = (5, 3)  # Форматирование in-place
+print(a)
 
-#### 2. If any dimensions differ in size, expand the ones that have size 1 by duplicating their elements:
- 
-left  = [[0.1, 0.1, 0.1], [0.6, 0.6, 0.6], [0.8, 0.8, 0.8]]  # Shape: (3, 3) <- !
-right = [[0.1, 0.6, 0.8], [0.1, 0.6, 0.8], [0.1, 0.6, 0.8]]  # Shape: (3, 3) <- !
+print(a.shape)
+a = a[:, :, np.newaxis]  # Увеличение размерности массива с 2 до 3
+print(a)
+print(a.shape)
 
-#### 3. If neither non-matching dimension has size 1, raise an error.
+a = a.flatten()  # Конвертация в одномерный массив
+print(a)
+print(a.shape)
+```
 
-### Example
-#### For each point returns index of its nearest point (`[0.1, 0.6, 0.8] => [1, 2, 1]`):
+    [[5 5 5 1 1]
+     [0 2 0 5 5]
+     [0 2 5 4 5]]
+    [[5 5 5]
+     [1 1 0]
+     [2 0 5]
+     [5 0 2]
+     [5 4 5]]
+    [[5 5 5]
+     [1 1 0]
+     [2 0 5]
+     [5 0 2]
+     [5 4 5]]
+    (5, 3)
+    [[[5]
+      [5]
+      [5]]
+    
+     [[1]
+      [1]
+      [0]]
+    
+     [[2]
+      [0]
+      [5]]
+    
+     [[5]
+      [0]
+      [2]]
+    
+     [[5]
+      [4]
+      [5]]]
+    (5, 3, 1)
+    [5 5 5 1 1 0 2 0 5 5 0 2 5 4 5]
+    (15,)
+    
 
->>> points = np.array([0.1, 0.6, 0.8])
- [ 0.1,  0.6,  0.8]
->>> wrapped_points = points.reshape(3, 1)
-[[ 0.1],
- [ 0.6],
- [ 0.8]]
->>> distances = wrapped_points - points
-[[ 0. , -0.5, -0.7],
- [ 0.5,  0. , -0.2],
- [ 0.7,  0.2,  0. ]]
->>> distances = np.abs(distances)
-[[ 0. ,  0.5,  0.7],
- [ 0.5,  0. ,  0.2],
- [ 0.7,  0.2,  0. ]]
->>> distances[i, i] = np.inf
-[[ inf,  0.5,  0.7],
- [ 0.5,  inf,  0.2],
- [ 0.7,  0.2,  inf]]
->>> distances.argmin(1)
-[1, 2, 1]
+Копирование массивов:
 
-NumPy очень мощный инструмент, не зря же он стоит на первом месте в списке «Data science frameworks and libraries» обзора, который мы упоминали чуть выше. Но углубляться в эту тему очень уж глубоко в рамках поверхностного обзора, пожалуй, не стоит; вряд ли прямо сейчас вам кровь из носу нужно освоить скалярное, тензорное и внешнее произведение матриц или познать (вспомнить?) специфику линейной алгебры. К тому же, изучая тонкости употребления NumPy, начинает появляться соблазн упоминания SciPy, предоставляющего еще более широкий функционал, а после первого "import scipy" у нас начнется уже полное непотребство. Давайте пока пройдем мимо этой кроличьей норы, для первого знакомства она слишком глубока.
+
+```python
+import numpy as np
+import copy
+
+a = np.random.randint(10, size=(4, 4))
+print(a)
+
+# Неглубокая (shallow) копия
+a1 = np.copy(a)
+
+# Глубокая (deep) копия
+a2 = copy.deepcopy(a)
+
+# Копирование ссылки
+a3 = a
+
+a[0, 0] = 10
+print(a[0, 0] == a1[0, 0])
+print(a[0, 0] == a2[0, 0])
+print(a[0, 0] == a3[0, 0])
+```
+
+    [[5 3 1 4]
+     [0 8 7 0]
+     [1 7 4 7]
+     [5 3 5 2]]
+    False
+    False
+    True
+    
+
+NumPy очень мощный инструмент, не зря же он стоит на первом месте в списке «Data science frameworks and libraries» обзора, который мы упоминали чуть выше. Но углубляться в эту тему очень уж глубоко в рамках поверхностного обзора, пожалуй, не стоит; вряд ли прямо сейчас вам кровь из носу нужно освоить скалярное, тензорное и внешнее произведение матриц или познать (вспомнить?) специфику линейной алгебры. Думаю, даже если мы сейчас начнем описывать транспонирование или выбор оси, по которой будет произведена конкатенация массивов, то это уже будет, что называется, «не в коня корм».  
+К тому же, изучая тонкости употребления NumPy, начинает появляться соблазн упоминания SciPy, предоставляющего еще более широкий функционал, а после первого "import scipy" у нас начнется уже полное непотребство. Давайте пока пройдем мимо этой кроличьей норы, для первого знакомства она слишком глубока.
+
+Единственное, что еще можно освоить в конце ознакомительного курса NumPy — взаимодействие с внешним миром. Изучите для начала load/save/savez (бинарники) и loadtxt/savetxt (человекочитаемый формат).
 
 ### Pandas
 
