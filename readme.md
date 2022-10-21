@@ -1904,23 +1904,69 @@ NumPy очень мощный инструмент, не зря же он сто
 
 ### Pandas
 
-Библиотека обработки и анализа данных. Работа с данными строится поверх библиотеки NumPy.
+Библиотека обработки и анализа данных. Работа с данными строится поверх библиотеки NumPy.  
+В первом, грубом приближении pandas можно воспринимать как связку Excel + VisualBasic-скрипты, только более гибкую и удобную. Библиотека создает своеобразный мостик между профессиями Python-программиста, дата-сайентиста и аналитика, позволяя сосредоточиться в большей степени именно на очистке и анализе данных, на читабельности отчетов, а не на программировании. Pandas также поддерживает широкий спектр «красивостей» при выводе информации, позволяя, например, добавлять в выводимые данные градиентную подсветку (heatmap) или визуализировать отклонение от среднего (bar chart).
 
-# $ pip3 install pandas
+Для того, чтобы как следует «распробовать» pandas, по-хорошему надо загрузить какой-нибудь развесистый набор данных, но мы, пожалуй, не будем погружаться в глубины глубин, просто поиграем небольшим самодельным датасетом.
+
+
+```python
 import pandas as pd
-from pandas import Series, DataFrame
+from pandas import Series
 
-### Series
-Ordered dictionary with a name.
+s = pd.Series([0, 1, 4, 7, 8, 10, 12])
+print(s)
+print(s[2])
+```
 
->>> Series([1, 2], index=['x', 'y'], name='a')
-x    1
-y    2
-Name: a, dtype: int64
+    0     0
+    1     1
+    2     4
+    3     7
+    4     8
+    5    10
+    6    12
+    dtype: int64
+    4
+    
 
-<Sr> = Series(<list>)                         # Assigns RangeIndex starting at 0.
-<Sr> = Series(<dict>)                         # Takes dictionary's keys for index.
-<Sr> = Series(<dict/Series>, index=<list>)    # Only keeps items with keys specified in index.
+Series — базовая структура данных pandas. Вы можете воспринимать её как упорядоченный словарь или как столбец Excel, смотря по тому, какая аналогия вам ближе.
+
+Индексы Series можно задавать вручную:
+
+
+```python
+import pandas as pd
+from pandas import Series
+
+s = pd.Series([0, 1, 4, 7, 8, 10, 12], index=["a", "b", "c", "d", "x", "y", "z"])
+print(s)
+print(s["x"])
+print(s[["x", "y", "z"]])  # Выборка
+print(s[s > 5])  # Фильтрация
+```
+
+    a     0
+    b     1
+    c     4
+    d     7
+    x     8
+    y    10
+    z    12
+    dtype: int64
+    8
+    x     8
+    y    10
+    z    12
+    dtype: int64
+    d     7
+    x     8
+    y    10
+    z    12
+    dtype: int64
+    
+
+При объединении нескольких Series получается DataFrame, который в первом приближении можно рассматривать как лист Excel.
 
 <el> = <Sr>.loc[key]                          # Or: <Sr>.iloc[index]
 <Sr> = <Sr>.loc[keys]                         # Or: <Sr>.iloc[indexes]
@@ -1967,6 +2013,45 @@ y    2
 +-----------------+-------------+-------------+---------------+
  
 Last result has a hierarchical index. Use `'<Sr>[key_1, key_2]'` to get its values.
+
+
+```python
+import pandas as pd
+from pandas import Series, DataFrame
+
+s1 = pd.Series([0, 1, 4, 7, 8, 10, 12])
+s2 = pd.Series([0, 100, 200, 300, 600, 900, 1200])
+
+df = pd.DataFrame([s1, s2])
+print(df)
+print(df[1])
+print(df[2][0])
+print(df.iloc[0][2:4])
+
+import matplotlib.pyplot as plt  # Простейшая визуализация
+df.plot.area()
+plt.show()
+```
+
+       0    1    2    3    4    5     6
+    0  0    1    4    7    8   10    12
+    1  0  100  200  300  600  900  1200
+    0      1
+    1    100
+    Name: 1, dtype: int64
+    4
+    2    4
+    3    7
+    Name: 0, dtype: int64
+    
+
+
+    
+![png](01_python_02_primitive_data_processing_files/01_python_02_primitive_data_processing_90_1.png)
+    
+
+
+Давайте сделаем что-то более похожее на реальный анализ данных.
 
 ### DataFrame
 Table with labeled rows and columns.
