@@ -761,11 +761,11 @@ print (f"{tz1}\n {tz2}\n {tz3}\n {tz4}\n {local_dt}\n {utc_dt}")
     
 ### Небольшое отступление
 
-Позволю себе крошечную ремарку, которая была бы несколько неуместна ни в начале статьи (когда вы только взвешивали её полезность) ни, тем более, в конце (чтобы не портить послевкусия). Раз уж вы, прочитав довольно значительный кусок этого материала, невольно верифицировали себя как представитель программной индустрии, то, следовательно, есть некоторая ненулевая вероятность того, что вы ищете нового сотрудника. Дело в том, что я, автор этой статьи, ищу новую работу, и если вам нужен middle backend Python-программист, то, возможно, вас заинтересует моя кандидатура.
+Позволю себе крошечную ремарку, которая была бы несколько неуместна ни в начале статьи (когда вы только взвешивали её полезность) ни, тем более, в конце (чтобы не портить послевкусия). Раз уж вы, прочитав довольно значительный кусок этого материала, невольно верифицировали себя как представитель программной индустрии, причём, как специалиста, непосредственно работающего с кодом, то, следовательно, есть некоторая ненулевая вероятность того, что вы ищете нового сотрудника. Дело в том, что я, автор этой статьи, ищу новую работу, и если вам нужен middle backend Python-программист, то, возможно, вас заинтересует моя кандидатура.
 
 Большую часть своей осмысленной жизни я разрабатывал встроенные устройства на базе микроконтроллеров, 50/50 занимаясь схемотехникой и программированием. Моей последней «железячной» разработкой стал двадцатипятигигабитный маршрутизатор на базе шестнадцатиядерного процессора (звучит как заклинание из «Гарри Поттера» :), что по сложности примерно соответствует материнской плате персонального компьютера, после чего я перешел в чистые программисты. До этого в основном работал с ассемблером, C и C#, а на базе своих заметок по вновь изучаемому Python я и написал эту статью. На мой взгляд, достаточно логично сразу озвучить потенциальному работодателю свой примерный профессиональный уровень; завалить собеседование я не боюсь (всё равно профит, пообщаюсь с умными людьми), а вот понимания своего несоответствия занимаемой должности, выявленного в течении испытательного срока, хотелось бы избежать.
 
-Собственно, всё что я хотел вам сообщить: мой [Github](https://github.com/amaargiru), [резюме](https://github.com/amaargiru/cv), емейл war4one@gmail.com и телефон 8 917 809-89-81 (лучше пишите в Telegram или WhatsApp).
+Собственно, всё что я хотел бы вам сообщить: мой [Github](https://github.com/amaargiru), [резюме](https://github.com/amaargiru/cv), емейл war4one@gmail.com и телефон 8 917 809-89-81 (лучше пишите в Telegram или WhatsApp).
 
 Засим вернёмся в основное русло нашего повествования.
 ## 2. Обработка данных
@@ -1923,7 +1923,6 @@ NumPy очень мощный инструмент, не зря же он сто
 
 ```python
 import pandas as pd
-from pandas import Series
 
 s = pd.Series([0, 1, 4, 7, 8, 10, 12])
 print(s)
@@ -1941,20 +1940,21 @@ print(s[2])
     4
     
 
-Series — базовая структура данных pandas. Вы можете воспринимать её как упорядоченный словарь или как столбец Excel, смотря по тому, какая аналогия вам ближе.
-
-Индексы Series можно задавать вручную:
+Series — базовая структура данных pandas. Вы можете воспринимать её как упорядоченный словарь или как строку Excel, смотря по тому, какая аналогия вам ближе.
 
 
 ```python
 import pandas as pd
-from pandas import Series
 
-s = pd.Series([0, 1, 4, 7, 8, 10, 12], index=["a", "b", "c", "d", "x", "y", "z"])
+s = pd.Series([0, 1, 4, 7, 8, 10, 12], index=["a", "b", "c", "d", "x", "y", "z"])  # Индексы Series можно задавать вручную
+
 print(s)
 print(s["x"])
 print(s[["x", "y", "z"]])  # Выборка
 print(s[s > 5])  # Фильтрация
+
+print(s.max())  # Математика, примерно как в NumPy
+print(s.sum())
 ```
 
     a     0
@@ -1975,60 +1975,16 @@ print(s[s > 5])  # Фильтрация
     y    10
     z    12
     dtype: int64
+    12
+    42
     
 
 При объединении нескольких Series получается DataFrame, который в первом приближении можно рассматривать как лист Excel.
 
-<el> = <Sr>.loc[key]                          # Or: <Sr>.iloc[index]
-<Sr> = <Sr>.loc[keys]                         # Or: <Sr>.iloc[indexes]
-<Sr> = <Sr>.loc[from_key : to_key_inclusive]  # Or: <Sr>.iloc[from_i : to_i_exclusive]
-
-<el> = <Sr>[key/index]                        # Or: <Sr>.key
-<Sr> = <Sr>[keys/indexes]                     # Or: <Sr>[<key_range/range>]
-<Sr> = <Sr>[bools]                            # Or: <Sr>.i/loc[bools]
-
-<Sr> = <Sr> ><== <el/Sr>                      # Returns a Series of bools.
-<Sr> = <Sr> +-*/ <el/Sr>                      # Items with non-matching keys get value NaN.
-
-<Sr> = <Sr>.append(<Sr>)                      # Or: pd.concat(<coll_of_Sr>)
-<Sr> = <Sr>.combine_first(<Sr>)               # Adds items that are not yet present.
-<Sr>.update(<Sr>)                             # Updates items that are already present.
-
-<Sr>.plot.line/area/bar/pie/hist()            # Generates a Matplotlib plot.
-matplotlib.pyplot.show()                      # Displays the plot. Also savefig(<path>).
-
-#### Series — Aggregate, Transform, Map:
-
-<el> = <Sr>.sum/max/mean/idxmax/all()         # Or: <Sr>.agg(lambda <Sr>: <el>)
-<Sr> = <Sr>.rank/diff/cumsum/ffill/interpl()  # Or: <Sr>.agg/transform(lambda <Sr>: <Sr>)
-<Sr> = <Sr>.fillna(<el>)                      # Or: <Sr>.agg/transform/map(lambda <el>: <el>)
-
->>> sr = Series([1, 2], index=['x', 'y'])
-x    1
-y    2
- 
- text
-+-----------------+-------------+-------------+---------------+
-|                 |    'sum'    |   ['sum']   | {'s': 'sum'}  |
-+-----------------+-------------+-------------+---------------+
-| sr.apply(…)     |      3      |    sum  3   |     s  3      |
-| sr.agg(…)       |             |             |               |
-+-----------------+-------------+-------------+---------------+
-
-+-----------------+-------------+-------------+---------------+
-|                 |    'rank'   |   ['rank']  | {'r': 'rank'} |
-+-----------------+-------------+-------------+---------------+
-| sr.apply(…)     |             |      rank   |               |
-| sr.agg(…)       |     x  1    |   x     1   |    r  x  1    |
-| sr.transform(…) |     y  2    |   y     2   |       y  2    |
-+-----------------+-------------+-------------+---------------+
- 
-Last result has a hierarchical index. Use `'<Sr>[key_1, key_2]'` to get its values.
-
 
 ```python
 import pandas as pd
-from pandas import Series, DataFrame
+from pandas import DataFrame
 
 s1 = pd.Series([0, 1, 4, 7, 8, 10, 12])
 s2 = pd.Series([0, 100, 200, 300, 600, 900, 1200])
@@ -2038,10 +1994,6 @@ print(df)
 print(df[1])
 print(df[2][0])
 print(df.iloc[0][2:4])
-
-import matplotlib.pyplot as plt  # Простейшая визуализация
-df.plot.area()
-plt.show()
 ```
 
        0    1    2    3    4    5     6
@@ -2056,179 +2008,47 @@ plt.show()
     Name: 0, dtype: int64
     
 
-
-    
-![png](01_python_02_primitive_data_processing_files/01_python_02_primitive_data_processing_90_1.png)
-    
+Давайте сделаем что-то более похожее на реальный анализ данных. При помощи формулы [ИМТ](https://ru.wikipedia.org/wiki/%D0%98%D0%BD%D0%B4%D0%B5%D0%BA%D1%81_%D0%BC%D0%B0%D1%81%D1%81%D1%8B_%D1%82%D0%B5%D0%BB%D0%B0) выясним, кто из знаменитостей не следит за собой и обзавелся лишним весом:
 
 
-Давайте сделаем что-то более похожее на реальный анализ данных.
-
-### DataFrame
-Table with labeled rows and columns.
-
->>> DataFrame([[1, 2], [3, 4]], index=['a', 'b'], columns=['x', 'y'])
-   x  y
-a  1  2
-b  3  4
-
-<DF>    = DataFrame(<list_of_rows>)           # Rows can be either lists, dicts or series.
-<DF>    = DataFrame(<dict_of_columns>)        # Columns can be either lists, dicts or series.
-
-<el>    = <DF>.loc[row_key, column_key]       # Or: <DF>.iloc[row_index, column_index]
-<Sr/DF> = <DF>.loc[row_key/s]                 # Or: <DF>.iloc[row_index/es]
-<Sr/DF> = <DF>.loc[:, column_key/s]           # Or: <DF>.iloc[:, column_index/es]
-<DF>    = <DF>.loc[row_bools, column_bools]   # Or: <DF>.iloc[row_bools, column_bools]
-
-<Sr/DF> = <DF>[column_key/s]                  # Or: <DF>.column_key
-<DF>    = <DF>[row_bools]                     # Keeps rows as specified by bools.
-<DF>    = <DF>[<DF_of_bools>]                 # Assigns NaN to False values.
-
-<DF>    = <DF> ><== <el/Sr/DF>                # Returns DF of bools. Sr is treated as a row.
-<DF>    = <DF> +-*/ <el/Sr/DF>                # Items with non-matching keys get value NaN.
-
-<DF>    = <DF>.set_index(column_key)          # Replaces row keys with values from a column.
-<DF>    = <DF>.reset_index()                  # Moves row keys to a column named index.
-<DF>    = <DF>.sort_index(ascending=True)     # Sorts rows by row keys.
-<DF>    = <DF>.sort_values(column_key/s)      # Sorts rows by the passed column/s.
-
-#### DataFrame — Merge, Join, Concat:
- 
->>> l = DataFrame([[1, 2], [3, 4]], index=['a', 'b'], columns=['x', 'y'])
-   x  y
-a  1  2
-b  3  4
->>> r = DataFrame([[4, 5], [6, 7]], index=['b', 'c'], columns=['y', 'z'])
-   y  z
-b  4  5
-c  6  7
-
- text
-+------------------------+---------------+------------+------------+--------------------------+
-|                        |    'outer'    |   'inner'  |   'left'   |       Description        |
-+------------------------+---------------+------------+------------+--------------------------+
-| l.merge(r, on='y',     |    x   y   z  | x   y   z  | x   y   z  | Joins/merges on column.  |
-|            how=…)      | 0  1   2   .  | 3   4   5  | 1   2   .  | Also accepts left_on and |
-|                        | 1  3   4   5  |            | 3   4   5  | right_on parameters.     |
-|                        | 2  .   6   7  |            |            | Uses 'inner' by default. |
-+------------------------+---------------+------------+------------+--------------------------+
-| l.join(r, lsuffix='l', |    x yl yr  z |            | x yl yr  z | Joins/merges on row keys.|
-|           rsuffix='r', | a  1  2  .  . | x yl yr  z | 1  2  .  . | Uses 'left' by default.  |
-|           how=…)       | b  3  4  4  5 | 3  4  4  5 | 3  4  4  5 | If r is a series, it is  |
-|                        | c  .  .  6  7 |            |            | treated as a column.     |
-+------------------------+---------------+------------+------------+--------------------------+
-| pd.concat([l, r],      |    x   y   z  |     y      |            | Adds rows at the bottom. |
-|           axis=0,      | a  1   2   .  |     2      |            | Uses 'outer' by default. |
-|           join=…)      | b  3   4   .  |     4      |            | A series is treated as a |
-|                        | b  .   4   5  |     4      |            | column. Use l.append(sr) |
-|                        | c  .   6   7  |     6      |            | to add a row instead.    |
-+------------------------+---------------+------------+------------+--------------------------+
-| pd.concat([l, r],      |    x  y  y  z |            |            | Adds columns at the      |
-|           axis=1,      | a  1  2  .  . | x  y  y  z |            | right end. Uses 'outer'  |
-|           join=…)      | b  3  4  4  5 | 3  4  4  5 |            | by default. A series is  |
-|                        | c  .  .  6  7 |            |            | treated as a column.     |
-+------------------------+---------------+------------+------------+--------------------------+
-| l.combine_first(r)     |    x   y   z  |            |            | Adds missing rows and    |
-|                        | a  1   2   .  |            |            | columns. Also updates    |
-|                        | b  3   4   5  |            |            | items that contain NaN.  |
-|                        | c  .   6   7  |            |            | R must be a DataFrame.   |
-+------------------------+---------------+------------+------------+--------------------------+
-
-#### DataFrame — Aggregate, Transform, Map:
- 
-<Sr> = <DF>.sum/max/mean/idxmax/all()         # Or: <DF>.apply/agg(lambda <Sr>: <el>)
-<DF> = <DF>.rank/diff/cumsum/ffill/interpl()  # Or: <DF>.apply/agg/transform(lambda <Sr>: <Sr>)
-<DF> = <DF>.fillna(<el>)                      # Or: <DF>.applymap(lambda <el>: <el>)
- 
-All operations operate on columns by default. Pass `'axis=1'` to process the rows instead.
-
->>> df = DataFrame([[1, 2], [3, 4]], index=['a', 'b'], columns=['x', 'y'])
-   x  y
-a  1  2
-b  3  4
-
- text
-+-----------------+-------------+-------------+---------------+
-|                 |    'sum'    |   ['sum']   | {'x': 'sum'}  |
-+-----------------+-------------+-------------+---------------+
-| df.apply(…)     |             |       x  y  |               |
-| df.agg(…)       |     x  4    |  sum  4  6  |     x  4      |
-|                 |     y  6    |             |               |
-+-----------------+-------------+-------------+---------------+
-
-+-----------------+-------------+-------------+---------------+
-|                 |    'rank'   |   ['rank']  | {'x': 'rank'} |
-+-----------------+-------------+-------------+---------------+
-| df.apply(…)     |      x  y   |      x    y |        x      |
-| df.agg(…)       |   a  1  1   |   rank rank |     a  1      |
-| df.transform(…) |   b  2  2   | a    1    1 |     b  2      |
-|                 |             | b    2    2 |               |
-+-----------------+-------------+-------------+---------------+
- 
-Use `'<DF>[col_key_1, col_key_2][row_key]'` to get the fifth result's values.
-
-#### DataFrame — Plot, Encode, Decode:
- 
+```python
+from pandas import DataFrame
 import matplotlib.pyplot as plt
-<DF>.plot.line/bar/hist/scatter([x=column_key, y=column_key/s]); plt.show()
- 
-<DF> = pd.read_json/html('<str/path/url>')
-<DF> = pd.read_csv/pickle/excel('<path/url>')
-<DF> = pd.read_sql('<table_name/query>', <connection>)
-<DF> = pd.read_clipboard()
- 
-<dict> = <DF>.to_dict(['d/l/s/sp/r/i'])
-<str>  = <DF>.to_json/html/csv/markdown/latex([<path>])
-<DF>.to_pickle/excel(<path>)
-<DF>.to_sql('<table_name>', <connection>)
- 
-### GroupBy
-Object that groups together rows of a dataframe based on the value of the passed column.
- 
->>> df = DataFrame([[1, 2, 3], [4, 5, 6], [7, 8, 6]], index=list('abc'), columns=list('xyz'))
->>> df.groupby('z').get_group(6)
-   x  y
-b  4  5
-c  7  8
- 
-<GB> = <DF>.groupby(column_key/s)             # DF is split into groups based on passed column.
-<DF> = <GB>.apply(<func>)                     # Maps each group. Func can return DF, Sr or el.
-<GB> = <GB>[column_key]                       # A single column GB. All operations return a Sr.
- 
-#### GroupBy — Aggregate, Transform, Map:
- 
-<DF> = <GB>.sum/max/mean/idxmax/all()         # Or: <GB>.agg(lambda <Sr>: <el>)
-<DF> = <GB>.rank/diff/cumsum/ffill()          # Or: <GB>.transform(lambda <Sr>: <Sr>)
-<DF> = <GB>.fillna(<el>)                      # Or: <GB>.transform(lambda <Sr>: <Sr>)
- 
->>> gb = df.groupby('z')
-      x  y  z
-3: a  1  2  3
-6: b  4  5  6
-   c  7  8  6
 
- text
-+-----------------+-------------+-------------+-------------+---------------+
-|                 |    'sum'    |    'rank'   |   ['rank']  | {'x': 'rank'} |
-+-----------------+-------------+-------------+-------------+---------------+
-| gb.agg(…)       |      x   y  |      x  y   |      x    y |        x      |
-|                 |  z          |   a  1  1   |   rank rank |     a  1      |
-|                 |  3   1   2  |   b  1  1   | a    1    1 |     b  1      |
-|                 |  6  11  13  |   c  2  2   | b    1    1 |     c  2      |
-|                 |             |             | c    2    2 |               |
-+-----------------+-------------+-------------+-------------+---------------+
-| gb.transform(…) |      x   y  |      x  y   |             |               |
-|                 |  a   1   2  |   a  1  1   |             |               |
-|                 |  b  11  13  |   b  1  1   |             |               |
-|                 |  c  11  13  |   c  2  2   |             |               |
-+-----------------+-------------+-------------+-------------+---------------+
 
-### Rolling
-Object for rolling window calculations.
+def bmi(row):
+    return row["weight"] / row["height"] ** 2
 
-<R_Sr/R_DF/R_GB> = <Sr/DF/GB>.rolling(window_size)  # Also: `min_periods=None, center=False`.
-<R_Sr/R_DF>      = <R_DF/R_GB>[column_key/s]        # Or: <R>.column_key
-<Sr/DF/DF>       = <R_Sr/R_DF/R_GB>.sum/max/mean()  # Or: <R>.apply/agg(<agg_func/str>)
+
+if __name__ == '__main__':
+    celebs: dict = {"Britney Spears": {"height": 1.63, "weight": 57},
+                    "Melanie Griffith": {"height": 1.73, "weight": 63},
+                    "Kylie Minogue": {"height": 1.52, "weight": 46},
+                    "Hulk Hogan": {"height": 1.98, "weight": 137}}
+
+    df = DataFrame(celebs)  # Создаем DataFrame
+    df.loc["bmi"] = df.apply(lambda row: bmi(row), axis=0)  # Добавлем новую строку с ИМТ
+    df = df.sort_values(by="bmi", ascending=True, axis=1)  # Сортируем
+
+    print(df)
+
+    df.loc["bmi"].plot.bar()  # Визуализация
+    plt.show()
+```
+
+            Kylie Minogue  Melanie Griffith  Britney Spears  Hulk Hogan
+    height       1.520000          1.730000        1.630000    1.980000
+    weight      46.000000         63.000000       57.000000  137.000000
+    bmi         19.909972         21.049818       21.453574   34.945414
+    
+
+
+    
+![png](01_python_02_primitive_data_processing_files/01_python_02_primitive_data_processing_92_1.png)
+    
+
+
+На самом деле Халк, конечно, не толстый, а профессиональный спортсмен, к которым формула ИМТ малоприменима, но крошка Кайли действительно вырывается вперед, даже с учетом своего небольшого роста.
 ## 3. Потоки данных
 
 ### Итераторы
@@ -4998,6 +4818,10 @@ def fact(N, acc=1):
 24. Система непересекающихся множеств (Union Find)
 25. Задача: найти уникальные маршруты (Unique Paths)
 ## 10. Администрирование/DevOps
+
+### Базовое знание Linux и работа в консоли
+
+Разумеется, администрирование подразумевает работу в консоли. Ничего сложного в этом нет, в конце-концов, Анджелина Джоли в «Хакерах» и Кэрри-Энн Мосс в «Матрице» прекрасно справились!
 
 ### Git-flow
 
