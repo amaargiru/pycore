@@ -1,4 +1,4 @@
-Пайтон Джуньор Плюс, или что вам нужно знать перед тем, как заплатить за курсы
+Пайтон джуньор плюс, или Карта Сокровищ
 
 ### Введение
 
@@ -18,3 +18,120 @@
 Также я бы рекомендовал для изучения базового синтаксиса Python на полную катушку использовать [leetcode.com](https://leetcode.com/problemset/all/?difficulty=EASY&page=1&status=NOT_STARTED). Если отфильтровать задачи по уровню «Easy», а потом добавить дополнительную сортировку по столбцу «Acceptance», то перед вами предстанет не волчий оскал соревновательной платформы, а ванильный букварь с плавно нарастающим уровнем задачек.
 
 Что ж, пожалуй, довольно запрягать. Погнали!  
+
+### Оглавление
+
+```mermaid
+flowchart TD
+Data_Structures==>Data_Management==>Data_Flows==>OOP
+
+subgraph Data_Structures
+direction LR
+List(list) -.-> Tuple -.-> Dict -.-> Set -.-> Array -.-> Linked_List -.->Tree -.-> Python_specific_data_structures
+subgraph Tuple
+direction LR
+tuple(tuple)
+namedtuple(namedtuple)
+end
+subgraph Dict
+direction LR
+dict(dict)
+HashProblem("Проблема вычисления хеша")
+defaultdict(defaultdict)
+Counter
+end
+subgraph Set
+direction LR
+set(set)
+FrozenSet("frozen set")
+end
+subgraph Array
+direction LR
+array(array)
+bytes(bytes)
+bytearray(bytearray)
+end
+subgraph Linked_List
+direction LR
+SinglyLinkedList("Singly linked list")
+subgraph Doubly_Linked_List
+direction LR
+deque(deque)
+Queue(Queue)
+end
+end
+subgraph Tree
+direction LR
+tree(tree)
+heap(heap)
+B-tree(B-tree)
+RedBlackTree("Red–black tree")
+AVLTree("AVL tree")
+trie(trie)
+end
+subgraph Python_specific_data_structures
+direction LR
+enum(enum)
+range(range)
+dataclass(dataclass)
+struct(struct)
+string(string)
+datetime(datetime)
+end
+end
+
+subgraph Data_Management
+slice(slice)
+subgraph Sorting
+direction LR
+sort(sort)
+sorted(sorted)
+end
+bisect(bisect)
+subgraph Comprehension
+direction LR
+listcomprehension(list)
+dictcomprehension(dict)
+setcomprehension(set)
+end
+functools
+datetime_management
+string_management
+re
+end
+
+subgraph Data_Flows
+itertools
+enumerate
+generator
+subgraph Decorator
+direction LR
+decorator(decorator)
+LRUCache("LRU Cache")
+param_decorator("Параметризованный декоратор")
+end
+context("Контекстный менеджер (with)")
+end
+
+subgraph OOP
+subgraph Class
+direction LR
+Comparable(Comparable)
+Hashable(Hashable)
+Sortable(Sortable)
+Callable(Callable)
+end
+__slots__
+object_copy("Копирование объектов")
+MRO
+metaprogramming("Метапрограммирование")
+
+end
+
+classDef dashed stroke-dasharray:5 5
+class B-tree dashed;
+class RedBlackTree dashed;
+class AVLTree dashed;
+class trie dashed;
+class SinglyLinkedList dashed;
+```

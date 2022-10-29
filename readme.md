@@ -1,4 +1,4 @@
-Пайтон Джуньор Плюс, или что вам нужно знать перед тем, как заплатить за курсы
+Пайтон джуньор плюс, или Карта Сокровищ
 
 ### Введение
 
@@ -18,6 +18,123 @@
 Также я бы рекомендовал для изучения базового синтаксиса Python на полную катушку использовать [leetcode.com](https://leetcode.com/problemset/all/?difficulty=EASY&page=1&status=NOT_STARTED). Если отфильтровать задачи по уровню «Easy», а потом добавить дополнительную сортировку по столбцу «Acceptance», то перед вами предстанет не волчий оскал соревновательной платформы, а ванильный букварь с плавно нарастающим уровнем задачек.
 
 Что ж, пожалуй, довольно запрягать. Погнали!  
+
+### Оглавление
+
+```mermaid
+flowchart TD
+Data_Structures==>Data_Management==>Data_Flows==>OOP
+
+subgraph Data_Structures
+direction LR
+List(list) -.-> Tuple -.-> Dict -.-> Set -.-> Array -.-> Linked_List -.->Tree -.-> Python_specific_data_structures
+subgraph Tuple
+direction LR
+tuple(tuple)
+namedtuple(namedtuple)
+end
+subgraph Dict
+direction LR
+dict(dict)
+HashProblem("Проблема вычисления хеша")
+defaultdict(defaultdict)
+Counter
+end
+subgraph Set
+direction LR
+set(set)
+FrozenSet("frozen set")
+end
+subgraph Array
+direction LR
+array(array)
+bytes(bytes)
+bytearray(bytearray)
+end
+subgraph Linked_List
+direction LR
+SinglyLinkedList("Singly linked list")
+subgraph Doubly_Linked_List
+direction LR
+deque(deque)
+Queue(Queue)
+end
+end
+subgraph Tree
+direction LR
+tree(tree)
+heap(heap)
+B-tree(B-tree)
+RedBlackTree("Red–black tree")
+AVLTree("AVL tree")
+trie(trie)
+end
+subgraph Python_specific_data_structures
+direction LR
+enum(enum)
+range(range)
+dataclass(dataclass)
+struct(struct)
+string(string)
+datetime(datetime)
+end
+end
+
+subgraph Data_Management
+slice(slice)
+subgraph Sorting
+direction LR
+sort(sort)
+sorted(sorted)
+end
+bisect(bisect)
+subgraph Comprehension
+direction LR
+listcomprehension(list)
+dictcomprehension(dict)
+setcomprehension(set)
+end
+functools
+datetime_management
+string_management
+re
+end
+
+subgraph Data_Flows
+itertools
+enumerate
+generator
+subgraph Decorator
+direction LR
+decorator(decorator)
+LRUCache("LRU Cache")
+param_decorator("Параметризованный декоратор")
+end
+context("Контекстный менеджер (with)")
+end
+
+subgraph OOP
+subgraph Class
+direction LR
+Comparable(Comparable)
+Hashable(Hashable)
+Sortable(Sortable)
+Callable(Callable)
+end
+__slots__
+object_copy("Копирование объектов")
+MRO
+metaprogramming("Метапрограммирование")
+
+end
+
+classDef dashed stroke-dasharray:5 5
+class B-tree dashed;
+class RedBlackTree dashed;
+class AVLTree dashed;
+class trie dashed;
+class SinglyLinkedList dashed;
+```
 ## 1. Структуры данных
 
 Как известно, программирование = структуры данных + алгоритмы (у Никлауса Вирта даже книжка такая есть). Начнем с данных, а потом плавненько перейдем к методам их обработки.
@@ -423,7 +540,7 @@ print(a, b, c, q.queue)
 
 ### Бинарное дерево <a name="basicbinarytree"></a>  
 
-Иерархическая структура данных, в которой каждый узел имеет не более двух потомков. Встроенной реализации не имеет, нужно писать свою.
+Иерархическая структура данных, в которой каждый узел имеет не более двух потомков. Встроенной реализации не имеет, нужно писать свою. Как правило, используются деревья с дополнительными свойствами, рассмотренные ниже.
 
 ### Куча (heap)
 
@@ -765,9 +882,9 @@ print (f"{tz1}\n {tz2}\n {tz3}\n {tz4}\n {local_dt}\n {utc_dt}")
 
 Большую часть своей осмысленной жизни я разрабатывал встроенные устройства на базе микроконтроллеров, 50/50 занимаясь схемотехникой и программированием. Моей последней «железячной» разработкой стал двадцатипятигигабитный маршрутизатор на базе шестнадцатиядерного процессора (звучит как заклинание из «Гарри Поттера» :), что по сложности примерно соответствует материнской плате персонального компьютера, после чего я перешел в чистые программисты. До этого в основном работал с ассемблером, C и C#, а на базе своих заметок по вновь изучаемому Python я и написал эту статью. На мой взгляд, достаточно логично сразу озвучить потенциальному работодателю свой примерный профессиональный уровень; завалить собеседование я не боюсь (всё равно профит, пообщаюсь с умными людьми), а вот понимания своего несоответствия занимаемой должности, выявленного в течении испытательного срока, хотелось бы избежать.
 
-Собственно, всё что я хотел бы вам сообщить: мой [Github](https://github.com/amaargiru), [резюме](https://github.com/amaargiru/cv), емейл war4one@gmail.com и телефон 8 917 809-89-81 (лучше пишите в Telegram или WhatsApp).
+Собственно, вот всё, что я хотел бы вам сообщить: моё [резюме](https://github.com/amaargiru/cv), [Github](https://github.com/amaargiru), емейл war4one@gmail.com и телефон 8 917 809-89-81 (лучше пишите в Telegram или WhatsApp).
 
-Засим вернёмся в основное русло нашего повествования.
+А теперь давайте вернёмся в основное русло нашего повествования.
 ## 2. Обработка данных
 
 ### Срез (slice)
@@ -1046,88 +1163,6 @@ print(all_animal)
 
     True
     False
-    
-
-### Itertools
-
-Методы модуля itertools возвращают *итераторы*. В «нормальные» данные итераторы перегоняются при помощи for, next или list(). Итераторы могут быть бесконечными (порождаются при помощи count(), cycle() или repeat()) и конечными (accumulate(), chain(), takewhile() и другие). Лучше изучить их все, хотя бы поверхностно, потому что даже относительно редко употребляемый метод, например, какой-нибудь zip_longest(), иногда весьма и весьма пригождается, идеально ложась на поставленную задачу.
-
-
-```python
-
-from itertools import count, repeat, cycle, pairwise, chain
-
-# Итератор, возвращающий равномерно распределенные значения
-i1 = count(start=0, step=.1)
-print(next(i1))
-print(next(i1))
-print(next(i1))
-
-# Итератор, возвращающий один и тот же объект бесконечно, если не указано значение аргумента times
-i2 = repeat("Wow!", times=3)
-print(list(i2))
-
-# Итератор, циклично и бесконечно возвращающий элементы итерируемого объекта
-i3 = cycle([1, 2])
-print(next(i3))
-print(next(i3))
-print(next(i3))
-
-# Возвращает элементы входной коллекции попарно
-i4 = pairwise([1, 2, 3, 4, 5])
-print(list(i4))
-
-# Итератор, формирующий из нескольких входных последовательностей одну общую
-i5 = chain(["A", "B", "C"],["D", "E", "F"],["G", "H", "I"])
-print(list(i5))
-# Кстати, такой же трюк можно провернуть при помощи обычной sum(), задав ей начальный параметр []
-a = sum([["A", "B", "C"],["D", "E", "F"],["G", "H", "I"]], [])
-print(a)
-```
-
-    0
-    0.1
-    0.2
-    ['Wow!', 'Wow!', 'Wow!']
-    1
-    2
-    1
-    [(1, 2), (2, 3), (3, 4), (4, 5)]
-    ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I']
-    ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I']
-    
-
-Комбинаторика
-
-
-```python
-from itertools import product, combinations, combinations_with_replacement, permutations
-
-# Создает множество, содержащее все упорядоченные пары элементов из входных множеств
-a = product("abc", "xyz")
-print(list(a))
-
-b = product([0, 1], repeat=3)
-print(list(b))
-
-# Возвращает подпоследовательности длины r из элементов входного итерируемого объекта, повторяющиеся элементы не допускаются
-c = combinations("abc", r=2)
-print(list(c))
-
-# Возвращает подпоследовательности длины r из элементов входного итерируемого объекта, повторяющиеся элементы допустимы
-d = combinations_with_replacement("abc", r=2)
-print(list(d))
-
-# Выдает перестановки элементов итерируемого объекта
-e = permutations("abc", r=2)
-print(list(e))
-```
-
-    [('a', 'x'), ('a', 'y'), ('a', 'z'), ('b', 'x'), ('b', 'y'), ('b', 'z'), ('c', 'x'), ('c', 'y'), ('c', 'z')]
-    [(0, 0, 0), (0, 0, 1), (0, 1, 0), (0, 1, 1), (1, 0, 0), (1, 0, 1), (1, 1, 0), (1, 1, 1)]
-    [('a', 'b'), ('a', 'c'), ('b', 'c')]
-    [('a', 'a'), ('a', 'b'), ('a', 'c'), ('b', 'b'), ('b', 'c'), ('c', 'c')]
-    [('a', 'b'), ('a', 'c'), ('b', 'a'), ('b', 'c'), ('c', 'a'), ('c', 'b')]
     
 
 ### datetime encode
@@ -1979,7 +2014,7 @@ print(s.sum())
     42
     
 
-При объединении нескольких Series получается DataFrame, который в первом приближении можно рассматривать как лист Excel.
+При объединении нескольких Series получается DataFrame, вторая базовая структура данных pandas, которую в первом приближении можно рассматривать как лист Excel.
 
 
 ```python
@@ -2044,20 +2079,94 @@ if __name__ == '__main__':
 
 
     
-![png](01_python_02_primitive_data_processing_files/01_python_02_primitive_data_processing_92_1.png)
+![png](01_python_02_primitive_data_management_files/01_python_02_primitive_data_management_88_1.png)
     
 
 
 На самом деле Халк, конечно, не толстый, а профессиональный спортсмен, к которым формула ИМТ малоприменима, но крошка Кайли действительно вырывается вперед, даже с учетом своего небольшого роста.
 ## 3. Потоки данных
 
-### Итераторы
+### Itertools
+
+Методы модуля itertools возвращают *итераторы*. В «нормальные» данные итераторы перегоняются при помощи for, next или list(). Итераторы могут быть бесконечными (порождаются при помощи count(), cycle() или repeat()) и конечными (accumulate(), chain(), takewhile() и другие). Лучше изучить их все, хотя бы поверхностно, потому что даже относительно редко употребляемый метод, например, какой-нибудь zip_longest(), иногда весьма и весьма пригождается, идеально ложась на поставленную задачу.
+
+
 ```python
-<iter> = iter(<collection>)                 # `iter(<iter>)` returns unmodified iterator.
-<iter> = iter(<function>, to_exclusive)     # A sequence of return values until 'to_exclusive'.
-<el>   = next(<iter> [, default])           # Raises StopIteration or returns 'default' on end.
-<list> = list(<iter>)                       # Returns a list of iterator's remaining elements.
+
+from itertools import count, repeat, cycle, pairwise, chain
+
+# Итератор, возвращающий равномерно распределенные значения
+i1 = count(start=0, step=.1)
+print(next(i1))
+print(next(i1))
+print(next(i1))
+
+# Итератор, возвращающий один и тот же объект бесконечно, если не указано значение аргумента times
+i2 = repeat("Wow!", times=3)
+print(list(i2))
+
+# Итератор, циклично и бесконечно возвращающий элементы итерируемого объекта
+i3 = cycle([1, 2])
+print(next(i3))
+print(next(i3))
+print(next(i3))
+
+# Возвращает элементы входной коллекции попарно
+i4 = pairwise([1, 2, 3, 4, 5])
+print(list(i4))
+
+# Итератор, формирующий из нескольких входных последовательностей одну общую
+i5 = chain(["A", "B", "C"],["D", "E", "F"],["G", "H", "I"])
+print(list(i5))
+# Кстати, такой же трюк можно провернуть при помощи обычной sum(), задав ей начальный параметр []
+a = sum([["A", "B", "C"],["D", "E", "F"],["G", "H", "I"]], [])
+print(a)
 ```
+
+    0
+    0.1
+    0.2
+    ['Wow!', 'Wow!', 'Wow!']
+    1
+    2
+    1
+    [(1, 2), (2, 3), (3, 4), (4, 5)]
+    ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I']
+    ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I']
+    
+
+Комбинаторика
+
+
+```python
+from itertools import product, combinations, combinations_with_replacement, permutations
+
+# Создает множество, содержащее все упорядоченные пары элементов из входных множеств
+a = product("abc", "xyz")
+print(list(a))
+
+b = product([0, 1], repeat=3)
+print(list(b))
+
+# Возвращает подпоследовательности длины r из элементов входного итерируемого объекта, повторяющиеся элементы не допускаются
+c = combinations("abc", r=2)
+print(list(c))
+
+# Возвращает подпоследовательности длины r из элементов входного итерируемого объекта, повторяющиеся элементы допустимы
+d = combinations_with_replacement("abc", r=2)
+print(list(d))
+
+# Выдает перестановки элементов итерируемого объекта
+e = permutations("abc", r=2)
+print(list(e))
+```
+
+    [('a', 'x'), ('a', 'y'), ('a', 'z'), ('b', 'x'), ('b', 'y'), ('b', 'z'), ('c', 'x'), ('c', 'y'), ('c', 'z')]
+    [(0, 0, 0), (0, 0, 1), (0, 1, 0), (0, 1, 1), (1, 0, 0), (1, 0, 1), (1, 1, 0), (1, 1, 1)]
+    [('a', 'b'), ('a', 'c'), ('b', 'c')]
+    [('a', 'a'), ('a', 'b'), ('a', 'c'), ('b', 'b'), ('b', 'c'), ('c', 'c')]
+    [('a', 'b'), ('a', 'c'), ('b', 'a'), ('b', 'c'), ('c', 'a'), ('c', 'b')]
+    
 
 ### Enumerate
 ```text
@@ -2238,7 +2347,7 @@ def fib(n):
 Default size of the cache is 128 values. Passing 'maxsize=None' makes it unbounded.
 CPython interpreter limits recursion depth to 1000 by default. To increase it use 'sys.setrecursionlimit(<depth>)'.
 
-### Parametrized Decorator
+### Параметризованный декоратор
 A decorator that accepts arguments and returns a normal decorator that accepts a function.
 
 ```python
@@ -2311,7 +2420,7 @@ class MyOpen:
 Hello World!
 ## 4. ООП
 
-### Классы, объекты
+### Классы и объекты
 
 Что такое магические методы, для чего нужны?
 
@@ -2450,14 +2559,6 @@ def func(<arg_name>: <type> [= <obj>]) -> <type>:
 <var_name>: typing.List/Set/Iterable/Sequence/Optional[<type>]
 <var_name>: typing.Dict/Tuple/Union[<type>, ...]
 
-### Slots
-Mechanism that restricts objects to attributes listed in 'slots' and significantly reduces their memory footprint.
-
-class MyClassWithSlots:
-    __slots__ = ['a']
-    def __init__(self):
-        self.a = 1
-
 ### Copy
  
 from copy import copy, deepcopy
@@ -2563,6 +2664,13 @@ class Counter:
 
 ### \_\_slots\_\_
 
+Mechanism that restricts objects to attributes listed in 'slots' and significantly reduces their memory footprint.
+
+class MyClassWithSlots:
+    __slots__ = ['a']
+    def __init__(self):
+        self.a = 1
+
 Классы хранят поля и их значения в секретном словаре dict. Поскольку словарь – изменяемая структура, вы можете на лету добавлять и удалять из класса поля. Параметр slots в классе жестко фиксирует набор полей класса. Слоты используются когда у класса может быть очень много полей, например, в некоторых ORM, либо когда критична производительность, потому что доступ к слоту срабатывает быстрее, чем поиск в словаре.
 
 Слоты активно используются в библиотеках requests и falcon.
@@ -2609,7 +2717,6 @@ Type is the root class. If only passed an object it returns its type (class). Ot
 
 Singleton через метаклассы
 
-Что переменная цикла?
 Какие задачи решали с помощью метаклассов?
 
 ### Meta Class
