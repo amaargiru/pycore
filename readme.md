@@ -21,7 +21,10 @@
 
 ### Оглавление
 
+Ниже вы видете оглавление, сделанное для лучшего усвоения не плоским, а в виде диаграммы (сама диаграмма, кстати, сделана на базе [Mermaid](https://habr.com/ru/news/t/651569/), так что вы легко можете менять картинку, просто корректируя текстовый файл). Темы, обязательные к глубокому практическому изучению, обведены сплошной линией. Прерывистый контур означает темы (достаточно немногочисленные, как вы видите), с которыми пока можно ознакомиться в пол-силы, необязательно плотно использовать на практике, но нужно чётко понимать, что это, для чего необходимо, плюсы и минусы; держать, так сказать, в «горячем резерве».
+
 ```mermaid
+
 flowchart TD
 Data_Structures==>Data_Management==>Data_Flows==>OOP
 
@@ -81,23 +84,39 @@ end
 end
 
 subgraph Data_Management
-slice(slice)
+direction LR
+slice(slice) -.-> Sorting -.-> Comprehension -.-> bisect(bisect) -.-> functools(functools) -.-> datetime_management(datetime_management) -.-> String_Management -.->File -.-> Data_Analysis
 subgraph Sorting
 direction LR
 sort(sort)
 sorted(sorted)
 end
-bisect(bisect)
 subgraph Comprehension
 direction LR
 listcomprehension(list)
 dictcomprehension(dict)
 setcomprehension(set)
 end
-functools
-datetime_management
-string_management
-re
+subgraph String_Management
+direction LR
+String_Built-in_Functions("Built-in functions")
+regex(regex)
+end
+subgraph File
+direction LR
+Read_Write("read/write")
+Text_Binary("text/binary")
+JSON(JSON)
+Pickle("Pickle")
+Protocol_Buffers("Protocol Buffers")
+paths(paths)
+end
+subgraph Data_Analysis
+direction LR
+Data_Built-in_Functions("Built-in functions")
+NumPy(NumPy)
+Pandas(Pandas)
+end
 end
 
 subgraph Data_Flows
@@ -134,6 +153,9 @@ class RedBlackTree dashed;
 class AVLTree dashed;
 class trie dashed;
 class SinglyLinkedList dashed;
+class regex dashed;
+class Protocol_Buffers dashed;
+class Pandas dashed;
 ```
 ## 1. Структуры данных
 
@@ -1165,87 +1187,6 @@ print(all_animal)
     False
     
 
-### datetime encode
-
-Python использует Unix Epoch: "1970-01-01 00:00 UTC"
-
-
-```python
-from datetime import datetime
-from dateutil.tz import tzlocal
-
-dt1: datetime = datetime.fromisoformat("2021-10-04 00:05:23.555+00:00")  # Может вызвать ValueError
-dt2: datetime = datetime.strptime("21/10/04 17:30", "%d/%m/%y %H:%M")   # Подробнее про форматы - https://docs.python.org/3/library/datetime.html#strftime-and-strptime-format-codes
-dt3: datetime = datetime.fromordinal(100_000)  # 100000-й день от 1.1.0001
-dt4: datetime = datetime.fromtimestamp(20_000_000.01)  # Время в секундах с начала Unix Epoch
-
-tz = tzlocal()
-dt5: datetime = datetime.fromtimestamp(20_000_000.01, tz)  # С учетом часового пояса
-
-print (f"{dt1}\n {dt2}\n {dt3}\n {dt4}\n {dt5}")
-```
-
-    2021-10-04 00:05:23.555000+00:00
-     2004-10-21 17:30:00
-     0274-10-16 00:00:00
-     1970-08-20 16:33:20.010000
-     1970-08-20 16:33:20.010000+05:00
-    
-
-### datetime decode
-
-
-```python
-from datetime import datetime
-
-dt1: datetime = datetime.today()
-
-s1: str = dt1.isoformat()
-s2: str = dt1.strftime("%d/%m/%y %H:%M")  # https://docs.python.org/3/library/datetime.html#strftime-and-strptime-format-codes
-i: int = dt1.toordinal()
-a: float = dt1.timestamp()  # Секунды с начала Unix Epoch
-
-print (f"{dt1}\n {s1}\n {s2}\n {i}\n {a}")
-```
-
-    2022-09-06 17:50:38.041159
-     2022-09-06T17:50:38.041159
-     06/09/22 17:50
-     738404
-     1662468638.041159
-    
-
-### Арифметика datetime
-
-
-```python
-from datetime import date, time, datetime, timedelta
-from dateutil.tz import UTC, tzlocal, gettz, datetime_exists, resolve_imaginary
-
-d: date  = date.today()
-dt1: datetime = datetime.today()
-dt2: datetime = datetime(year=1981, month=12, day=2)
-td1: timedelta = timedelta(days=5)
-td2: timedelta = timedelta(days=1)
-
-d = d + td1  # date = date ± timedelta
-dt3 = dt1 - td1  # datetime = datetime ± timedelta
-
-td3 = dt1 - dt2  # timedelta = datetime - datetime
-
-td4 = 10 * td1  # timedelta = const * timedelta
-c: float = td1/td2  # timedelta/timedelta
-
-print (f"{d}\n {dt3}\n {td3}\n {td4}\n {c}")
-```
-
-    2022-09-11
-     2022-09-01 17:50:38.132916
-     14888 days, 17:50:38.132916
-     50 days, 0:00:00
-     5.0
-    
-
 ### Операции над строками. lower(), upper(), capitalize() и title()
 
 
@@ -1423,6 +1364,87 @@ print (f"{s3}\n {s4}\n {t1}\n {start}\n {end}\n {t2}\n")
     
     
 
+### datetime encode
+
+Python использует Unix Epoch: "1970-01-01 00:00 UTC"
+
+
+```python
+from datetime import datetime
+from dateutil.tz import tzlocal
+
+dt1: datetime = datetime.fromisoformat("2021-10-04 00:05:23.555+00:00")  # Может вызвать ValueError
+dt2: datetime = datetime.strptime("21/10/04 17:30", "%d/%m/%y %H:%M")   # Подробнее про форматы - https://docs.python.org/3/library/datetime.html#strftime-and-strptime-format-codes
+dt3: datetime = datetime.fromordinal(100_000)  # 100000-й день от 1.1.0001
+dt4: datetime = datetime.fromtimestamp(20_000_000.01)  # Время в секундах с начала Unix Epoch
+
+tz = tzlocal()
+dt5: datetime = datetime.fromtimestamp(20_000_000.01, tz)  # С учетом часового пояса
+
+print (f"{dt1}\n {dt2}\n {dt3}\n {dt4}\n {dt5}")
+```
+
+    2021-10-04 00:05:23.555000+00:00
+     2004-10-21 17:30:00
+     0274-10-16 00:00:00
+     1970-08-20 16:33:20.010000
+     1970-08-20 16:33:20.010000+05:00
+    
+
+### datetime decode
+
+
+```python
+from datetime import datetime
+
+dt1: datetime = datetime.today()
+
+s1: str = dt1.isoformat()
+s2: str = dt1.strftime("%d/%m/%y %H:%M")  # https://docs.python.org/3/library/datetime.html#strftime-and-strptime-format-codes
+i: int = dt1.toordinal()
+a: float = dt1.timestamp()  # Секунды с начала Unix Epoch
+
+print (f"{dt1}\n {s1}\n {s2}\n {i}\n {a}")
+```
+
+    2022-09-06 17:50:38.041159
+     2022-09-06T17:50:38.041159
+     06/09/22 17:50
+     738404
+     1662468638.041159
+    
+
+### Арифметика datetime
+
+
+```python
+from datetime import date, time, datetime, timedelta
+from dateutil.tz import UTC, tzlocal, gettz, datetime_exists, resolve_imaginary
+
+d: date  = date.today()
+dt1: datetime = datetime.today()
+dt2: datetime = datetime(year=1981, month=12, day=2)
+td1: timedelta = timedelta(days=5)
+td2: timedelta = timedelta(days=1)
+
+d = d + td1  # date = date ± timedelta
+dt3 = dt1 - td1  # datetime = datetime ± timedelta
+
+td3 = dt1 - dt2  # timedelta = datetime - datetime
+
+td4 = 10 * td1  # timedelta = const * timedelta
+c: float = td1/td2  # timedelta/timedelta
+
+print (f"{d}\n {dt3}\n {td3}\n {td4}\n {c}")
+```
+
+    2022-09-11
+     2022-09-01 17:50:38.132916
+     14888 days, 17:50:38.132916
+     50 days, 0:00:00
+     5.0
+    
+
 ### Файлы
 
 Файловые операции стоят немного особняком от остальных методов обработки данных, так как подразумевают взаимодействие с неким постоянным энергонезависимым хранилищем данных. Так что если вам нужно сохранить данные *на завтра*, или, наоборот, нужно прочитать данные, которые вам предоставили *неделю назад*, то вам, очевидно, нужно будет работать с файлами. В файлах же осядет информация, которую мы передаем базам данных, но эту тему мы рассмотри ниже.
@@ -1442,7 +1464,7 @@ print(f.read())
 Исходный код скачивается [отсюда](https://github.com/amaargiru/pycore), VS Code лежит [здесь](https://code.visualstudio.com/download).
 
 Режимы (mode):  
-"r" — чтение (поведение по умоолчанию)  
+"r" — чтение (поведение по умолчанию)  
 "w" — запись (информация, ранее присутствующая в файле, будет стёрта)  
 "x" — эксклюзивное создание и запись; если файл уже существует, будет выброшено исключение FileExistsError  
 "a" — открытие с последующим добавлением в конец файла  
@@ -1489,53 +1511,6 @@ with open("f.txt", encoding="utf-8") as f:
 with open("f.txt", "w", encoding="utf-8") as f:
     f.write("Hello from file!")  # Или f.writelines(<collection>)
 ```
-
-### Пути (Paths)
-
-При работе с файлами не обойтись без манипулирования файловыми путями.
-
-
-```python
-from os import getcwd, path, listdir
-from pathlib import Path
-
-s1: str = getcwd()  # Возвращает текущую рабочую директорию
-print(s1)
-
-s2: str = path.abspath("f.txt")  # Возвращает полный путь
-print(s2)
-
-s3: str = path.basename(s2)  # Возвращает имя файла
-s4: str = path.dirname(s2)  # Возвращает путь без файла
-t1: tuple = path.splitext(s2)  # Возвращает кортеж из пути и имени файла
-print(s3, s4, t1)
-
-p = Path(s2)
-st = p.stat()
-print(st)
-
-b1: bool = p.exists()
-b2: bool = p.is_file()
-b3: bool = p.is_dir()
-print(b1, b2, b3)
-
-c: list = listdir(path=s1)  # Возвращает список имен файлов, находящихся по указанному пути
-print(c)
-
-s5: str = p.stem  # Возвращает имя файла без расширения
-s6: str  = p.suffix  # Возвращает расширение файла
-t2: tuple = p.parts  # Возвращает все элементы пути как отдельные строки
-print(s5, s6, t2)
-```
-
-    c:\Works\amaargiru\pycore
-    c:\Works\amaargiru\pycore\f.txt
-    f.txt c:\Works\amaargiru\pycore ('c:\\Works\\amaargiru\\pycore\\f', '.txt')
-    os.stat_result(st_mode=33206, st_ino=2251799814917120, st_dev=3628794147, st_nlink=1, st_uid=0, st_gid=0, st_size=16, st_atime=1662468638, st_mtime=1662468638, st_ctime=1661089564)
-    True True False
-    ['.git', '.gitignore', '.pytest_cache', '01_python.ipynb', '01_python.md', '02_postgre.md', '03_architecture.md', '04_algorithms.ipynb', '04_algorithms.md', '05_admin_devops.md', '06_pytest_mock.ipynb', '06_pytest_mock.md', '07_fastapi.md', '08_flask.md', '1.bin', '1.json', 'compose_readme.bat', 'coupling_vs_cohesion.svg', 'f.txt', 'gitflow.svg', 'graph_for_dfs.jpg', 'pycallgraph3.png', 'readme.md']
-    f .txt ('c:\\', 'Works', 'amaargiru', 'pycore', 'f.txt')
-    
 
 ### JSON
 
@@ -1598,6 +1573,53 @@ print(restored_from_file)
 
 ### Protocol Buffers
 Если вы хотите передавать и хранить данные, используя универсальную структуру, одинаково хорошо понимаемую всеми языками программирования (как JSON) и занимающую мало места (как Pickle), то можно посмотреть в сторону Protocol Buffers ([Wikipedia](https://en.wikipedia.org/wiki/Protocol_Buffers), [примеры для Python](https://developers.google.com/protocol-buffers/docs/pythontutorial)). Есть еще альтернативы, например, [FlatBuffers](https://google.github.io/flatbuffers/), [Apache Avro](https://avro.apache.org/) или [Thrift](https://thrift.apache.org/).
+
+### Пути (Paths)
+
+При работе с файлами не обойтись без манипулирования файловыми путями.
+
+
+```python
+from os import getcwd, path, listdir
+from pathlib import Path
+
+s1: str = getcwd()  # Возвращает текущую рабочую директорию
+print(s1)
+
+s2: str = path.abspath("f.txt")  # Возвращает полный путь
+print(s2)
+
+s3: str = path.basename(s2)  # Возвращает имя файла
+s4: str = path.dirname(s2)  # Возвращает путь без файла
+t1: tuple = path.splitext(s2)  # Возвращает кортеж из пути и имени файла
+print(s3, s4, t1)
+
+p = Path(s2)
+st = p.stat()
+print(st)
+
+b1: bool = p.exists()
+b2: bool = p.is_file()
+b3: bool = p.is_dir()
+print(b1, b2, b3)
+
+c: list = listdir(path=s1)  # Возвращает список имен файлов, находящихся по указанному пути
+print(c)
+
+s5: str = p.stem  # Возвращает имя файла без расширения
+s6: str  = p.suffix  # Возвращает расширение файла
+t2: tuple = p.parts  # Возвращает все элементы пути как отдельные строки
+print(s5, s6, t2)
+```
+
+    c:\Works\amaargiru\pycore
+    c:\Works\amaargiru\pycore\f.txt
+    f.txt c:\Works\amaargiru\pycore ('c:\\Works\\amaargiru\\pycore\\f', '.txt')
+    os.stat_result(st_mode=33206, st_ino=2251799814917120, st_dev=3628794147, st_nlink=1, st_uid=0, st_gid=0, st_size=16, st_atime=1662468638, st_mtime=1662468638, st_ctime=1661089564)
+    True True False
+    ['.git', '.gitignore', '.pytest_cache', '01_python.ipynb', '01_python.md', '02_postgre.md', '03_architecture.md', '04_algorithms.ipynb', '04_algorithms.md', '05_admin_devops.md', '06_pytest_mock.ipynb', '06_pytest_mock.md', '07_fastapi.md', '08_flask.md', '1.bin', '1.json', 'compose_readme.bat', 'coupling_vs_cohesion.svg', 'f.txt', 'gitflow.svg', 'graph_for_dfs.jpg', 'pycallgraph3.png', 'readme.md']
+    f .txt ('c:\\', 'Works', 'amaargiru', 'pycore', 'f.txt')
+    
 
 ### Простейшие вычисления — Sum, Count, Min, Max
 

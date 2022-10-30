@@ -21,7 +21,10 @@
 
 ### Оглавление
 
+Ниже вы видете оглавление, сделанное для лучшего усвоения не плоским, а в виде диаграммы (сама диаграмма, кстати, сделана на базе [Mermaid](https://habr.com/ru/news/t/651569/), так что вы легко можете менять картинку, просто корректируя текстовый файл). Темы, обязательные к глубокому практическому изучению, обведены сплошной линией. Прерывистый контур означает темы (достаточно немногочисленные, как вы видите), с которыми пока можно ознакомиться в пол-силы, необязательно плотно использовать на практике, но нужно чётко понимать, что это, для чего необходимо, плюсы и минусы; держать, так сказать, в «горячем резерве».
+
 ```mermaid
+
 flowchart TD
 Data_Structures==>Data_Management==>Data_Flows==>OOP
 
@@ -81,23 +84,39 @@ end
 end
 
 subgraph Data_Management
-slice(slice)
+direction LR
+slice(slice) -.-> Sorting -.-> Comprehension -.-> bisect(bisect) -.-> functools(functools) -.-> datetime_management(datetime_management) -.-> String_Management -.->File -.-> Data_Analysis
 subgraph Sorting
 direction LR
 sort(sort)
 sorted(sorted)
 end
-bisect(bisect)
 subgraph Comprehension
 direction LR
 listcomprehension(list)
 dictcomprehension(dict)
 setcomprehension(set)
 end
-functools
-datetime_management
-string_management
-re
+subgraph String_Management
+direction LR
+String_Built-in_Functions("Built-in functions")
+regex(regex)
+end
+subgraph File
+direction LR
+Read_Write("read/write")
+Text_Binary("text/binary")
+JSON(JSON)
+Pickle("Pickle")
+Protocol_Buffers("Protocol Buffers")
+paths(paths)
+end
+subgraph Data_Analysis
+direction LR
+Data_Built-in_Functions("Built-in functions")
+NumPy(NumPy)
+Pandas(Pandas)
+end
 end
 
 subgraph Data_Flows
@@ -134,4 +153,7 @@ class RedBlackTree dashed;
 class AVLTree dashed;
 class trie dashed;
 class SinglyLinkedList dashed;
+class regex dashed;
+class Protocol_Buffers dashed;
+class Pandas dashed;
 ```
