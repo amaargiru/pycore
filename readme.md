@@ -24,7 +24,6 @@
 Ниже вы видете оглавление, сделанное для лучшего усвоения не плоским, а в виде диаграммы (сама диаграмма, кстати, сделана на базе [Mermaid](https://habr.com/ru/news/t/651569/), так что вы легко можете менять картинку, просто корректируя текстовый файл). Темы, обязательные к глубокому практическому изучению, обведены сплошной линией. Прерывистый контур означает темы (достаточно немногочисленные, как вы видите), с которыми пока можно ознакомиться в пол-силы, необязательно плотно использовать на практике, но нужно чётко понимать, что это, для чего необходимо, плюсы и минусы; держать, так сказать, в «горячем резерве».
 
 ```mermaid
-
 flowchart TD
 Data_Structures==>Data_Management==>Data_Flows==>OOP
 
@@ -39,9 +38,9 @@ end
 subgraph Dict
 direction LR
 dict(dict)
-HashProblem("Проблема вычисления хеша")
+HashProblem("Hash collisions")
 defaultdict(defaultdict)
-Counter
+Counter(Counter)
 end
 subgraph Set
 direction LR
@@ -85,7 +84,7 @@ end
 
 subgraph Data_Management
 direction LR
-slice(slice) -.-> Sorting -.-> Comprehension -.-> bisect(bisect) -.-> functools(functools) -.-> datetime_management(datetime_management) -.-> String_Management -.->File -.-> Data_Analysis
+slice(slice) -.-> Sorting -.-> Comprehension -.-> bisect(bisect) -.-> Functools -.-> String_Management -.-> Datetime_Management -.->File -.-> Data_Analysis
 subgraph Sorting
 direction LR
 sort(sort)
@@ -97,11 +96,29 @@ listcomprehension(list)
 dictcomprehension(dict)
 setcomprehension(set)
 end
+
+subgraph Functools
+direction LR
+fmap(map)
+ffilter(filter)
+freduce(reduce)
+fpartial(partial)
+fmore(...)
+end
+
 subgraph String_Management
 direction LR
 String_Built-in_Functions("Built-in functions")
 regex(regex)
 end
+
+subgraph Datetime_Management
+direction LR
+encode(encode)
+decode(decode)
+dtmath(math)
+end
+
 subgraph File
 direction LR
 Read_Write("read/write")
@@ -120,16 +137,41 @@ end
 end
 
 subgraph Data_Flows
-itertools
+direction LR
+itertools -.-> enumerate -.-> generator -.-> Decorator -.-> context
+subgraph itertools
+direction LR
+subgraph Infinite_Iterators
+icount(count)
+icycle(cycle)
+irepeat(repeat)
+end
+subgraph Finite_Iterators
+count
+repeat
+cycle
+pairwise
+chain
+fimore(...)
+end
+subgraph Combinatorics
+
+product(product)
+combinations(combinations)
+combinations_with_replacement(combinations_with_replacement)
+permutations(permutations)
+end
+
+end
 enumerate
 generator
 subgraph Decorator
 direction LR
 decorator(decorator)
 LRUCache("LRU Cache")
-param_decorator("Параметризованный декоратор")
+param_decorator("Parameterized decorator")
 end
-context("Контекстный менеджер (with)")
+context("Context manager")
 end
 
 subgraph OOP
@@ -139,11 +181,29 @@ Comparable(Comparable)
 Hashable(Hashable)
 Sortable(Sortable)
 Callable(Callable)
+Collection(Collection)
+Sequence(Sequence)
 end
-__slots__
-object_copy("Копирование объектов")
-MRO
-metaprogramming("Метапрограммирование")
+slots(slots)
+subgraph Object_Copy
+direction LR
+shallow("Shallow copy")
+deep("Deep copy")
+end
+subgraph Inheritance
+direction LR
+objInheritance(Inheritance)
+Multiple_Inheritance("Multiple Inheritance")
+MRO(MRO)
+Inheritance_of_slots("Inheritance of slots")
+end
+
+subgraph Metaprogramming
+direction LR
+Metaclass("Meta Class")
+ABCMeta(ABCMeta)
+Registry(Registry)
+end
 
 end
 
@@ -156,6 +216,13 @@ class SinglyLinkedList dashed;
 class regex dashed;
 class Protocol_Buffers dashed;
 class Pandas dashed;
+class fmore dashed;
+class fimore dashed;
+class Metaclass dashed;
+class ABCMeta dashed;
+class Registry dashed;
+class Inheritance_of_slots dashed;
+
 ```
 ## 1. Структуры данных
 
@@ -2581,12 +2648,6 @@ def func(<arg_name>: <type> [= <obj>]) -> <type>:
 <var_name>: typing.List/Set/Iterable/Sequence/Optional[<type>]
 <var_name>: typing.Dict/Tuple/Union[<type>, ...]
 
-### Copy
- 
-from copy import copy, deepcopy
-<object> = copy(<object>)
-<object> = deepcopy(<object>)
-
 Duck Types
 ----------
 A duck type is an implicit type that prescribes a set of special methods. Any object that has those methods defined is considered a member of that duck type.
@@ -2705,6 +2766,10 @@ class MyClassWithSlots:
 
 Shallow Copy – это побитовая копия объекта. Созданный скопированный объект имеет точную копию значений в исходном объекте. Если одно из значений является ссылкой на другие объекты, копируются только адреса ссылок на них.
 Deep Copy – рекурсивно копирует все значения от исходного объекта к целевому, т. е. дублирует даже объекты, на которые ссылается исходный объект.
+
+from copy import copy, deepcopy
+<object> = copy(<object>)
+<object> = deepcopy(<object>)
 
 ## Что такое MRO? Какая разница между MRO2 и MR3 (diamond problem)?!!!
 
