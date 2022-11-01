@@ -25,7 +25,7 @@
 
 ```mermaid
 flowchart TD
-Data_Structures==>Data_Management==>Data_Flows==>OOP
+Data_Structures ==> Data_Management ==> Data_Flows ==> OOP ==> Language_Skeleton
 
 subgraph Data_Structures
 direction LR
@@ -204,8 +204,24 @@ Metaclass("Meta Class")
 ABCMeta(ABCMeta)
 Registry(Registry)
 end
-
 end
+
+subgraph Language_Skeleton
+
+subgraph Garbage_Collector
+direction LR
+reference_counting("Reference counting")
+garbage_collector("Garbage collector")
+debug_objgraph("Debug/objgraph")
+pypygc("PyPy GC")
+end
+GIL(GIL)
+args_kwargs("*args, **kwargs")
+lambda(lambda)
+Conditional_Expression("Conditional Expression")
+Closure
+end
+
 
 classDef dashed stroke-dasharray:5 5
 class B-tree dashed;
@@ -222,5 +238,6 @@ class Metaclass dashed;
 class ABCMeta dashed;
 class Registry dashed;
 class Inheritance_of_slots dashed;
+class pypygc dashed;
 
 ```
