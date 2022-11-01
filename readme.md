@@ -25,7 +25,7 @@
 
 ```mermaid
 flowchart TD
-Data_Structures==>Data_Management==>Data_Flows==>OOP
+Data_Structures ==> Data_Management ==> Data_Flows ==> OOP ==> Language_Skeleton ==> Multithreading_&_Multiprocessing
 
 subgraph Data_Structures
 direction LR
@@ -155,13 +155,11 @@ chain
 fimore(...)
 end
 subgraph Combinatorics
-
 product(product)
 combinations(combinations)
 combinations_with_replacement(combinations_with_replacement)
 permutations(permutations)
 end
-
 end
 enumerate
 generator
@@ -175,12 +173,15 @@ context("Context manager")
 end
 
 subgraph OOP
+direction LR
+Class -.-> slots -.-> Object_Copy -.->Inheritance -.-> Metaprogramming
 subgraph Class
 direction LR
 Comparable(Comparable)
 Hashable(Hashable)
 Sortable(Sortable)
 Callable(Callable)
+Iterable(Iterable)
 Collection(Collection)
 Sequence(Sequence)
 end
@@ -197,14 +198,96 @@ Multiple_Inheritance("Multiple Inheritance")
 MRO(MRO)
 Inheritance_of_slots("Inheritance of slots")
 end
-
 subgraph Metaprogramming
 direction LR
 Metaclass("Meta Class")
 ABCMeta(ABCMeta)
 Registry(Registry)
 end
+end
 
+subgraph Language_Skeleton
+subgraph Garbage_Collector
+direction LR
+reference_counting("Reference counting")
+garbage_collector("Garbage collector")
+debug_objgraph("Debug/objgraph")
+pypygc("PyPy GC")
+end
+GIL(GIL)
+args_kwargs("*args, **kwargs")
+lambda(lambda)
+Conditional_Expression("Conditional Expression")
+Closure
+subgraph Exception
+direction LR
+exception_handling("Exception handling")
+built_in_exceptions("Built-in exceptions")
+exception_raising("Exception raising")
+user_exception("User exceptions")
+exception_object("Exception Object")
+end
+subgraph Introspection
+direction LR
+variables(variables)
+attributes(attributes)
+parameters(parameters)
+end
+Operator
+end
+
+subgraph Multithreading_&_Multiprocessing
+direction LR
+Multithreading -.-> asyncio -.-> Multiprocessing -.->Synchronization
+subgraph Multithreading
+direction LR
+Thread(Thread)
+Thread_Pool_Executor("Thread pool executor")
+Timer
+end
+subgraph asyncio
+direction LR
+subgraph High_level_API
+create_task(create_task)
+gather(gather)
+wait_for(wait_for)
+hilapi_more("...")
+end
+subgraph asyncio_Queues
+asQueue(Queue)
+asPriorityQueue(PriorityQueue)
+asLifoQueue(LifoQueue)
+end
+subgraph asyncio_Streams
+StreamReader(StreamReader)
+StreamWriter(StreamWriter)
+end
+subgraph Low_level_API
+new_event_loop(new_event_loop)
+run_forever(run_forever)
+lowlapi_more("...")
+end
+end
+subgraph Multiprocessing
+direction LR
+Pool(Pool)
+Process(Process)
+Pipe(Pipe)
+Value(Value)
+muArray(Array)
+Manager(Manager)
+Listener(Listener)
+end
+
+subgraph Synchronization
+direction LR
+Lock(Lock)
+Event(Event)
+Condition(Condition)
+Semaphore(Semaphore)
+BoundedSemaphore(BoundedSemaphore)
+Barrier(Barrier)
+end
 end
 
 classDef dashed stroke-dasharray:5 5
@@ -222,7 +305,18 @@ class Metaclass dashed;
 class ABCMeta dashed;
 class Registry dashed;
 class Inheritance_of_slots dashed;
-
+class pypygc dashed;
+class Value dashed;
+class muArray dashed;
+class Manager dashed;
+class Listener dashed;
+class new_event_loop dashed;
+class run_forever dashed;
+class lowlapi_more dashed;
+class asLifoQueue dashed;
+class Timer dashed;
+class Low_level_API dashed;
+class Metaprogramming dashed;
 ```
 ## 1. Структуры данных
 
@@ -2743,6 +2837,101 @@ class Counter:
 >>> counter(), counter(), counter()
 (1, 2, 3)
 
+### Iterable
+Only required method is iter(). It should return an iterator of object's items.
+Contains() automatically works on any object that has iter() defined.
+
+```python
+class MyIterable:
+    def __init__(self, a):
+        self.a = a
+    def __iter__(self):
+        return iter(self.a)
+    def __contains__(self, el):
+        return el in self.a
+```
+ 
+>>> obj = MyIterable([1, 2, 3])
+>>> [el for el in obj]
+[1, 2, 3]
+>>> 1 in obj
+True
+
+https://ru.stackoverflow.com/questions/1025914/%D0%A7%D0%B5%D0%BC-%D0%BE%D1%82%D0%BB%D0%B8%D1%87%D0%B0%D1%8E%D1%82%D1%81%D1%8F-%D0%BF%D0%BE%D0%BD%D1%8F%D1%82%D0%B8%D1%8F-iterable-%D0%B8-sequence
+
+### Collection
+Only required methods are iter() and len().
+This cheatsheet actually means `'<iterable>'` when it uses `'<collection>'`.
+I chose not to use the name 'iterable' because it sounds scarier and more vague than 'collection'. The only drawback of this decision is that a reader could think a certain function doesn't accept iterators when it does, since iterators are the only built-in objects that are iterable but are not collections.
+ 
+class MyCollection:
+    def __init__(self, a):
+        self.a = a
+    def __iter__(self):
+        return iter(self.a)
+    def __contains__(self, el):
+        return el in self.a
+    def __len__(self):
+        return len(self.a)
+
+### Sequence
+Only required methods are len() and getitem().
+Getitem() should return an item at the passed index or raise IndexError.
+Iter() and contains() automatically work on any object that has getitem() defined.
+Reversed() automatically works on any object that has len() and getitem() defined.
+ 
+class MySequence:
+    def __init__(self, a):
+        self.a = a
+    def __iter__(self):
+        return iter(self.a)
+    def __contains__(self, el):
+        return el in self.a
+    def __len__(self):
+        return len(self.a)
+    def __getitem__(self, i):
+        return self.a[i]
+    def __reversed__(self):
+        return reversed(self.a)
+
+### ABC Sequence
+It's a richer interface than the basic sequence.
+Extending it generates iter(), contains(), reversed(), index() and count().
+Unlike `'abc.Iterable'` and `'abc.Collection'`, it is not a duck type. That is why `'issubclass(MySequence, abc.Sequence)'` would return False even if MySequence had all the methods defined.
+
+```python
+from collections import abc
+
+class MyAbcSequence(abc.Sequence):
+    def __init__(self, a):
+        self.a = a
+    def __len__(self):
+        return len(self.a)
+    def __getitem__(self, i):
+        return self.a[i]
+```
+
+#### Table of required and automatically available special methods:
+```text
++------------+------------+------------+------------+--------------+
+|            |  Iterable  | Collection |  Sequence  | abc.Sequence |
++------------+------------+------------+------------+--------------+
+| iter()     |    REQ     |    REQ     |    Yes     |     Yes      |
+| contains() |    Yes     |    Yes     |    Yes     |     Yes      |
+| len()      |            |    REQ     |    REQ     |     REQ      |
+| getitem()  |            |            |    REQ     |     REQ      |
+| reversed() |            |            |    Yes     |     Yes      |
+| index()    |            |            |            |     Yes      |
+| count()    |            |            |            |     Yes      |
++------------+------------+------------+------------+--------------+
+```
+
+Other ABCs that generate missing methods are: MutableSequence, Set, MutableSet, Mapping and MutableMapping.
+Names of their required methods are stored in `'<abc>.__abstractmethods__'`.
+
+#### Discrepancies between glossary definitions and abstract base classes:
+Glossary defines iterable as any object with iter() or getitem() and sequence as any object with len() and getitem(). It does not define collection.
+Passing ABC Iterable to isinstance() or issubclass() checks whether object/class has iter(), while ABC Collection checks for iter(), contains() and len().
 
 
 ### \_\_slots\_\_
@@ -2927,6 +3116,75 @@ args – это кортеж, который накапливает позици
 
 Важно: если в функцию не передано никаких параметров, переменные будут соответственно равны пустому кортежу и пустому словарю, а не None.
 
+Arguments
+---------
+### Inside Function Call
+ 
+<function>(<positional_args>)                  # f(0, 0)
+<function>(<keyword_args>)                     # f(x=0, y=0)
+<function>(<positional_args>, <keyword_args>)  # f(0, y=0)
+
+### Inside Function Definition
+ 
+def f(<nondefault_args>):                      # def f(x, y):
+def f(<default_args>):                         # def f(x=0, y=0):
+def f(<nondefault_args>, <default_args>):      # def f(x, y=0):
+ 
+A function has its default values evaluated when it's first encountered in the scope.
+Any changes to default values that are mutable will persist between invocations.
+
+Splat Operator
+--------------
+### Inside Function Call
+Splat expands a collection into positional arguments, while splatty-splat expands a dictionary into keyword arguments.
+ 
+args   = (1, 2)
+kwargs = {'x': 3, 'y': 4, 'z': 5}
+func(*args, **kwargs)
+
+#### Is the same as:
+ 
+func(1, 2, x=3, y=4, z=5)
+
+### Inside Function Definition
+Splat combines zero or more positional arguments into a tuple, while splatty-splat combines zero or more keyword arguments into a dictionary.
+ 
+def add(*a):
+    return sum(a)
+
+>>> add(1, 2, 3)
+6
+
+#### Legal argument combinations:
+ 
+def f(*, x, y, z):          # f(x=1, y=2, z=3)
+def f(x, *, y, z):          # f(x=1, y=2, z=3) | f(1, y=2, z=3)
+def f(x, y, *, z):          # f(x=1, y=2, z=3) | f(1, y=2, z=3) | f(1, 2, z=3)
+
+def f(*args):               # f(1, 2, 3)
+def f(x, *args):            # f(1, 2, 3)
+def f(*args, z):            # f(1, 2, z=3)
+
+def f(**kwargs):            # f(x=1, y=2, z=3)
+def f(x, **kwargs):         # f(x=1, y=2, z=3) | f(1, y=2, z=3)
+def f(*, x, **kwargs):      # f(x=1, y=2, z=3)
+
+def f(*args, **kwargs):     # f(x=1, y=2, z=3) | f(1, y=2, z=3) | f(1, 2, z=3) | f(1, 2, 3)
+def f(x, *args, **kwargs):  # f(x=1, y=2, z=3) | f(1, y=2, z=3) | f(1, 2, z=3) | f(1, 2, 3)
+def f(*args, y, **kwargs):  # f(x=1, y=2, z=3) | f(1, y=2, z=3)
+
+### Other Uses
+ 
+<list>  = [*<collection> [, ...]]
+<set>   = {*<collection> [, ...]}
+<tuple> = (*<collection>, [...])
+<dict>  = {**<dict> [, ...]}
+ 
+head, *body, tail = <collection>
+
+Как передаются значения аргументов в функцию или метод?
+Как передаются аргументы функций в Python (by value or reference)?  
+
 ### lambda-функции
 
 Это анонимные функции. Они не резервируют имени в пространстве имен. Лямбды часто передают в функции map, reduce, filter.
@@ -3021,28 +3279,6 @@ finally:
     This part is always called
     
 
-### Вызов исключений
-
-
-```python
-from decimal import *
-
-def div(a: Decimal, b: Decimal) -> Decimal:
-    if b == 0:
-        raise ValueError("Second argument must be non-zero")
-    return a/b
-
-
-try:
-    c: Decimal = div(1, 0)
-except ValueError:
-    print("We have ValueError, as a planned!")
-    # raise # We can re-raise exception
-```
-
-    We have ValueError, as a planned!
-    
-
 ### Встроенные исключения
 ```text
 BaseException
@@ -3066,6 +3302,27 @@ BaseException
       +-- ValueError              # When an argument is of right type but inappropriate value
            +-- UnicodeError       # Encoding/decoding strings to/from bytes fails
 ```
+
+### Вызов исключений
+
+
+```python
+from decimal import *
+
+def div(a: Decimal, b: Decimal) -> Decimal:
+    if b == 0:
+        raise ValueError("Second argument must be non-zero")
+    return a/b
+
+try:
+    c: Decimal = div(1, 0)
+except ValueError:
+    print("We have ValueError, as a planned!")
+    # raise # We can re-raise exception
+```
+
+    We have ValueError, as a planned!
+    
 
 ### Выход из программы при помощи вызова исключения SystemExit
 
@@ -3133,16 +3390,14 @@ raise MyException("My car is broken")
     MyException: My car is broken
 
 
-### Exception Object
+Exception Object
 
-```python
 arguments = <name>.args
 exc_type = <name>.__class__
 filename = <name>.__traceback__.tb_frame.f_code.co_filename
 func_name = <name>.__traceback__.tb_frame.f_code.co_name
 line = linecache.getline(filename, <name>.__traceback__.tb_lineno)
 error_msg = ''.join(traceback.format_exception(exc_type, <name>, <name>.__traceback__))
-```
 
 ## PEP8
 
@@ -3191,73 +3446,32 @@ class Stack(object):
 ```
 
 
-### Collection
-Only required methods are iter() and len().
-This cheatsheet actually means `'<iterable>'` when it uses `'<collection>'`.
-I chose not to use the name 'iterable' because it sounds scarier and more vague than 'collection'. The only drawback of this decision is that a reader could think a certain function doesn't accept iterators when it does, since iterators are the only built-in objects that are iterable but are not collections.
- 
-class MyCollection:
-    def __init__(self, a):
-        self.a = a
-    def __iter__(self):
-        return iter(self.a)
-    def __contains__(self, el):
-        return el in self.a
-    def __len__(self):
-        return len(self.a)
-
-### Sequence
-Only required methods are len() and getitem().
-Getitem() should return an item at the passed index or raise IndexError.
-Iter() and contains() automatically work on any object that has getitem() defined.
-Reversed() automatically works on any object that has len() and getitem() defined.
- 
-class MySequence:
-    def __init__(self, a):
-        self.a = a
-    def __iter__(self):
-        return iter(self.a)
-    def __contains__(self, el):
-        return el in self.a
-    def __len__(self):
-        return len(self.a)
-    def __getitem__(self, i):
-        return self.a[i]
-    def __reversed__(self):
-        return reversed(self.a)
-
 ## Introspection
 
 Inspecting code at runtime.
 
 ### Variables
 
-```
 <list> = dir()                             # Names of local variables (incl. functions).
 <dict> = vars()                            # Dict of local variables. Also locals().
 <dict> = globals()                         # Dict of global variables.
-``` 
 
 ### Attributes
 
-```
 <list> = dir(<object>)                     # Names of object's attributes (incl. methods).
 <dict> = vars(<object>)                    # Dict of writable attributes. Also <obj>.__dict__.
 <bool> = hasattr(<object>, '<attr_name>')  # Checks if getattr() raises an AttributeError.
 value  = getattr(<object>, '<attr_name>')  # Raises AttributeError if attribute is missing.
 setattr(<object>, '<attr_name>', value)    # Only works on objects with '__dict__' attribute.
 delattr(<object>, '<attr_name>')           # Same. Also `del <object>.<attr_name>`.
-```
 
 ### Parameters
 
-```
 from inspect import signature
 <Sig>  = signature(<function>)             # Function's Signature object.
 <dict> = <Sig>.parameters                  # Dict of function's Parameter objects.
 <str>  = <Param>.name                      # Parameter's name.
 <memb> = <Param>.kind                      # Member of ParameterKind enum.
-```
 
 (использование dir(), dir, hasattr(), getattr())
 
@@ -3268,204 +3482,22 @@ from inspect import signature
 Operator
 --------
 Module of functions that provide the functionality of operators.
-```
+
 import operator as op
 <el>      = op.add/sub/mul/truediv/floordiv/mod(<el>, <el>)  # +, -, *, /, //, %
 <int/set> = op.and_/or_/xor(<int/set>, <int/set>)            # &, |, ^
 <bool>    = op.eq/ne/lt/le/gt/ge(<sortable>, <sortable>)     # ==, !=, <, <=, >, >=
 <func>    = op.itemgetter/attrgetter/methodcaller(<obj>)     # [index/key], .name, .name()
- ```
 
-```
 elementwise_sum  = map(op.add, list_a, list_b)
 sorted_by_second = sorted(<collection>, key=op.itemgetter(1))
 sorted_by_both   = sorted(<collection>, key=op.itemgetter(1, 0))
 product_of_elems = functools.reduce(op.mul, <collection>)
 union_of_sets    = functools.reduce(op.or_, <coll_of_sets>)
 first_element    = op.methodcaller('pop', 0)(<list>)
-```
  
 Binary operators require objects to have and(), or(), xor() and invert() special methods, unlike logical operators that work on all types of objects.
 Also: `'<bool> = <bool> &|^ <bool>'` and `'<int> = <bool> &|^ <int>'`.
-
-## Как передаются значения аргументов в функцию или метод?
-Как передаются аргументы функций в Python (by value or reference)?  
-
-Arguments
----------
-### Inside Function Call
- 
-<function>(<positional_args>)                  # f(0, 0)
-<function>(<keyword_args>)                     # f(x=0, y=0)
-<function>(<positional_args>, <keyword_args>)  # f(0, y=0)
-
-### Inside Function Definition
- 
-def f(<nondefault_args>):                      # def f(x, y):
-def f(<default_args>):                         # def f(x=0, y=0):
-def f(<nondefault_args>, <default_args>):      # def f(x, y=0):
- 
-A function has its default values evaluated when it's first encountered in the scope.
-Any changes to default values that are mutable will persist between invocations.
-
-Splat Operator
---------------
-### Inside Function Call
-Splat expands a collection into positional arguments, while splatty-splat expands a dictionary into keyword arguments.
- 
-args   = (1, 2)
-kwargs = {'x': 3, 'y': 4, 'z': 5}
-func(*args, **kwargs)
- 
-
-#### Is the same as:
- 
-func(1, 2, x=3, y=4, z=5)
- 
-
-### Inside Function Definition
-Splat combines zero or more positional arguments into a tuple, while splatty-splat combines zero or more keyword arguments into a dictionary.
- 
-def add(*a):
-    return sum(a)
- 
-
- 
->>> add(1, 2, 3)
-6
- 
-
-#### Legal argument combinations:
- 
-def f(*, x, y, z):          # f(x=1, y=2, z=3)
-def f(x, *, y, z):          # f(x=1, y=2, z=3) | f(1, y=2, z=3)
-def f(x, y, *, z):          # f(x=1, y=2, z=3) | f(1, y=2, z=3) | f(1, 2, z=3)
- 
-
- 
-def f(*args):               # f(1, 2, 3)
-def f(x, *args):            # f(1, 2, 3)
-def f(*args, z):            # f(1, 2, z=3)
- 
-
- 
-def f(**kwargs):            # f(x=1, y=2, z=3)
-def f(x, **kwargs):         # f(x=1, y=2, z=3) | f(1, y=2, z=3)
-def f(*, x, **kwargs):      # f(x=1, y=2, z=3)
- 
-
- 
-def f(*args, **kwargs):     # f(x=1, y=2, z=3) | f(1, y=2, z=3) | f(1, 2, z=3) | f(1, 2, 3)
-def f(x, *args, **kwargs):  # f(x=1, y=2, z=3) | f(1, y=2, z=3) | f(1, 2, z=3) | f(1, 2, 3)
-def f(*args, y, **kwargs):  # f(x=1, y=2, z=3) | f(1, y=2, z=3)
- 
-
-### Other Uses
- 
-<list>  = [*<collection> [, ...]]
-<set>   = {*<collection> [, ...]}
-<tuple> = (*<collection>, [...])
-<dict>  = {**<dict> [, ...]}
- 
-
- 
-head, *body, tail = <collection>
- 
-
-### Partial
- 
-from functools import partial
-<function> = partial(<function> [, <arg_1>, <arg_2>, ...])
- 
-
- 
->>> import operator as op
->>> multiply_by_3 = partial(op.mul, 3)
->>> multiply_by_3(10)
-30
- 
-Partial is also useful in cases when function needs to be passed as an argument because it enables us to set its arguments beforehand.
-A few examples being: `'defaultdict(<function>)'`, `'iter(<function>, to_exclusive)'` and dataclass's `'field(default_factory=<function>)'`.
-
-### Non-Local
-If variable is being assigned to anywhere in the scope, it is regarded as a local variable, unless it is declared as a 'global' or a 'nonlocal'.
-
- 
-def get_counter():
-    i = 0
-    def out():
-        nonlocal i
-        i += 1
-        return i
-    return out
- 
-
- 
->>> counter = get_counter()
->>> counter(), counter(), counter()
-(1, 2, 3)
-
-
-Iterable Duck Types
--------------------
-### Iterable
-Only required method is iter(). It should return an iterator of object's items.
-Contains() automatically works on any object that has iter() defined.
-
-```python
-class MyIterable:
-    def __init__(self, a):
-        self.a = a
-    def __iter__(self):
-        return iter(self.a)
-    def __contains__(self, el):
-        return el in self.a
-```
- 
->>> obj = MyIterable([1, 2, 3])
->>> [el for el in obj]
-[1, 2, 3]
->>> 1 in obj
-True
-
-#### Discrepancies between glossary definitions and abstract base classes:
-Glossary defines iterable as any object with iter() or getitem() and sequence as any object with len() and getitem(). It does not define collection.
-Passing ABC Iterable to isinstance() or issubclass() checks whether object/class has iter(), while ABC Collection checks for iter(), contains() and len().
-
-### ABC Sequence
-It's a richer interface than the basic sequence.
-Extending it generates iter(), contains(), reversed(), index() and count().
-Unlike `'abc.Iterable'` and `'abc.Collection'`, it is not a duck type. That is why `'issubclass(MySequence, abc.Sequence)'` would return False even if MySequence had all the methods defined.
-
-```python
-from collections import abc
-
-class MyAbcSequence(abc.Sequence):
-    def __init__(self, a):
-        self.a = a
-    def __len__(self):
-        return len(self.a)
-    def __getitem__(self, i):
-        return self.a[i]
-```
-
-#### Table of required and automatically available special methods:
-```text
-+------------+------------+------------+------------+--------------+
-|            |  Iterable  | Collection |  Sequence  | abc.Sequence |
-+------------+------------+------------+------------+--------------+
-| iter()     |    REQ     |    REQ     |    Yes     |     Yes      |
-| contains() |    Yes     |    Yes     |    Yes     |     Yes      |
-| len()      |            |    REQ     |    REQ     |     REQ      |
-| getitem()  |            |            |    REQ     |     REQ      |
-| reversed() |            |            |    Yes     |     Yes      |
-| index()    |            |            |            |     Yes      |
-| count()    |            |            |            |     Yes      |
-+------------+------------+------------+------------+--------------+
-```
-
-Other ABCs that generate missing methods are: MutableSequence, Set, MutableSet, Mapping and MutableMapping.
-Names of their required methods are stored in `'<abc>.__abstractmethods__'`.
 ## 6. Многопоточность и многозадачность
 
 Threading
@@ -3553,6 +3585,22 @@ An object with the same interface called ProcessPoolExecutor provides true paral
 
 понимание многопоточности, способов ей управлять и проблем, с этим связанных (синхронизации, локи, race condition и т.д.);
 
+## asyncio
+
+В JavaScript async / await сделаны жадными как Promise. При вызове async функции автоматически создается задача и отправляется в очередь на исполнение в event loop. await, в свою очередь, просто ждёт результат.
+
+В питоне асинхронщину задизайнили иначе - лениво.
+
+Вызов async функции возвращает объект - корутину, - которая ни чего не делает.
+
+asyncio.run() создаёт event loop, запускает (корневую) корутину и блокирует поток до получения результата.
+
+await запускает корутину изнутри другой корутины в текущем event loop и ждёт результат.
+
+Для запуска корутины без ожидания (как это делает Promise) используется asyncio.create_task(coro). Либо asyncio.gather(*aws), если надо запустить сразу несколько. Нужно только следить, чтобы ссылка на возвращаемое значение сохранялась до конца вычисления, иначе его пожрет GC и все оборвется на самом интересном месте (промис бы отработал до конца не смотря ни на что).
+
+В JS только один event loop, поэтому было вполне разумно закопать его внутрь promise / async / await как деталь реализации, упростив работу прикладному программисту. В питоне отзеркалили более ранний вариант корутин на генераторах, дали возможность использовать разные event loop и выставили все кишки наружу.
+
 
 ```python
 # Однопоточное приложение
@@ -3627,22 +3675,6 @@ if __name__ ==  '__main__':
 ```
 
 Count time 2.0029137134552
-
-## asyncio
-
-В JavaScript async / await сделаны жадными как Promise. При вызове async функции автоматически создается задача и отправляется в очередь на исполнение в event loop. await, в свою очередь, просто ждёт результат.
-
-В питоне асинхронщину задизайнили иначе - лениво.
-
-Вызов async функции возвращает объект - корутину, - которая ни чего не делает.
-
-asyncio.run() создаёт event loop, запускает (корневую) корутину и блокирует поток до получения результата.
-
-await запускает корутину изнутри другой корутины в текущем event loop и ждёт результат.
-
-Для запуска корутины без ожидания (как это делает Promise) используется asyncio.create_task(coro). Либо asyncio.gather(*aws), если надо запустить сразу несколько. Нужно только следить, чтобы ссылка на возвращаемое значение сохранялась до конца вычисления, иначе его пожрет GC и все оборвется на самом интересном месте (промис бы отработал до конца не смотря ни на что).
-
-В JS только один event loop, поэтому было вполне разумно закопать его внутрь promise / async / await как деталь реализации, упростив работу прикладному программисту. В питоне отзеркалили более ранний вариант корутин на генераторах, дали возможность использовать разные event loop и выставили все кишки наружу.
 ## 7. Популярные библиотеки
 
 ### Логгирование
@@ -3880,29 +3912,6 @@ pprint(<collection>, width=80, depth=None, compact=False, sort_dicts=True)
 ```
  
 Levels deeper than 'depth' get replaced by '...'.
-
-### OS Commands
-```
-import os, shutil, subprocess
-
-### Files and Directories
-Paths can be either strings, Paths or DirEntry objects.
-Functions report OS related errors by raising either OSError or one of its [subclasses](#exceptions-1).
- 
-os.chdir(<path>)                    # Changes the current working directory.
-os.mkdir(<path>, mode=0o777)        # Creates a directory. Mode is in octal.
-os.makedirs(<path>, mode=0o777)     # Creates all directories in the path.
-
-shutil.copy(from, to)               # Copies the file. 'to' can exist or be a dir.
-shutil.copytree(from, to)           # Copies the directory. 'to' must not exist.
-
-os.rename(from, to)                 # Renames/moves the file or directory.
-os.replace(from, to)                # Same, but overwrites 'to' if it exists.
-
-os.remove(<path>)                   # Deletes the file.
-os.rmdir(<path>)                    # Deletes the empty directory.
-shutil.rmtree(<path>)               # Deletes the directory.
-```
 
 ### Шифрование и дешифрование
 

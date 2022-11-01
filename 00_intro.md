@@ -25,7 +25,7 @@
 
 ```mermaid
 flowchart TD
-Data_Structures ==> Data_Management ==> Data_Flows ==> OOP ==> Language_Skeleton
+Data_Structures ==> Data_Management ==> Data_Flows ==> OOP ==> Language_Skeleton ==> Multithreading_&_Multiprocessing
 
 subgraph Data_Structures
 direction LR
@@ -155,13 +155,11 @@ chain
 fimore(...)
 end
 subgraph Combinatorics
-
 product(product)
 combinations(combinations)
 combinations_with_replacement(combinations_with_replacement)
 permutations(permutations)
 end
-
 end
 enumerate
 generator
@@ -175,12 +173,15 @@ context("Context manager")
 end
 
 subgraph OOP
+direction LR
+Class -.-> slots -.-> Object_Copy -.->Inheritance -.-> Metaprogramming
 subgraph Class
 direction LR
 Comparable(Comparable)
 Hashable(Hashable)
 Sortable(Sortable)
 Callable(Callable)
+Iterable(Iterable)
 Collection(Collection)
 Sequence(Sequence)
 end
@@ -197,7 +198,6 @@ Multiple_Inheritance("Multiple Inheritance")
 MRO(MRO)
 Inheritance_of_slots("Inheritance of slots")
 end
-
 subgraph Metaprogramming
 direction LR
 Metaclass("Meta Class")
@@ -207,7 +207,6 @@ end
 end
 
 subgraph Language_Skeleton
-
 subgraph Garbage_Collector
 direction LR
 reference_counting("Reference counting")
@@ -220,8 +219,76 @@ args_kwargs("*args, **kwargs")
 lambda(lambda)
 Conditional_Expression("Conditional Expression")
 Closure
+subgraph Exception
+direction LR
+exception_handling("Exception handling")
+built_in_exceptions("Built-in exceptions")
+exception_raising("Exception raising")
+user_exception("User exceptions")
+exception_object("Exception Object")
+end
+subgraph Introspection
+direction LR
+variables(variables)
+attributes(attributes)
+parameters(parameters)
+end
+Operator
 end
 
+subgraph Multithreading_&_Multiprocessing
+direction LR
+Multithreading -.-> asyncio -.-> Multiprocessing -.->Synchronization
+subgraph Multithreading
+direction LR
+Thread(Thread)
+Thread_Pool_Executor("Thread pool executor")
+Timer
+end
+subgraph asyncio
+direction LR
+subgraph High_level_API
+create_task(create_task)
+gather(gather)
+wait_for(wait_for)
+hilapi_more("...")
+end
+subgraph asyncio_Queues
+asQueue(Queue)
+asPriorityQueue(PriorityQueue)
+asLifoQueue(LifoQueue)
+end
+subgraph asyncio_Streams
+StreamReader(StreamReader)
+StreamWriter(StreamWriter)
+end
+subgraph Low_level_API
+new_event_loop(new_event_loop)
+run_forever(run_forever)
+lowlapi_more("...")
+end
+end
+subgraph Multiprocessing
+direction LR
+Pool(Pool)
+Process(Process)
+Pipe(Pipe)
+Value(Value)
+muArray(Array)
+Manager(Manager)
+Listener(Listener)
+end
+
+subgraph Synchronization
+direction LR
+Lock(Lock)
+Event(Event)
+Condition(Condition)
+Semaphore(Semaphore)
+BoundedSemaphore(BoundedSemaphore)
+Barrier(Barrier)
+end
+end
 
 classDef dashed stroke-dasharray:5 5
 class B-tree dashed;
@@ -239,5 +306,15 @@ class ABCMeta dashed;
 class Registry dashed;
 class Inheritance_of_slots dashed;
 class pypygc dashed;
-
+class Value dashed;
+class muArray dashed;
+class Manager dashed;
+class Listener dashed;
+class new_event_loop dashed;
+class run_forever dashed;
+class lowlapi_more dashed;
+class asLifoQueue dashed;
+class Timer dashed;
+class Low_level_API dashed;
+class Metaprogramming dashed;
 ```
