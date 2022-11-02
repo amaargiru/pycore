@@ -25,7 +25,7 @@
 
 ```mermaid
 flowchart TD
-Data_Structures ==> Data_Management ==> Data_Flows ==> OOP ==> Language_Skeleton ==> Multithreading_&_Multiprocessing
+Data_Structures ==> Data_Management ==> Data_Flows ==> OOP ==> Language_Skeleton ==> Multithreading_&_Multiprocessing ==> Common_Practice ==> SQL ==> Architecture
 
 subgraph Data_Structures
 direction LR
@@ -278,7 +278,6 @@ muArray(Array)
 Manager(Manager)
 Listener(Listener)
 end
-
 subgraph Synchronization
 direction LR
 Lock(Lock)
@@ -288,6 +287,117 @@ Semaphore(Semaphore)
 BoundedSemaphore(BoundedSemaphore)
 Barrier(Barrier)
 end
+end
+
+subgraph Common_Practice
+direction LR
+Logging -.-> Profiling -.-> Random -.-> Input -.-> Print -.-> hashlib
+Logging(Logging)
+subgraph Profiling
+direction LR
+Stopwatch(Stopwatch)
+perf_counter(perf_counter)
+timeit
+Call_Graph("Call Graph")
+end
+Random
+subgraph Input
+direction LR
+input(input)
+Command_Line_Arguments("Command Line Arguments")
+Argument_Parser("Argument Parser")
+end
+subgraph Print
+direction LR
+simple_print(print)
+json_print("json print")
+Pretty_Print("Pretty Print")
+end
+subgraph hashlib
+direction LR
+MD5(MD5)
+AES("AES")
+end
+end
+
+subgraph SQL
+direction LR
+DB_Basics -.-> SQL_Basics -.-> SQLite -.-> MySQL -.-> PostgreSQL
+subgraph DB_Basics
+direction LR
+Relational_model("Relational model")
+Transaction("Transaction")
+Isolation("Isolation")
+Nplusone("N+1 problem")
+SQL_injection("SQL injection")
+NoSQL(NoSQL)
+end
+subgraph SQL_Basics
+direction LR
+DDL(DDL)
+DML(DML)
+DCL(DCL)
+end
+subgraph SQLite
+direction LR
+SQLiteConnect(Connect)
+SQLiteWrite(Write)
+SQLiteRead(Read)
+end
+subgraph MySQL
+direction LR
+MySQLConnect(Connect)
+MySQLWrite(Write)
+MySQLRead(Read)
+end
+subgraph PostgreSQL
+direction LR
+PostgreSQL_benefits("PostgreSQL benefits")
+PostgreSQLConnect(Connect)
+PostgreSQLWrite(Write)
+PostgreSQLRead(Read)
+end
+end
+
+subgraph Architecture
+direction LR
+WhatIsArch -.-> Principles -.-> Paradigms -.-> Object-oriented -.-> Practices -.-> Development_lifecycle -.-> Microservices
+WhatIsArch("What is?")
+subgraph Principles
+direction LR
+subgraph SOLID
+SRP(SRP)
+OCP(OCP)
+LSP(LSP)
+ISP(ISP)
+DIP(DIP)
+end
+KISS
+DRY
+YAGNI
+end
+subgraph Paradigms
+direction LR
+Procedural(Procedural)
+Structured(Structured)
+parObject-oriented(Object-oriented)
+Functional(Functional)
+end
+subgraph Object-oriented
+direction LR
+ooInheritance(Inheritance)
+Encapsulation(Encapsulation)
+Polymorphism(Polymorphism)
+Abstraction(Abstraction)
+end
+subgraph Practices
+direction LR
+Agile
+Scrum
+Kanban
+end
+Development_lifecycle("Development lifecycle")
+Microservices(Microservices)
 end
 
 classDef dashed stroke-dasharray:5 5
@@ -317,4 +427,11 @@ class asLifoQueue dashed;
 class Timer dashed;
 class Low_level_API dashed;
 class Metaprogramming dashed;
+class Call_Graph dashed;
+class Pretty_Print dashed;
+class MySQL dashed;
+class MySQLConnect dashed;
+class MySQLWrite dashed;
+class MySQLRead dashed;
+
 ```
