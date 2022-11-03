@@ -21,11 +21,12 @@
 
 ### Оглавление
 
-Ниже вы видете оглавление, сделанное для лучшего усвоения не плоским, а в виде диаграммы (сама диаграмма, кстати, сделана на базе [Mermaid](https://habr.com/ru/news/t/651569/), так что вы легко можете менять картинку, просто корректируя текстовый файл). Темы, обязательные к глубокому практическому изучению, обведены сплошной линией. Прерывистый контур означает темы (достаточно немногочисленные, как вы видите), с которыми пока можно ознакомиться в пол-силы, необязательно плотно использовать на практике, но нужно чётко понимать, что это, для чего необходимо, плюсы и минусы; держать, так сказать, в «горячем резерве».
+Ниже вы видете оглавление, сделанное для лучшего усвоения не плоским, а в виде диаграммы (сама диаграмма, кстати, сделана на базе [Mermaid](https://habr.com/ru/news/t/651569/), так что вы легко можете менять картинку, просто корректируя текстовый файл). Темы, обязательные к глубокому практическому изучению, обведены сплошной линией. Прерывистый контур означает темы (достаточно немногочисленные, как вы видите), с которыми пока можно ознакомиться в пол-силы, необязательно плотно использовать на практике, но нужно чётко понимать, что это, для чего необходимо, плюсы и минусы; держать, так сказать, в «горячем резерве». 
 
 ```mermaid
+
 flowchart TD
-Data_Structures ==> Data_Management ==> Data_Flows ==> OOP ==> Language_Skeleton ==> Multithreading_&_Multiprocessing ==> Common_Practice ==> SQL ==> Architecture
+Data_Structures ==> Data_Management ==> Data_Flows ==> OOP ==> Language_Skeleton ==> Multithreading_&_Multiprocessing ==> Common_Practice ==> Algorithms ==> SQL ==> Net ==> Architecture ==> DevOps
 
 subgraph Data_Structures
 direction LR
@@ -320,6 +321,45 @@ AES("AES")
 end
 end
 
+subgraph Algorithms
+direction LR
+FizzBuzz -.-> Sort -.-> Search -.-> Graphs -.-> Methods
+Recursion -.-> Recursion
+FizzBuzz(FizzBuzz)
+subgraph Sort
+direction LR
+BubbleSort(BubbleSort)
+QuickSort(QuickSort)
+MergeSort(MergeSort)
+HeapSort(HeapSort)
+InsertionSort(InsertionSort)
+RadixSort(RadixSort)
+end
+subgraph Search
+direction LR
+Linear_Search("Linear search")
+Binary_Search("Binary search")
+DFS(DFS)
+BFS(BFS)
+Dijkstras(Dijkstras)
+Bellman_Ford("Bellman–Ford")
+end
+subgraph Graphs
+direction LR
+Adjacency_Matrix("Adjacency matrix")
+Incidence_Matrix("Incidence matrix")
+Adjacency_List("Adjacency list")
+Incidence_List("Incidence list")
+end
+subgraph Methods
+direction LR
+divide_and_conquer("Divide and conquer")
+Dynamic_programming("Dynamic programming")
+Greedy_algorithm("Greedy algorithm")
+Recursion(Recursion)
+end
+end
+
 subgraph SQL
 direction LR
 DB_Basics -.-> SQL_Basics -.-> SQLite -.-> MySQL -.-> PostgreSQL
@@ -359,9 +399,22 @@ PostgreSQLRead(Read)
 end
 end
 
+subgraph Net
+direction LR
+REST -.-> HTTP -.-> sockets -.-> aiohttp
+REST(REST)
+subgraph HTTP
+direction LR
+HTTPS(HTTPS)
+CSRF-token(CSRF-token)
+end
+sockets(sockets)
+aiohttp(aiohttp)
+end
+
 subgraph Architecture
 direction LR
-WhatIsArch -.-> Principles -.-> Paradigms -.-> Object-oriented -.-> Practices -.-> Development_lifecycle -.-> Microservices
+WhatIsArch -.-> Principles -.-> Paradigms -.-> Object-oriented -.-> Practices -.-> Microservices -.-> Messaging
 WhatIsArch("What is?")
 subgraph Principles
 direction LR
@@ -372,9 +425,9 @@ LSP(LSP)
 ISP(ISP)
 DIP(DIP)
 end
-KISS
-DRY
-YAGNI
+KISS(KISS)
+DRY(DRY)
+YAGNI(YAGNI)
 end
 subgraph Paradigms
 direction LR
@@ -392,12 +445,40 @@ Abstraction(Abstraction)
 end
 subgraph Practices
 direction LR
-Agile
-Scrum
-Kanban
+Agile(Agile)
+Scrum(Scrum)
+Kanban(Kanban)
 end
-Development_lifecycle("Development lifecycle")
 Microservices(Microservices)
+subgraph Messaging
+direction LR
+RabbitMQ(RabbitMQ)
+Apache_Kafka("Apache Kafka")
+NATS(NATS)
+end
+end
+
+subgraph DevOps
+direction LR
+Development_lifecycle -.-> git -.-> Linux -.-> CI_CD -.-> Containers
+subgraph Development_lifecycle
+direction LR
+Git_flow("Git-flow")
+trunk_based_development("Trunk-based development")
+end
+git(git)
+Linux(Linux)
+subgraph CI_CD
+direction LR
+Continuous_testing("Continuous testing")
+GitHub_Actions("GitHub Actions")
+Jenkins(Jenkins)
+end
+subgraph Containers
+direction LR
+Docker(Docker)
+Kubernetes(Kubernetes)
+end
 end
 
 classDef dashed stroke-dasharray:5 5
@@ -433,6 +514,8 @@ class MySQL dashed;
 class MySQLConnect dashed;
 class MySQLWrite dashed;
 class MySQLRead dashed;
+class Kubernetes dashed;
+class Jenkins dashed;
 
 ```
 ## 1. Структуры данных
@@ -4420,7 +4503,7 @@ POST – создать объект
 PUT – обновить существующий объект
 DELETE – удалить объект
 HEAD – получить метаданные объекта
-REST-архитектура актвивно использует возможности протокола HTTP, чтобы избежать т.н. “велосипедов” – собственных решений. Например, параметры кеширования передаются стандартными заголовками Cache, If-Modified-Since, ETag. Авторизациция – заголовком Authentication.
+REST-архитектура активно использует возможности протокола HTTP, чтобы избежать т.н. “велосипедов” – собственных решений. Например, параметры кеширования передаются стандартными заголовками Cache, If-Modified-Since, ETag. Авторизациция – заголовком Authentication.
 
 Что такое CSRF?
 
@@ -4475,6 +4558,18 @@ Host: ya.ru
 Как кэшируются файлы на уровне протокола?
 
 Когда Nginx отдает статичный файл, он добавляет заголовок Etag – MD5-хеш файла. Клиент запоминает этот хеш. В следующий раз при запросе файла клиент посылает хеш. Сервер проверяет хеш клиента для этого файла. Если хеш не совпадает (файл обновили), сервер отвечает с кодом 200 и выгружает актуальный файл с новым хешем. Если хеши равны, сервер отвечает с кодом 304 Not Modified с пустым телом. В этом случае браузер подставляет локальную копию файла.
+
+### nginx vs Apache
+
+Всё просто — нужно использовать nginx всегда, когда есть возможность. Apache — для шаред хостингов, но даже на шаред хостингах часто фронтендом стоит nginx (без возможности настройки), а уже за ним — настраиваемый Apache и настраиваемый PHP.
+
+Архитектура: Apache слздает отдельный поток для каждого соединения, nginx работает по асинхронной модели.
+Статический контент: nginx в 2 раза быстрее Apache.
+Динамический контент: ничья.
+Функционал: Apache разработан только как веб-сервер, nginx может работать и как веб-сервер, так и как прокси-сервер.
+Настройка: nginx проще в настройке.
+
+
 
 ## 8. Архитектура программного обеспечения
 
@@ -4586,6 +4681,12 @@ Kanban
 
 Микросервисы  
 https://habr.com/ru/post/249183/
+
+Messaging
+
+RabbitMQ
+Apache Kafka
+NATS
 ## 9. Алгоритмы
 
 ### FizzBuzz <a name="fizzbuzz"></a>  
@@ -5145,10 +5246,6 @@ def fact(N, acc=1):
 25. Задача: найти уникальные маршруты (Unique Paths)
 ## 10. Администрирование/DevOps
 
-### Базовое знание Linux и работа в консоли
-
-Разумеется, администрирование подразумевает работу в консоли. Ничего сложного в этом нет, в конце-концов, Анджелина Джоли в «Хакерах» и Кэрри-Энн Мосс в «Матрице» прекрасно справились!
-
 ### Git-flow
 
 <img src="gitflow.svg" style="height:320px">
@@ -5191,22 +5288,26 @@ squash
 выполнять комплексное тестирование проекта;
 прерывать операцию commit'а в случае обнаружения ошибок и отображать подробный журнал ошибок.
 
-### nginx vs apache?
+### Базовые знания Linux и работа в консоли
 
-Всё просто — нужно использовать nginx всегда, когда есть возможность. Apache — для шаред хостингов, но даже на шаред хостингах часто фронтендом стоит nginx (без возможности настройки), а уже за ним — настраиваемый Apache и настраиваемый PHP.
+Разумеется, администрирование подразумевает работу в консоли. Ничего сложного в этом нет, в конце-концов, Анджелина Джоли в «Хакерах» и Кэрри-Энн Мосс в «Матрице» прекрасно справились!
 
-Архитектура: Apache слздает отдельный поток для каждого соединения, nginx работает по асинхронной модели.
-Статический контент: nginx в 2 раза быстрее Apache.
-Динамический контент: ничья.
-Функционал: Apache разработан только как веб-сервер, nginx может работать и как веб-сервер, так и как прокси-сервер.
-Настройка: nginx проще в настройке.
+CI/CD
+
+Continuous testing
+GitHub Actions
+Jenkins
+
+Containers
+
+Docker
+Kubernetes
 
 ### Источники
 
 [A successful Git branching model](https://nvie.com/posts/a-successful-git-branching-model/), статья 2010 года, положившая начало распростанения git-flow. Сам автор сделал в 2020 дополнение к статье, где рекомендует командам, придерживающихся continuous delivery, переходить на GitHub flow.  
 [git-flow](https://www.atlassian.com/git/tutorials/comparing-workflows/gitflow-workflow) (Компания Atlassian изменила текст страницы, теперь там размещены рекомендации перехода на магистральную разработку)  
 [Критика](https://habr.com/ru/company/flant/blog/491320/) git-flow  
-
 [GitHub flow](https://docs.github.com/en/get-started/quickstart/github-flow)  
 ## 11. Тестирование, pytest
 

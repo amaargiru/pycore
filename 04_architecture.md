@@ -108,3 +108,9 @@ Kanban
 
 Микросервисы  
 https://habr.com/ru/post/249183/
+
+Messaging
+
+RabbitMQ
+Apache Kafka
+NATS

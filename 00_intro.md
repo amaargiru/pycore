@@ -21,11 +21,12 @@
 
 ### Оглавление
 
-Ниже вы видете оглавление, сделанное для лучшего усвоения не плоским, а в виде диаграммы (сама диаграмма, кстати, сделана на базе [Mermaid](https://habr.com/ru/news/t/651569/), так что вы легко можете менять картинку, просто корректируя текстовый файл). Темы, обязательные к глубокому практическому изучению, обведены сплошной линией. Прерывистый контур означает темы (достаточно немногочисленные, как вы видите), с которыми пока можно ознакомиться в пол-силы, необязательно плотно использовать на практике, но нужно чётко понимать, что это, для чего необходимо, плюсы и минусы; держать, так сказать, в «горячем резерве».
+Ниже вы видете оглавление, сделанное для лучшего усвоения не плоским, а в виде диаграммы (сама диаграмма, кстати, сделана на базе [Mermaid](https://habr.com/ru/news/t/651569/), так что вы легко можете менять картинку, просто корректируя текстовый файл). Темы, обязательные к глубокому практическому изучению, обведены сплошной линией. Прерывистый контур означает темы (достаточно немногочисленные, как вы видите), с которыми пока можно ознакомиться в пол-силы, необязательно плотно использовать на практике, но нужно чётко понимать, что это, для чего необходимо, плюсы и минусы; держать, так сказать, в «горячем резерве». 
 
 ```mermaid
+
 flowchart TD
-Data_Structures ==> Data_Management ==> Data_Flows ==> OOP ==> Language_Skeleton ==> Multithreading_&_Multiprocessing ==> Common_Practice ==> SQL ==> Architecture
+Data_Structures ==> Data_Management ==> Data_Flows ==> OOP ==> Language_Skeleton ==> Multithreading_&_Multiprocessing ==> Common_Practice ==> Algorithms ==> SQL ==> Net ==> Architecture ==> DevOps
 
 subgraph Data_Structures
 direction LR
@@ -320,6 +321,45 @@ AES("AES")
 end
 end
 
+subgraph Algorithms
+direction LR
+FizzBuzz -.-> Sort -.-> Search -.-> Graphs -.-> Methods
+Recursion -.-> Recursion
+FizzBuzz(FizzBuzz)
+subgraph Sort
+direction LR
+BubbleSort(BubbleSort)
+QuickSort(QuickSort)
+MergeSort(MergeSort)
+HeapSort(HeapSort)
+InsertionSort(InsertionSort)
+RadixSort(RadixSort)
+end
+subgraph Search
+direction LR
+Linear_Search("Linear search")
+Binary_Search("Binary search")
+DFS(DFS)
+BFS(BFS)
+Dijkstras(Dijkstras)
+Bellman_Ford("Bellman–Ford")
+end
+subgraph Graphs
+direction LR
+Adjacency_Matrix("Adjacency matrix")
+Incidence_Matrix("Incidence matrix")
+Adjacency_List("Adjacency list")
+Incidence_List("Incidence list")
+end
+subgraph Methods
+direction LR
+divide_and_conquer("Divide and conquer")
+Dynamic_programming("Dynamic programming")
+Greedy_algorithm("Greedy algorithm")
+Recursion(Recursion)
+end
+end
+
 subgraph SQL
 direction LR
 DB_Basics -.-> SQL_Basics -.-> SQLite -.-> MySQL -.-> PostgreSQL
@@ -359,9 +399,22 @@ PostgreSQLRead(Read)
 end
 end
 
+subgraph Net
+direction LR
+REST -.-> HTTP -.-> sockets -.-> aiohttp
+REST(REST)
+subgraph HTTP
+direction LR
+HTTPS(HTTPS)
+CSRF-token(CSRF-token)
+end
+sockets(sockets)
+aiohttp(aiohttp)
+end
+
 subgraph Architecture
 direction LR
-WhatIsArch -.-> Principles -.-> Paradigms -.-> Object-oriented -.-> Practices -.-> Development_lifecycle -.-> Microservices
+WhatIsArch -.-> Principles -.-> Paradigms -.-> Object-oriented -.-> Practices -.-> Microservices -.-> Messaging
 WhatIsArch("What is?")
 subgraph Principles
 direction LR
@@ -372,9 +425,9 @@ LSP(LSP)
 ISP(ISP)
 DIP(DIP)
 end
-KISS
-DRY
-YAGNI
+KISS(KISS)
+DRY(DRY)
+YAGNI(YAGNI)
 end
 subgraph Paradigms
 direction LR
@@ -392,12 +445,40 @@ Abstraction(Abstraction)
 end
 subgraph Practices
 direction LR
-Agile
-Scrum
-Kanban
+Agile(Agile)
+Scrum(Scrum)
+Kanban(Kanban)
 end
-Development_lifecycle("Development lifecycle")
 Microservices(Microservices)
+subgraph Messaging
+direction LR
+RabbitMQ(RabbitMQ)
+Apache_Kafka("Apache Kafka")
+NATS(NATS)
+end
+end
+
+subgraph DevOps
+direction LR
+Development_lifecycle -.-> git -.-> Linux -.-> CI_CD -.-> Containers
+subgraph Development_lifecycle
+direction LR
+Git_flow("Git-flow")
+trunk_based_development("Trunk-based development")
+end
+git(git)
+Linux(Linux)
+subgraph CI_CD
+direction LR
+Continuous_testing("Continuous testing")
+GitHub_Actions("GitHub Actions")
+Jenkins(Jenkins)
+end
+subgraph Containers
+direction LR
+Docker(Docker)
+Kubernetes(Kubernetes)
+end
 end
 
 classDef dashed stroke-dasharray:5 5
@@ -433,5 +514,7 @@ class MySQL dashed;
 class MySQLConnect dashed;
 class MySQLWrite dashed;
 class MySQLRead dashed;
+class Kubernetes dashed;
+class Jenkins dashed;
 
 ```
