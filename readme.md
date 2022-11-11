@@ -1,4 +1,4 @@
-Пайтон джуньор плюс, или Карта Сокровищ
+Обратите внимание, пока материал находится в статусе **черновика**. Чем дальше вы продвинетесь вглубь текста, тем больше неувязок, косноязычия и ошибок вы там увидите, а где-то примерно в районе середины статьи окончательно попадёте в область разрозненных заметок, невнятных почеркушек и псоголовых воинов, воюющих с драконами. Пожалуйста, не судите строго, материал хоть и не быстро, но упорно корректируется, медленно дрейфуя в сторону большей читаемости.    
 
 ### Введение
 
@@ -11,7 +11,7 @@
 
 Для работы с Jupiter вы можете воспользоваться [VS Code](https://code.visualstudio.com/), JetBrains [IntelliJ](https://www.jetbrains.com/ru-ru/idea/) или каким-нибудь онлайн-инструментом, самым известным из которых являятся [Google Colab](https://colab.research.google.com/).
 
-В этой стать 100 % есть ошибки и неточности самых разных калибров, так что, если что-то углядите, не стесняйтесь выражаться в личку, в комментариях, на почту war4one@gmail.com, а если чувствуете в себе Силу — смело форкайте репу и пишите туда всё, что считаете нужным, все исправления и дополнения бурно приветствуются.
+В этой статье 100 % есть ошибки и неточности самых разных калибров, так что, если что-то углядите, не стесняйтесь выражаться в личку, в комментариях, на почту war4one@gmail.com, а если чувствуете в себе Силу — смело форкайте репу и пишите туда всё, что считаете нужным, все исправления и дополнения бурно приветствуются.
 
 Погружаясь в Python, не забывайте про прекрасную официальную документацию [docs.python.org](https://docs.python.org/). Изучив её, хотя бы по диагонали, и постепенно углубляясь в нужные разделы, вы сможете убедиться, что многие «хаки», «открытия» и прочие неочевидные вещи уже давно разжеваны, описаны и имеют подробные примеры применения.
 
@@ -24,18 +24,19 @@
 Ниже вы видете оглавление, сделанное для лучшего усвоения не плоским, а в виде диаграммы (сама диаграмма, кстати, сделана на базе [Mermaid](https://habr.com/ru/news/t/651569/), так что вы легко можете менять картинку, просто корректируя текстовый файл). Темы, обязательные к глубокому практическому изучению, обведены сплошной линией. Прерывистый контур означает темы (достаточно немногочисленные, как вы видите), с которыми пока можно ознакомиться в пол-силы, необязательно плотно использовать на практике, но нужно чётко понимать, что это, для чего необходимо, плюсы и минусы; держать, так сказать, в «горячем резерве». 
 
 ```mermaid
-
 flowchart TD
 Data_Structures ==> Data_Management ==> Data_Flows ==> OOP ==> Language_Skeleton ==> Multithreading_&_Multiprocessing ==> Common_Practice ==> Algorithms ==> SQL ==> Net ==> Architecture ==> DevOps
 
 subgraph Data_Structures
 direction LR
 List(list) -.-> Tuple -.-> Dict -.-> Set -.-> Array -.-> Linked_List -.->Tree -.-> Python_specific_data_structures
+
 subgraph Tuple
 direction LR
 tuple(tuple)
 namedtuple(namedtuple)
 end
+
 subgraph Dict
 direction LR
 dict(dict)
@@ -43,17 +44,20 @@ HashProblem("Hash collisions")
 defaultdict(defaultdict)
 Counter(Counter)
 end
+
 subgraph Set
 direction LR
 set(set)
 FrozenSet("frozen set")
 end
+
 subgraph Array
 direction LR
 array(array)
 bytes(bytes)
 bytearray(bytearray)
 end
+
 subgraph Linked_List
 direction LR
 SinglyLinkedList("Singly linked list")
@@ -63,6 +67,7 @@ deque(deque)
 Queue(Queue)
 end
 end
+
 subgraph Tree
 direction LR
 tree(tree)
@@ -72,6 +77,7 @@ RedBlackTree("Red–black tree")
 AVLTree("AVL tree")
 trie(trie)
 end
+
 subgraph Python_specific_data_structures
 direction LR
 enum(enum)
@@ -85,12 +91,13 @@ end
 
 subgraph Data_Management
 direction LR
-slice(slice) -.-> Sorting -.-> Comprehension -.-> bisect(bisect) -.-> Functools -.-> String_Management -.-> Datetime_Management -.->File -.-> Data_Analysis
+slice(slice) -.-> Sorting -.-> Comprehension -.-> bisect(bisect) -.-> Functools -.-> String_Management -.-> Datetime_Management -.->File -.-> Data_Analysis -.-> Neural_Networks
 subgraph Sorting
 direction LR
 sort(sort)
 sorted(sorted)
 end
+
 subgraph Comprehension
 direction LR
 listcomprehension(list)
@@ -129,32 +136,42 @@ Pickle("Pickle")
 Protocol_Buffers("Protocol Buffers")
 paths(paths)
 end
+
 subgraph Data_Analysis
 direction LR
 Data_Built-in_Functions("Built-in functions")
 NumPy(NumPy)
 Pandas(Pandas)
 end
+
+subgraph Neural_Networks
+direction LR
+TensorFlow(TensorFlow)
+Keras(Keras)
+end
+
 end
 
 subgraph Data_Flows
 direction LR
+
 itertools -.-> enumerate -.-> generator -.-> Decorator -.-> context
+
 subgraph itertools
 direction LR
+
 subgraph Infinite_Iterators
 icount(count)
 icycle(cycle)
 irepeat(repeat)
 end
+
 subgraph Finite_Iterators
-count
-repeat
-cycle
-pairwise
-chain
+pairwise(pairwise)
+chain(chain)
 fimore(...)
 end
+
 subgraph Combinatorics
 product(product)
 combinations(combinations)
@@ -162,20 +179,25 @@ combinations_with_replacement(combinations_with_replacement)
 permutations(permutations)
 end
 end
-enumerate
-generator
+
+enumerate(enumerate)
+generator(generator)
+
 subgraph Decorator
 direction LR
 decorator(decorator)
 LRUCache("LRU Cache")
 param_decorator("Parameterized decorator")
 end
+
 context("Context manager")
+
 end
 
 subgraph OOP
 direction LR
 Class -.-> slots -.-> Object_Copy -.->Inheritance -.-> Metaprogramming
+
 subgraph Class
 direction LR
 Comparable(Comparable)
@@ -186,12 +208,15 @@ Iterable(Iterable)
 Collection(Collection)
 Sequence(Sequence)
 end
+
 slots(slots)
+
 subgraph Object_Copy
 direction LR
 shallow("Shallow copy")
 deep("Deep copy")
 end
+
 subgraph Inheritance
 direction LR
 objInheritance(Inheritance)
@@ -199,12 +224,14 @@ Multiple_Inheritance("Multiple Inheritance")
 MRO(MRO)
 Inheritance_of_slots("Inheritance of slots")
 end
+
 subgraph Metaprogramming
 direction LR
 Metaclass("Meta Class")
 ABCMeta(ABCMeta)
 Registry(Registry)
 end
+
 end
 
 subgraph Language_Skeleton
@@ -212,14 +239,14 @@ subgraph Garbage_Collector
 direction LR
 reference_counting("Reference counting")
 garbage_collector("Garbage collector")
-debug_objgraph("Debug/objgraph")
+debug_objgraph("GC debug / objgraph")
 pypygc("PyPy GC")
 end
 GIL(GIL)
 args_kwargs("*args, **kwargs")
 lambda(lambda)
 Conditional_Expression("Conditional Expression")
-Closure
+Closure(Closure)
 subgraph Exception
 direction LR
 exception_handling("Exception handling")
@@ -234,18 +261,21 @@ variables(variables)
 attributes(attributes)
 parameters(parameters)
 end
-Operator
+Operator(Operator)
 end
 
 subgraph Multithreading_&_Multiprocessing
 direction LR
+
 Multithreading -.-> asyncio -.-> Multiprocessing -.->Synchronization
+
 subgraph Multithreading
 direction LR
 Thread(Thread)
 Thread_Pool_Executor("Thread pool executor")
 Timer
 end
+
 subgraph asyncio
 direction LR
 subgraph High_level_API
@@ -269,6 +299,7 @@ run_forever(run_forever)
 lowlapi_more("...")
 end
 end
+
 subgraph Multiprocessing
 direction LR
 Pool(Pool)
@@ -279,6 +310,7 @@ muArray(Array)
 Manager(Manager)
 Listener(Listener)
 end
+
 subgraph Synchronization
 direction LR
 Lock(Lock)
@@ -288,12 +320,16 @@ Semaphore(Semaphore)
 BoundedSemaphore(BoundedSemaphore)
 Barrier(Barrier)
 end
+
 end
 
 subgraph Common_Practice
 direction LR
-Logging -.-> Profiling -.-> Random -.-> Input -.-> Print -.-> hashlib
+
+Logging -.-> Profiling -.-> Random -.-> Input -.-> Print -.-> Cryptography -.-> Testing
+
 Logging(Logging)
+
 subgraph Profiling
 direction LR
 Stopwatch(Stopwatch)
@@ -301,31 +337,45 @@ perf_counter(perf_counter)
 timeit
 Call_Graph("Call Graph")
 end
-Random
+
+Random(Random)
+
 subgraph Input
 direction LR
 input(input)
 Command_Line_Arguments("Command Line Arguments")
 Argument_Parser("Argument Parser")
 end
+
 subgraph Print
 direction LR
 simple_print(print)
 json_print("json print")
 Pretty_Print("Pretty Print")
 end
-subgraph hashlib
+
+subgraph Cryptography
 direction LR
 MD5(MD5)
 AES("AES")
 end
+
+subgraph Testing
+direction LR
+pytest(pytest)
+mock(mock)
+end
+
 end
 
 subgraph Algorithms
 direction LR
-FizzBuzz -.-> Sort -.-> Search -.-> Graphs -.-> Methods
-Recursion -.-> Recursion
+FizzBuzz -.-> bigo -.-> Sort -.-> Graphs -.-> Search -.-> Methods
+Recursion ==> Recursion
+
 FizzBuzz(FizzBuzz)
+bigo("O(n)")
+
 subgraph Sort
 direction LR
 BubbleSort(BubbleSort)
@@ -335,6 +385,15 @@ HeapSort(HeapSort)
 InsertionSort(InsertionSort)
 RadixSort(RadixSort)
 end
+
+subgraph Graphs
+direction LR
+Adjacency_Matrix("Adjacency matrix")
+Incidence_Matrix("Incidence matrix")
+Adjacency_List("Adjacency list")
+Incidence_List("Incidence list")
+end
+
 subgraph Search
 direction LR
 Linear_Search("Linear search")
@@ -344,25 +403,23 @@ BFS(BFS)
 Dijkstras(Dijkstras)
 Bellman_Ford("Bellman–Ford")
 end
-subgraph Graphs
-direction LR
-Adjacency_Matrix("Adjacency matrix")
-Incidence_Matrix("Incidence matrix")
-Adjacency_List("Adjacency list")
-Incidence_List("Incidence list")
-end
+
 subgraph Methods
 direction LR
 divide_and_conquer("Divide and conquer")
 Dynamic_programming("Dynamic programming")
 Greedy_algorithm("Greedy algorithm")
 Recursion(Recursion)
+methmore("...")
 end
+
 end
 
 subgraph SQL
 direction LR
-DB_Basics -.-> SQL_Basics -.-> SQLite -.-> MySQL -.-> PostgreSQL
+
+DB_Basics -.-> SQL_Basics -.-> SQLite -.-> MySQL -.-> PostgreSQL -.-> ORM
+
 subgraph DB_Basics
 direction LR
 Relational_model("Relational model")
@@ -372,24 +429,28 @@ Nplusone("N+1 problem")
 SQL_injection("SQL injection")
 NoSQL(NoSQL)
 end
+
 subgraph SQL_Basics
 direction LR
 DDL(DDL)
 DML(DML)
 DCL(DCL)
 end
+
 subgraph SQLite
 direction LR
 SQLiteConnect(Connect)
 SQLiteWrite(Write)
 SQLiteRead(Read)
 end
+
 subgraph MySQL
 direction LR
 MySQLConnect(Connect)
 MySQLWrite(Write)
 MySQLRead(Read)
 end
+
 subgraph PostgreSQL
 direction LR
 PostgreSQL_benefits("PostgreSQL benefits")
@@ -397,27 +458,52 @@ PostgreSQLConnect(Connect)
 PostgreSQLWrite(Write)
 PostgreSQLRead(Read)
 end
+
+subgraph ORM
+direction LR
+peewee(peewee)
+SQLAlchemy(SQLAlchemy)
+end
+
 end
 
 subgraph Net
 direction LR
-REST -.-> HTTP -.-> sockets -.-> aiohttp
+REST -.-> HTTP -.-> sockets -.-> Frameworks -.-> API
+
 REST(REST)
+
 subgraph HTTP
 direction LR
 HTTPS(HTTPS)
 CSRF-token(CSRF-token)
 end
+
 sockets(sockets)
+
+subgraph Frameworks
+direction LR
+Flask(Flask)
+Django(Django)
 aiohttp(aiohttp)
+end
+
+subgraph API
+direction LR
+FastAPI(FastAPI)
+jwt_tokens("JWT tokens")
+end
+
 end
 
 subgraph Architecture
 direction LR
 WhatIsArch -.-> Principles -.-> Paradigms -.-> Object-oriented -.-> Practices -.-> Microservices -.-> Messaging
+
 WhatIsArch("What is?")
 subgraph Principles
 direction LR
+
 subgraph SOLID
 SRP(SRP)
 OCP(OCP)
@@ -425,10 +511,14 @@ LSP(LSP)
 ISP(ISP)
 DIP(DIP)
 end
+
 KISS(KISS)
 DRY(DRY)
 YAGNI(YAGNI)
+coupling_vs_cohesion("Coupling vs cohesion")
+
 end
+
 subgraph Paradigms
 direction LR
 Procedural(Procedural)
@@ -436,6 +526,7 @@ Structured(Structured)
 parObject-oriented(Object-oriented)
 Functional(Functional)
 end
+
 subgraph Object-oriented
 direction LR
 ooInheritance(Inheritance)
@@ -443,24 +534,29 @@ Encapsulation(Encapsulation)
 Polymorphism(Polymorphism)
 Abstraction(Abstraction)
 end
+
 subgraph Practices
 direction LR
 Agile(Agile)
 Scrum(Scrum)
 Kanban(Kanban)
 end
+
 Microservices(Microservices)
+
 subgraph Messaging
 direction LR
 RabbitMQ(RabbitMQ)
 Apache_Kafka("Apache Kafka")
 NATS(NATS)
 end
+
 end
 
 subgraph DevOps
 direction LR
 Development_lifecycle -.-> git -.-> Linux -.-> CI_CD -.-> Containers
+
 subgraph Development_lifecycle
 direction LR
 Git_flow("Git-flow")
@@ -468,26 +564,30 @@ trunk_based_development("Trunk-based development")
 end
 git(git)
 Linux(Linux)
+
 subgraph CI_CD
 direction LR
 Continuous_testing("Continuous testing")
 GitHub_Actions("GitHub Actions")
 Jenkins(Jenkins)
 end
+
 subgraph Containers
 direction LR
 Docker(Docker)
 Kubernetes(Kubernetes)
 end
+
 end
 
 classDef dashed stroke-dasharray:5 5
+classDef bolded stroke-width:3px,stroke:#f99
+
 class B-tree dashed;
 class RedBlackTree dashed;
 class AVLTree dashed;
 class trie dashed;
 class SinglyLinkedList dashed;
-class regex dashed;
 class Protocol_Buffers dashed;
 class Pandas dashed;
 class fmore dashed;
@@ -516,6 +616,33 @@ class MySQLWrite dashed;
 class MySQLRead dashed;
 class Kubernetes dashed;
 class Jenkins dashed;
+class NATS dashed;
+class aiohttp dashed;
+class peewee dashed;
+class Neural_Networks dashed;
+
+class NoSQL bolded;
+class Functional bolded;
+class Microservices bolded;
+class RabbitMQ bolded;
+class Scrum bolded;
+class Apache_Kafka bolded;
+class git bolded;
+class Linux bolded;
+class Docker bolded;
+class Cryptography bolded;
+class Methods bolded;
+class PostgreSQL bolded;
+class HTTP bolded;
+class SQLAlchemy bolded;
+class Flask bolded;
+class Django bolded;
+class FastAPI bolded;
+class ORM bolded;
+class TensorFlow bolded;
+class Keras bolded;
+class regex bolded;
+class Testing bolded;
 
 ```
 ## 1. Структуры данных
@@ -3785,7 +3912,13 @@ An object with the same interface called ProcessPoolExecutor provides true paral
 
 понимание многопоточности, способов ей управлять и проблем, с этим связанных (синхронизации, локи, race condition и т.д.);
 
+2. Многопоточность - вариант реализации вычислений, при котором для решения некоторой прикладной задачи запускаются и выполняются несколько независимых потоков вычислений, причём выполнение происходит одновременно или псевдоодновременно. В операционных системах, где термины "поток" и "процесс" различаются, под "потоком" понимают именно поток выполнения (ресурсами же владеет сущность, называемая "процессом"). Обычно применяется для распараллеливания вычислений на несколько вычислителей (процессоров и ядер процессора).
+
+3. Многопроцессность - вариант реализации вычислений, когда для решения некоторой прикладной задачи запускается несколько независимых процессов. В системах, где под процессом понимается сущность, владеющая ресурсами (памятью, открытыми файлами, сетевыми подключениями), несколько процессов запускаются с целью повышения отказоустойчивости приложения а также с целью повышения безопасности. Т.к. ОС выполняет разделение памяти и прочих ресурсов именно между процессами (в то время как потоки работают в едином адресном пространстве), то а) внезапно упавший (читай - убитый ОС) процесс не уронит остальные; б) если в процессе начал выполняться чужеродный код (например, из-за RCE уязвимости), то он не получит доступ к содержимому памяти в других процессах. Многопроцессность сегодня можно увидеть в браузерах, когда отдельные вкладки выполняются в разных процессах, и упавшая вкладка (из-за js или из-за кривого плагина) тянет за собой не весь браузер, а только себя или еще пару вкладок.
+
 ## asyncio
+
+https://realpython.com/async-io-python/
 
 В JavaScript async / await сделаны жадными как Promise. При вызове async функции автоматически создается задача и отправляется в очередь на исполнение в event loop. await, в свою очередь, просто ждёт результат.
 
@@ -4961,6 +5094,16 @@ with <conn>:                                    # Exits the block with commit() 
 [(1, 'Jean-Luc', 187)]
 
 
+SQLite 
+Small. Fast. Reliable. Choose any three.
+
+https://sqlite.org/index.html
+https://github.com/sqlite/sqlite
+https://habr.com/ru/post/149356/
+https://github.com/sqlitebrowser/sqlitebrowser
+
+Syntax Diagrams https://www.sqlite.org/syntaxdiagrams.html
+
 ### MySQL
 **Has a very similar interface, with differences listed below.**
  
@@ -5036,7 +5179,7 @@ EXPLAIN ANALYZE – в отличие от просто EXPLAIN не тольк�
 
 ### Источники
 
-Е. П. Моргунов. PostgreSQL. Основы языка SQL.  
+Е. П. Моргунов. [PostgreSQL. Основы языка SQL](https://edu.postgrespro.ru/sql_primer.pdf).  
 REST, Restfull!!!
 
 HTTP. Какие у него есть методы?!!!  
@@ -5142,19 +5285,19 @@ Single-responsibility principle, принцип единственной отв�
 
 ### OCP <a name="archsolidocp"></a>  
 
-Open–closed principle, принцип открытости/закрытости. Классы должны быть закрыты от изменения (чтобы код, опирающийся наэти классы, не нуждался в обновлении), но открыты для расширения (классу можно добавить новое поведение). Вкратце — хочешь изменить поведение класса — не трогай старый код (не считая рефакторинга, т. е. изменение программы без изменения внешнего поведения), добавь новый. Если расширение требований ведет к значительным изменениям в существующем коде, значит, были допущены архитектурные ошибки.
+Open–closed principle, принцип открытости/закрытости. Классы должны быть закрыты от изменения (чтобы код, опирающийся на эти классы, не нуждался в обновлении), но открыты для расширения (классу можно добавить новое поведение). Вкратце — хочешь изменить поведение класса — не трогай старый код (не считая рефакторинга, т. е. изменение программы без изменения внешнего поведения), добавь новый. Если расширение требований ведет к значительным изменениям в существующем коде, значит, были допущены архитектурные ошибки.
 
 ### LSP <a name="archsolidlsp"></a>
 
-Liskov Substitution Principle, принцип подстановки Барбары Лисков: поведение наследующих классов должно быть ожидаемым для кода, использующего переменную базового класса. Или, другими словами, подкласс не должен требовать от вызывающего кода больше, чем базовый класс, и не должен предоставлять вызывающему коду меньше, чем базовый класс.
+Liskov substitution principle, принцип подстановки Барбары Лисков: поведение наследующих классов должно быть ожидаемым для кода, использующего переменную базового класса. Или, другими словами, подкласс не должен требовать от вызывающего кода больше, чем базовый класс, и не должен предоставлять вызывающему коду меньше, чем базовый класс.
 
 ### ISP <a name="archsolidisp"></a>  
 
-Interface segregation principle, принцип разделения интерфейса. Клиент интерфейса не должен зависить от неиспользуемых методов. В соответствии с принципом ISP рекомендуется создавать минималистичные интерфейсы, содержащие минимальное количество специфичных методов. Если пользователь интерфейса не пользуется каким-либо методом интерфейса, то лучше создать новый интерфейс, без этого метода.
+Interface segregation principle, принцип разделения интерфейса. Клиент интерфейса не должен зависеть от неиспользуемых методов. В соответствии с принципом ISP рекомендуется создавать минималистичные интерфейсы, содержащие минимальное количество специфичных методов. Если пользователь интерфейса не пользуется каким-либо методом интерфейса, то лучше создать новый интерфейс, без этого метода.
 
 ### DIP <a name="archsoliddip"></a>  
 
-Dependency inversion principle, принцип инверсии зависимостей. Модули верхнего уровня не должны обращаться к модулям нижнего уровня напрямую, между ними должна быть «прокладка» из абстракций (т. е. интерфейсов). Причем абстракции не должны зависить от реализаций, реализации должны звисить от абстракций.  
+Dependency inversion principle, принцип инверсии зависимостей. Модули верхнего уровня не должны обращаться к модулям нижнего уровня напрямую, между ними должна быть «прокладка» из абстракций (т. е. интерфейсов). Причем абстракции не должны зависеть от реализаций, реализации должны зависеть от абстракций.  
 
 ### KISS <a name="archkiss"></a>  
 
