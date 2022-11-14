@@ -21,11 +21,13 @@
 
 ### Оглавление
 
-Ниже вы видете оглавление, сделанное для лучшего усвоения не плоским, а в виде диаграммы (сама диаграмма, кстати, сделана на базе [Mermaid](https://habr.com/ru/news/t/651569/), так что вы легко можете менять картинку, просто корректируя текстовый файл). Темы, обязательные к глубокому практическому изучению, обведены сплошной линией. Прерывистый контур означает темы (достаточно немногочисленные, как вы видите), с которыми пока можно ознакомиться в пол-силы, необязательно плотно использовать на практике, но нужно чётко понимать, что это, для чего необходимо, плюсы и минусы; держать, так сказать, в «горячем резерве». 
+Ниже вы видете оглавление, сделанное для лучшего усвоения не плоским, а в виде диаграммы (сама диаграмма, кстати, сделана на базе [Mermaid](https://habr.com/ru/news/t/651569/), так что вы легко можете менять картинку, просто корректируя текстовый файл).
+
+Пользоваться путеводителем очень просто. Как в обычном тексте, идите слева направо и сверху вниз. Если вы только начинаете изучать Python, то идите по зеленым пунктам путеводителя. Если накопленный опыт, любопытство или необходимость толкают вас глубже, начните изучать разделы, помеченные серым. Оранжевым помечены темы, требующие углубленного изучения, ими лучше заняться (хотя бы и не копая, для начала, особенно глубоко) в третий проход. Даже если вы не собираетесь плотно использовать на практике какие-то из оранжевых тем, рассмотрите их хотя бы поверхностно, чтобы чётко понимать, что это, для чего необходимо, плюсы и минусы; держать, так сказать, в «горячем резерве».  
 
 ```mermaid
 flowchart TD
-Data_Structures ==> Data_Management ==> Data_Flows ==> OOP ==> Language_Skeleton ==> Multithreading_&_Multiprocessing ==> Common_Practice ==> Algorithms ==> SQL ==> Net ==> Architecture ==> DevOps
+Data_Structures ==> Data_Management ==> Data_Flows ==> OOP ==> Language_Skeleton ==> Multithreading_&_Multiprocessing ==> Common_Practice ==> Algorithms ==> Database ==> Net ==> Architecture ==> DevOps
 
 subgraph Data_Structures
 direction LR
@@ -91,7 +93,7 @@ end
 
 subgraph Data_Management
 direction LR
-slice(slice) -.-> Sorting -.-> Comprehension -.-> bisect(bisect) -.-> Functools -.-> String_Management -.-> Datetime_Management -.->File -.-> Data_Analysis -.-> Neural_Networks
+slice(slice) -.-> Sorting -.-> Comprehension -.-> String_Management -.-> Datetime_Management -.-> bisect(bisect) -.-> Functools -.->File -.-> Data_Analysis -.-> Neural_Networks
 subgraph Sorting
 direction LR
 sort(sort)
@@ -105,15 +107,6 @@ dictcomprehension(dict)
 setcomprehension(set)
 end
 
-subgraph Functools
-direction LR
-fmap(map)
-ffilter(filter)
-freduce(reduce)
-fpartial(partial)
-fmore(...)
-end
-
 subgraph String_Management
 direction LR
 String_Built-in_Functions("Built-in functions")
@@ -125,6 +118,15 @@ direction LR
 encode(encode)
 decode(decode)
 dtmath(math)
+end
+
+subgraph Functools
+direction LR
+fmap(map)
+ffilter(filter)
+freduce(reduce)
+fpartial(partial)
+fmore(...)
 end
 
 subgraph File
@@ -155,7 +157,7 @@ end
 subgraph Data_Flows
 direction LR
 
-itertools -.-> enumerate -.-> generator -.-> Decorator -.-> context
+itertools -.-> enumerate -.-> Generator -.-> Decorator -.-> Context_managers
 
 subgraph itertools
 direction LR
@@ -167,21 +169,30 @@ irepeat(repeat)
 end
 
 subgraph Finite_Iterators
-pairwise(pairwise)
+accumulate(accumulate)
 chain(chain)
+compress(compress)
+dropwhile(dropwhile)
+takewhile(takewhile)
 fimore(...)
 end
 
 subgraph Combinatorics
 product(product)
 combinations(combinations)
-combinations_with_replacement(combinations_with_replacement)
 permutations(permutations)
+combinations_with_replacement(combinations_with_replacement)
 end
 end
 
 enumerate(enumerate)
-generator(generator)
+
+subgraph Generator
+direction LR
+yield("yield")
+yield_from("yield from")
+Generator_expression("Generator expression")
+end
 
 subgraph Decorator
 direction LR
@@ -190,26 +201,44 @@ LRUCache("LRU Cache")
 param_decorator("Parameterized decorator")
 end
 
-context("Context manager")
+subgraph Context_managers
+direction LR
+enter_exit_cm("__enter__, __exit__")
+contextlib(contextlib)
+end
 
 end
 
 subgraph OOP
 direction LR
-Class -.-> slots -.-> Object_Copy -.->Inheritance -.-> Metaprogramming
+OOP_Base -.-> Duck_Types -.-> Iterable_Duck_Types -.-> Object_Copy -.->Inheritance -.-> Metaprogramming
 
-subgraph Class
+subgraph OOP_Base
+direction LR
+oopBase1("init, repr, str")
+oop_property("@property")
+staticmethod("@staticmethod")
+classmethod("@classmethod, cls, self")
+slots(slots)
+end
+
+subgraph Duck_Types
 direction LR
 Comparable(Comparable)
 Hashable(Hashable)
 Sortable(Sortable)
+Iterator(Iterator)
 Callable(Callable)
+dt_Context_Manager("Context Manager")
+end
+
+subgraph Iterable_Duck_Types
+direction LR
 Iterable(Iterable)
 Collection(Collection)
 Sequence(Sequence)
+ABC_Sequence("ABC Sequence")
 end
-
-slots(slots)
 
 subgraph Object_Copy
 direction LR
@@ -221,8 +250,9 @@ subgraph Inheritance
 direction LR
 objInheritance(Inheritance)
 Multiple_Inheritance("Multiple Inheritance")
+abstractmethod("@abstractmethod")
 MRO(MRO)
-Inheritance_of_slots("Inheritance of slots")
+Inheritance_of_slots("Slots' inheritance")
 end
 
 subgraph Metaprogramming
@@ -235,6 +265,9 @@ end
 end
 
 subgraph Language_Skeleton
+direction LR
+Garbage_Collector -.-> Exception -.-> Typing -.-> Introspection -.-> Other
+
 subgraph Garbage_Collector
 direction LR
 reference_counting("Reference counting")
@@ -242,11 +275,7 @@ garbage_collector("Garbage collector")
 debug_objgraph("GC debug / objgraph")
 pypygc("PyPy GC")
 end
-GIL(GIL)
-args_kwargs("*args, **kwargs")
-lambda(lambda)
-Conditional_Expression("Conditional Expression")
-Closure(Closure)
+
 subgraph Exception
 direction LR
 exception_handling("Exception handling")
@@ -255,13 +284,32 @@ exception_raising("Exception raising")
 user_exception("User exceptions")
 exception_object("Exception Object")
 end
+
+subgraph Typing
+direction LR
+typing_loc(typing)
+Protocol(Protocol)
+final("final (name mangling)")
+Literal(Literal)
+TypedDict(TypedDict)
+end
+
 subgraph Introspection
 direction LR
 variables(variables)
 attributes(attributes)
 parameters(parameters)
 end
+
+subgraph Other
+direction LR
+GIL(GIL)
+args_kwargs("*, *args, **kwargs")
+lambda(lambda)
+Closure(Closure)
 Operator(Operator)
+end
+
 end
 
 subgraph Multithreading_&_Multiprocessing
@@ -279,9 +327,10 @@ end
 subgraph asyncio
 direction LR
 subgraph High_level_API
+sleep(sleep)
+run(run)
 create_task(create_task)
 gather(gather)
-wait_for(wait_for)
 hilapi_more("...")
 end
 subgraph asyncio_Queues
@@ -328,7 +377,15 @@ direction LR
 
 Logging -.-> Profiling -.-> Random -.-> Input -.-> Print -.-> Cryptography -.-> Testing
 
-Logging(Logging)
+subgraph Logging
+direction LR
+StreamHandler(StreamHandler)
+ColoredFormatter(ColoredFormatter)
+Log_formatting("Log formatting")
+RotatingFileHandler(RotatingFileHandler)
+TimedRotatingFileHandler(TimedRotatingFileHandler)
+ELK_Stack("ELK Stack")
+end
 
 subgraph Profiling
 direction LR
@@ -338,7 +395,11 @@ timeit
 Call_Graph("Call Graph")
 end
 
-Random(Random)
+subgraph Random
+direction LR
+random_mod(random)
+secrets(secrets)
+end
 
 subgraph Input
 direction LR
@@ -350,14 +411,15 @@ end
 subgraph Print
 direction LR
 simple_print(print)
-json_print("json print")
-Pretty_Print("Pretty Print")
+json_print("json.dumps")
+Pretty_Print(pprint)
 end
 
 subgraph Cryptography
 direction LR
 MD5(MD5)
-AES("AES")
+AES(AES)
+cryptomore("...")
 end
 
 subgraph Testing
@@ -415,90 +477,121 @@ end
 
 end
 
-subgraph SQL
+subgraph Database
 direction LR
 
-DB_Basics -.-> SQL_Basics -.-> SQLite -.-> MySQL -.-> PostgreSQL -.-> ORM
+Database_basics -.-> SQL -.-> SQLite -.-> MySQL -.-> PostgreSQL -.-> ORM -.-> Analyze_an_execution_plan
 
-subgraph DB_Basics
+subgraph Database_basics
 direction LR
 Relational_model("Relational model")
-Transaction("Transaction")
-Isolation("Isolation")
+Transaction(Transaction)
+subgraph ACID
+Consistency(Consistency)
+Isolation(Isolation)
+end
 Nplusone("N+1 problem")
 SQL_injection("SQL injection")
 NoSQL(NoSQL)
 end
 
-subgraph SQL_Basics
+subgraph SQL
 direction LR
-DDL(DDL)
-DML(DML)
+
+subgraph DDL
+CREATE(CREATE)
+ALTER(ALTER)
+DROP(DROP)
+PRIMARY_KEY("PRIMARY KEY")
+FOREIGN_KEY("FOREIGN KEY")
+ddlmore("...")
+end
+
+subgraph DML
+SELECT(SELECT)
+INSERT(INSERT)
+UPDATE(UPDATE)
+DELETE(DELETE)
+FROM(FROM)
+WHERE(WHERE)
+SET(SET)
+
+dmlmore("...")
+end
+
 DCL(DCL)
+TCL(TCL)
+SQL_standard("SQL standard")
+
 end
 
 subgraph SQLite
 direction LR
-SQLiteConnect(Connect)
-SQLiteWrite(Write)
-SQLiteRead(Read)
+SQLite_benefits("SQLite benefits")
+Syntax_Diagrams("Syntax Diagrams")
+DB_Browser_for_SQLite("DB Browser for SQLite")
 end
 
 subgraph MySQL
 direction LR
-MySQLConnect(Connect)
-MySQLWrite(Write)
-MySQLRead(Read)
+MySQL_Workbench("MySQL Workbench")
 end
 
 subgraph PostgreSQL
 direction LR
 PostgreSQL_benefits("PostgreSQL benefits")
-PostgreSQLConnect(Connect)
-PostgreSQLWrite(Write)
-PostgreSQLRead(Read)
+psql(psql)
+pgAdmin(pgAdmin)
+PostgreSQL_more("...")
 end
 
 subgraph ORM
 direction LR
 peewee(peewee)
 SQLAlchemy(SQLAlchemy)
+Django_ORM("Django ORM")
 end
+
+Analyze_an_execution_plan("Analyze an execution plan")
 
 end
 
 subgraph Net
 direction LR
-REST -.-> HTTP -.-> sockets -.-> Frameworks -.-> API
-
-REST(REST)
+HTTP -.-> requests -.-> websocket -.-> Frameworks -.-> API
 
 subgraph HTTP
 direction LR
 HTTPS(HTTPS)
-CSRF-token(CSRF-token)
+CORS(CORS)
 end
 
-sockets(sockets)
+requests(requests)
+websocket(websocket)
 
 subgraph Frameworks
 direction LR
 Flask(Flask)
-Django(Django)
 aiohttp(aiohttp)
+Django(Django)
 end
 
 subgraph API
 direction LR
-FastAPI(FastAPI)
+REST(REST)
+Postman(Postman)
+Authentication(Authentication)
 jwt_tokens("JWT tokens")
+Swagger(Swagger)
+FastAPI(FastAPI)
+GraphQL(GraphQL)
 end
 
 end
 
 subgraph Architecture
 direction LR
-WhatIsArch -.-> Principles -.-> Paradigms -.-> Object-oriented -.-> Practices -.-> Microservices -.-> Messaging
+WhatIsArch -.-> Principles -.-> Paradigms -.-> Object-oriented -.-> Design_Patterns -.-> Microservices -.-> System_Design -.-> Practices
 
 WhatIsArch("What is?")
 subgraph Principles
@@ -512,10 +605,10 @@ ISP(ISP)
 DIP(DIP)
 end
 
+coupling_vs_cohesion("Coupling vs cohesion")
 KISS(KISS)
 DRY(DRY)
 YAGNI(YAGNI)
-coupling_vs_cohesion("Coupling vs cohesion")
 
 end
 
@@ -535,6 +628,42 @@ Polymorphism(Polymorphism)
 Abstraction(Abstraction)
 end
 
+subgraph Microservices
+direction LR
+
+Decentralization(Decentralization)
+Smart_endpoints_dumb_pipes("Smart endpoints, dumb pipes")
+Design_for_failure("Design for failure")
+
+subgraph Messaging
+direction LR
+RabbitMQ(RabbitMQ)
+Apache_Kafka("Apache Kafka")
+end
+end
+
+subgraph Design_Patterns
+direction LR
+
+Observer(Observer)
+Decorator_Method(Decorator)
+Factory_Method("Factory Method")
+Adapter_Facade("Adapter, Facade")
+
+Creational_patterns("Creational patterns")
+Structural_patterns("Structural patterns")
+Behavioral_patterns("Behavioral patterns")
+end
+
+subgraph System_Design
+direction LR
+CQRS(CQRS)
+Two_Phase_Commit("Two-Phase Commit")
+Load_Balanced_Services("Load-Balanced Services")
+Pattern_of_Distributed_Systems("Patterns of Distributed Systems")
+Cloud_Design_Patterns("Cloud Design Patterns")
+end
+
 subgraph Practices
 direction LR
 Agile(Agile)
@@ -542,34 +671,43 @@ Scrum(Scrum)
 Kanban(Kanban)
 end
 
-Microservices(Microservices)
-
-subgraph Messaging
-direction LR
-RabbitMQ(RabbitMQ)
-Apache_Kafka("Apache Kafka")
-NATS(NATS)
-end
-
 end
 
 subgraph DevOps
 direction LR
-Development_lifecycle -.-> git -.-> Linux -.-> CI_CD -.-> Containers
+git -.-> Linux -.-> Development_lifecycle -.-> CI_CD -.-> Containers
+
+subgraph git
+direction LR
+Basics(Basics)
+Branching(Branching)
+Tools(Tools)
+GitHub(GitHub)
+end
+
+subgraph Linux
+direction LR
+Install(Install)
+Directory_Structure("Directory Structure")
+Terminal(Terminal)
+Input_Output("Input/Output")
+bash(bash)
+System_administration("System administration")
+Network_administration("Network administration")
+end
 
 subgraph Development_lifecycle
 direction LR
 Git_flow("Git-flow")
 trunk_based_development("Trunk-based development")
 end
-git(git)
-Linux(Linux)
 
 subgraph CI_CD
 direction LR
 Continuous_testing("Continuous testing")
 GitHub_Actions("GitHub Actions")
 Jenkins(Jenkins)
+New_Relic("New Relic")
 end
 
 subgraph Containers
@@ -580,70 +718,193 @@ end
 
 end
 
-classDef dashed stroke-dasharray:5 5
-classDef bolded stroke-width:3px,stroke:#f99
+classDef trainee fill:#6ADA6A, stroke-width:3px
+classDef middle fill:#FF9900, stroke-width:3px
 
-class B-tree dashed;
-class RedBlackTree dashed;
-class AVLTree dashed;
-class trie dashed;
-class SinglyLinkedList dashed;
-class Protocol_Buffers dashed;
-class Pandas dashed;
-class fmore dashed;
-class fimore dashed;
-class Metaclass dashed;
-class ABCMeta dashed;
-class Registry dashed;
-class Inheritance_of_slots dashed;
-class pypygc dashed;
-class Value dashed;
-class muArray dashed;
-class Manager dashed;
-class Listener dashed;
-class new_event_loop dashed;
-class run_forever dashed;
-class lowlapi_more dashed;
-class asLifoQueue dashed;
-class Timer dashed;
-class Low_level_API dashed;
-class Metaprogramming dashed;
-class Call_Graph dashed;
-class Pretty_Print dashed;
-class MySQL dashed;
-class MySQLConnect dashed;
-class MySQLWrite dashed;
-class MySQLRead dashed;
-class Kubernetes dashed;
-class Jenkins dashed;
-class NATS dashed;
-class aiohttp dashed;
-class peewee dashed;
-class Neural_Networks dashed;
+class List trainee;
+class tuple trainee;
+class dict trainee;
+class set trainee;
+class array trainee;
+class bytes trainee;
+class deque trainee;
+class heap trainee;
+class range trainee;
+class string trainee;
+class datetime trainee;
+class slice trainee;
+class sort trainee;
+class sorted trainee;
+class listcomprehension trainee;
+class bisect trainee;
+class fmap trainee;
+class ffilter trainee;
+class freduce trainee;
+class String_Built-in_Functions trainee;
+class encode trainee;
+class decode trainee;
+class Read_Write trainee;
+class Text_Binary trainee;
+class JSON trainee;
+class paths trainee;
+class Data_Built-in_Functions trainee;
+class icount trainee;
+class icycle trainee;
+class irepeat trainee;
+class product trainee;
+class combinations trainee;
+class enumerate trainee;
+class yield trainee;
+class decorator trainee;
+class enter_exit_cm trainee;
+class oopBase1 trainee;
+class oop_property trainee;
+class staticmethod trainee;
+class classmethod trainee;
+class slots trainee;
+class Comparable trainee;
+class Hashable trainee;
+class Sortable trainee;
+class Iterable trainee;
+class Collection trainee;
+class shallow trainee;
+class deep trainee;
+class objInheritance trainee;
+class Multiple_Inheritance trainee;
+class MRO trainee;
+class reference_counting trainee;
+class garbage_collector trainee;
+class GIL trainee;
+class args_kwargs trainee;
+class lambda trainee;
+class exception_handling trainee;
+class built_in_exceptions trainee;
+class exception_raising trainee;
+class create_task trainee;
+class gather trainee;
+class sleep trainee;
+class run trainee;
+class wait_for trainee;
+class asQueue trainee;
+class Lock trainee;
+class Event trainee;
+class variables trainee;
+class Thread trainee;
+class Pool trainee;
+class Stopwatch trainee;
+class timeit trainee;
+class random_mod trainee;
+class input trainee;
+class Command_Line_Arguments trainee;
+class simple_print trainee;
+class MD5 trainee;
+class AES trainee;
+class pytest trainee;
+class FizzBuzz trainee;
+class BubbleSort trainee;
+class QuickSort trainee;
+class RadixSort trainee;
+class Adjacency_Matrix trainee;
+class Adjacency_List trainee;
+class Linear_Search trainee;
+class Binary_Search trainee;
+class DFS trainee;
+class bigo trainee;
+class divide_and_conquer trainee;
+class Greedy_algorithm trainee;
+class Recursion trainee;
+class Relational_model trainee;
+class Transaction trainee;
+class Isolation trainee;
+class PostgreSQL_benefits trainee;
+class peewee trainee;
+class CREATE trainee;
+class ALTER trainee;
+class DROP trainee;
+class SELECT trainee;
+class INSERT trainee;
+class UPDATE trainee;
+class DELETE trainee;
+class PRIMARY_KEY trainee;
+class FOREIGN_KEY trainee;
+class FROM trainee;
+class WHERE trainee;
+class SET trainee;
+class SQLite_benefits trainee;
+class Syntax_Diagrams trainee;
+class Flask trainee;
+class Consistency trainee;
+class HTTPS trainee;
+class requests trainee;
+class websocket trainee;
+class GitHub_Actions trainee;
+class WhatIsArch trainee;
+class SRP trainee;
+class OCP trainee;
+class LSP trainee;
+class ISP trainee;
+class DIP trainee;
+class coupling_vs_cohesion trainee;
+class Procedural trainee;
+class parObject-oriented trainee;
+class ooInheritance trainee;
+class Encapsulation trainee;
+class Polymorphism trainee;
+class Abstraction trainee;
+class trunk_based_development trainee;
+class StreamHandler trainee;
+class Observer trainee;
+class Decorator_Method trainee;
+class Factory_Method trainee;
+class Adapter_Facade trainee;
+class CQRS trainee;
+class Decentralization trainee;
+class Smart_endpoints_dumb_pipes trainee;
+class Basics trainee;
+class GitHub trainee;
+class Install trainee;
+class Directory_Structure trainee;
+class Terminal trainee;
+class accumulate trainee;
+class chain trainee;
+class compress trainee;
+class dropwhile trainee;
+class takewhile trainee;
+class typing_loc trainee;
+class REST trainee;
+class Postman trainee;
 
-class NoSQL bolded;
-class Functional bolded;
-class Microservices bolded;
-class RabbitMQ bolded;
-class Scrum bolded;
-class Apache_Kafka bolded;
-class git bolded;
-class Linux bolded;
-class Docker bolded;
-class Cryptography bolded;
-class Methods bolded;
-class PostgreSQL bolded;
-class HTTP bolded;
-class SQLAlchemy bolded;
-class Flask bolded;
-class Django bolded;
-class FastAPI bolded;
-class ORM bolded;
-class TensorFlow bolded;
-class Keras bolded;
-class regex bolded;
-class Testing bolded;
-
+class GraphQL middle;
+class bash middle;
+class System_administration middle;
+class Network_administration middle;
+class NoSQL middle;
+class Functional middle;
+class RabbitMQ middle;
+class Scrum middle;
+class Apache_Kafka middle;
+class Docker middle;
+class methmore middle;
+class PostgreSQL_more middle;
+class SQLAlchemy middle;
+class Django_ORM middle;
+class Django middle;
+class FastAPI middle;
+class SQL_standard middle;
+class Analyze_an_execution_plan middle;
+class TensorFlow middle;
+class Keras middle;
+class cryptomore middle;
+class Jenkins middle;
+class Kubernetes middle;
+class Creational_patterns middle;
+class Structural_patterns middle;
+class Behavioral_patterns middle;
+class Architectural_Patterns middle;
+class ELK_Stack middle;
+class Pattern_of_Distributed_Systems middle;
+class Cloud_Design_Patterns middle;
+class New_Relic middle;
 ```
 ## 1. Структуры данных
 
@@ -2589,7 +2850,7 @@ if __name__ == '__main__':
 
 
     
-![png](01_python_02_primitive_data_management_files/01_python_02_primitive_data_management_88_1.png)
+![png](02_data_management_files/02_data_management_88_1.png)
     
 
 
@@ -4388,6 +4649,87 @@ foo()
 [1]
 
 
+### Тестирование, pytest
+
+Для работы с pytest внутри Jupiter notebook воспользуемся инструментом [ipytest](https://github.com/chmp/ipytest)
+
+
+```python
+# pip install -U ipytest
+import ipytest
+
+ipytest.autoconfig()
+```
+
+
+```python
+%%ipytest
+
+import ipytest
+
+def test_my_func():
+    assert my_func(0) == 0
+    assert my_func(1) == 0
+    assert my_func(2) == 2
+    assert my_func(3) == 2
+    
+    
+def my_func(x):
+    return x // 2 * 2 
+```
+
+    [32m.[0m[32m                                                                                            [100%][0m
+    [32m[32m[1m1 passed[0m[32m in 0.01s[0m[0m
+    
+
+
+```python
+%%ipytest
+
+import pytest
+
+@pytest.mark.parametrize('input,expected', [
+    (0, 0),
+    (1, 0),
+    (2, 2),
+    (3, 2),
+])
+def test_parametrized(input, expected):
+    assert my_func(input) == expected
+    
+@pytest.fixture
+def my_fixture():
+    return 42
+
+def test_fixture(my_fixture):
+    assert my_fixture == 42
+```
+
+    [32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m                                                                                        [100%][0m
+    [32m[32m[1m5 passed[0m[32m in 0.01s[0m[0m
+    
+
+
+
+## Моки, стабы
+
+Тестовый двойник - термин, описывающий все виды фальшивых (fake) зависимостей, непригодных к использованию в конечном продукте (non-production-ready). Такая зависимость выглядит и ведет себя как ее аналог, предназначенный для production, но на самом деле является упрощенной версией, которая снижает сложность и облегчает тестирование. Зависимости бывают пяти типов, но для простоты можно ограничиться двумя: моки (mock) и стабы (stub).  
+Моки помогают имитировать и изучать исходящие (outcoming) взаимодействия. То есть вызовы, совершаемые тестируемой системой (SUT) к ее зависимостям для изменения их состояния.  
+Стабы помогают имитировать входящие (incoming) взаимодействия. То есть вызовы, совершаемые SUT к ее зависимостям для получения входных данных.  
+
+Понятие моков и стабов связано с принципом command-query separation (CQS). Принцип CQS гласит, что каждый метод должен быть либо командой, либо запросом, но не обоими.  
+Команды - это методы, которые вызывают побочные эффекты и не возвращают никакого значения. Примеры побочных эффектов включают изменение состояния объекта, изменение файла в файловой системе и т. д.  
+Запросы, наоборот, не имеют побочных эффектов и возвращают значение.  
+Другими словами, задавая вопрос, вы не должны менять ответ. Код, который поддерживает такое четкое разделение, становится легче для чтения. Тестовые двойники, заменяющие команды, становятся моками, и, соответственно, тестовые двойники, заменяющие запросы, становятся стабами.
+
+## Не нужно проверять взаимодействия со стабами
+
+Как уже упоминалось, стабы помогают только эмулировать входящие взаимодействия, а не изучать их. Из этого следует, что вы никогда не должны проверять взаимодействие со стабами. Вызов от SUT к стабу не является частью конечного результата, который выдает SUT. Такой вызов - это всего лишь средство для получения конечного результата; это деталь реализации. Проверка взаимодействий со стабами является распространенным анти-паттерном, который приводит к хрупким тестам. Единственный способ избежать хрупкости тестов - это заставить эти тесты проверять конечный результат (который в идеале должен иметь значение для специалиста в предметной области, а не для программиста), а не детали реализации.  
+
+## Самодостаточность тестов
+
+К тестам нужно относиться как к функциональному программированию: при отправке одних и тех же аргументов, мы должны получать ровно тот же результат. Тесты должны быть самодостаточны, нельзя обуславливать вызов некоторого теста предварительным вызовом какого-то другого теста.
+
 ## Источники  
 Официальная документация Python [docs.python.org](https://docs.python.org/), включающая [The Python Standard Library](https://docs.python.org/3/library/index.html).  
 Весьма подробное руководство (совсем уж базовый синтаксис не включен): [Comprehensive Python Cheatsheet](https://github.com/gto76/python-cheatsheet).  
@@ -5387,6 +5729,17 @@ Messaging
 RabbitMQ
 Apache Kafka
 NATS
+
+https://habr.com/ru/company/innotech/blog/698838/
+
+Цитата из статьи:
+
+Выбирая между Kafka и RabbitMQ
+На самом деле, категорично сравнивать брокеры сообщений очень сложно. У всех существуют свои задачи и области применения. В случае с Apache Kafka и RabbitMQ это немного разный уровень, где лучшего не существует.
+
+Kafka используется для обработки больших объёмов данных, сотен тысяч сообщений в секунду, которые подолгу хранятся на диске и много раз читаются сотнями или даже тысячами подписчиков. Kafka — это легко масштабируемая система, обладающая повышенной отказоустойчивостью, что очень важно в крупных проектах.
+
+RabbitMQ более простой в установке и настройке, успешно справляется с асинхронным обменом данными в микросервисной архитектуре. Не требует дополнительных компонентов и затрат на дисковые ресурсы, так как все сообщения после чтения из очереди удаляются. По сравнению с Kafka обладает большими возможностями по настройке шаблонов обмена сообщениями. Отличный выбор, если нет завышенных требований к отказоустойчивости и пропускной способности.
 ## 10. Администрирование/DevOps
 
 ### Git-flow
@@ -5452,89 +5805,6 @@ Kubernetes
 [git-flow](https://www.atlassian.com/git/tutorials/comparing-workflows/gitflow-workflow) (Компания Atlassian изменила текст страницы, теперь там размещены рекомендации перехода на магистральную разработку)  
 [Критика](https://habr.com/ru/company/flant/blog/491320/) git-flow  
 [GitHub flow](https://docs.github.com/en/get-started/quickstart/github-flow)  
-## 11. Тестирование, pytest
-
-Для работы с pytest внутри Jupiter notebook воспользуемся инструментом [ipytest](https://github.com/chmp/ipytest)
-
-
-```python
-# pip install -U ipytest
-import ipytest
-
-ipytest.autoconfig()
-```
-
-
-```python
-%%ipytest
-
-import ipytest
-
-def test_my_func():
-    assert my_func(0) == 0
-    assert my_func(1) == 0
-    assert my_func(2) == 2
-    assert my_func(3) == 2
-    
-    
-def my_func(x):
-    return x // 2 * 2 
-```
-
-    [32m.[0m[32m                                                                                            [100%][0m
-    [32m[32m[1m1 passed[0m[32m in 0.01s[0m[0m
-    
-
-
-```python
-%%ipytest
-
-import pytest
-
-@pytest.mark.parametrize('input,expected', [
-    (0, 0),
-    (1, 0),
-    (2, 2),
-    (3, 2),
-])
-def test_parametrized(input, expected):
-    assert my_func(input) == expected
-    
-@pytest.fixture
-def my_fixture():
-    return 42
-
-def test_fixture(my_fixture):
-    assert my_fixture == 42
-```
-
-    [32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m                                                                                        [100%][0m
-    [32m[32m[1m5 passed[0m[32m in 0.01s[0m[0m
-    
-
-
-
-## Моки, стабы
-
-Тестовый двойник - термин, описывающий все виды фальшивых (fake) зависимостей, непригодных к использованию в конечном продукте (non-production-ready). Такая зависимость выглядит и ведет себя как ее аналог, предназначенный для production, но на самом деле является упрощенной версией, которая снижает сложность и облегчает тестирование. Зависимости бывают пяти типов, но для простоты можно ограничиться двумя: моки (mock) и стабы (stub).  
-Моки помогают имитировать и изучать исходящие (outcoming) взаимодействия. То есть вызовы, совершаемые тестируемой системой (SUT) к ее зависимостям для изменения их состояния.  
-Стабы помогают имитировать входящие (incoming) взаимодействия. То есть вызовы, совершаемые SUT к ее зависимостям для получения входных данных.  
-
-Понятие моков и стабов связано с принципом command-query separation (CQS). Принцип CQS гласит, что каждый метод должен быть либо командой, либо запросом, но не обоими.  
-Команды - это методы, которые вызывают побочные эффекты и не возвращают никакого значения. Примеры побочных эффектов включают изменение состояния объекта, изменение файла в файловой системе и т. д.  
-Запросы, наоборот, не имеют побочных эффектов и возвращают значение.  
-Другими словами, задавая вопрос, вы не должны менять ответ. Код, который поддерживает такое четкое разделение, становится легче для чтения. Тестовые двойники, заменяющие команды, становятся моками, и, соответственно, тестовые двойники, заменяющие запросы, становятся стабами.
-
-## Не нужно проверять взаимодействия со стабами
-
-Как уже упоминалось, стабы помогают только эмулировать входящие взаимодействия, а не изучать их. Из этого следует, что вы никогда не должны проверять взаимодействие со стабами. Вызов от SUT к стабу не является частью конечного результата, который выдает SUT. Такой вызов - это всего лишь средство для получения конечного результата; это деталь реализации. Проверка взаимодействий со стабами является распространенным анти-паттерном, который приводит к хрупким тестам. Единственный способ избежать хрупкости тестов - это заставить эти тесты проверять конечный результат (который в идеале должен иметь значение для специалиста в предметной области, а не для программиста), а не детали реализации.  
-
-## Самодостаточность тестов
-
-К тестам нужно относиться как к функциональному программированию: при отправке одних и тех же аргументов, мы должны получать ровно тот же результат. Тесты должны быть самодостаточны, нельзя обуславливать вызов некоторого теста предварительным вызовом какого-то другого теста.
-## 12. FastAPI
-## 13. Flask
-## 14. SQLAlchemy
 ### Выведение
 
 Ну что ж, дорогие читатели, теперь, после прочтения этого краткого путеводителя по языку программирования Python и окружающей его инфраструктуре, надеюсь, что вы закрыли некоторые лакуны в своих знаниях, даже если до этого обладали околонулевым опытом программирования. Еще больше надеюсь, что у вас появилась масса других вопросов, уже более оформившихся и структурированных, а желание немедленно сесть и что-нибудь эдакое запрограммировать только возросло.
