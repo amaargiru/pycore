@@ -1,4 +1,6 @@
-## 8. Архитектура программного обеспечения
+## 11. Архитектура программного обеспечения
+
+![Architecture](https://raw.githubusercontent.com/amaargiru/pycore/main/pics/11_Architecture.png)  
 
 Что такое архитектура 
 

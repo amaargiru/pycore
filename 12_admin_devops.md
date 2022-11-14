@@ -1,4 +1,6 @@
-## 10. Администрирование/DevOps
+## 12. Администрирование/DevOps
+
+![DevOps](https://raw.githubusercontent.com/amaargiru/pycore/main/pics/12_DevOps.png)  
 
 ### Git-flow
 
