@@ -59,9 +59,24 @@ Containers
 Docker
 Kubernetes
 
-### Источники
 
-[A successful Git branching model](https://nvie.com/posts/a-successful-git-branching-model/), статья 2010 года, положившая начало распростанения git-flow. Сам автор сделал в 2020 дополнение к статье, где рекомендует командам, придерживающихся continuous delivery, переходить на GitHub flow.  
-[git-flow](https://www.atlassian.com/git/tutorials/comparing-workflows/gitflow-workflow) (Компания Atlassian изменила текст страницы, теперь там размещены рекомендации перехода на магистральную разработку)  
-[Критика](https://habr.com/ru/company/flant/blog/491320/) git-flow  
-[GitHub flow](https://docs.github.com/en/get-started/quickstart/github-flow)  
+## Источники  
+
+### Python
+
+Официальная документация Python [docs.python.org](https://docs.python.org/), включающая [The Python Standard Library](https://docs.python.org/3/library/index.html).  
+Весьма подробное руководство (совсем уж базовый синтаксис не включен): [Comprehensive Python Cheatsheet](https://github.com/gto76/python-cheatsheet).  
+Руководство с включением базового синтаксиса: [Python Cheatsheet](https://github.com/wilfredinni/python-cheatsheet). Включает практические Jupiter [Notebooks](https://github.com/wilfredinni/python-cheatsheet/tree/master/jupyter_notebooks).  
+Сипсок библиотек и фреймворков: [Awesome Python](https://github.com/vinta/awesome-python).  
+Около-питоновские практические советы (pip, virtualenv, pyInstaller и т. д.): ["The Hitchhiker’s Guide to Python"](https://github.com/realpython/python-guide).  
+Мануал для начинающих дата-сайентистов: [Joel Grus, "Data Science from Scratch"](https://github.com/joelgrus/data-science-from-scratch).  
+Руководство для начинающих: ["Python Notes for Professionals"](https://goalkicker.com/PythonBook/).  
+Руководство для опытных программистов: ["Python 3 Patterns, Recipes and Idioms"](https://python-3-patterns-idioms-test.readthedocs.io/en/latest/index.html).  
+Архитектурные паттерны: [Harry Percival & Bob Gregory, "Architecture Patterns with Python"](https://www.cosmicpython.com/book/preface.html).  
+
+### Git
+
+Статья 2010 года, положившая начало распростанения git-flow. Сам автор сделал в 2020 дополнение к статье, где рекомендует командам, придерживающихся continuous delivery, переходить на GitHub flow: [A successful Git branching model](https://nvie.com/posts/a-successful-git-branching-model/).  
+git-flow (компания Atlassian изменила текст страницы, теперь там размещены рекомендации перехода на магистральную разработку): [git-flow](https://www.atlassian.com/git/tutorials/comparing-workflows/gitflow-workflow).  
+[Критика](https://habr.com/ru/company/flant/blog/491320/) git-flow.  
+[GitHub flow](https://docs.github.com/en/get-started/quickstart/github-flow).  
