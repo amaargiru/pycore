@@ -912,6 +912,10 @@ class New_Relic middle;
 ```
 ## 1. Структуры данных
 
+> «На востоке расположен Рай; место это преобильное и известно своими наслаждениями, но для людей недоступно. Место это ограждено огненной стеной до самого неба.»
+> 
+> Эбсторфская карта.
+
 ![Data structures](https://raw.githubusercontent.com/amaargiru/pycore/main/pics/01_Data_Structures.png)  
 
 Как известно, программирование = структуры данных + алгоритмы (у Никлауса Вирта даже книжка такая есть). Начнем с данных, а потом плавненько перейдем к методам их обработки.
@@ -1663,6 +1667,10 @@ print (f"{tz1}\n {tz2}\n {tz3}\n {tz4}\n {local_dt}\n {utc_dt}")
 
 А теперь давайте вернёмся в основное русло нашего повествования.
 ## 2. Обработка данных
+
+> «Огненный поток, поднимающийся подобно пламени от земли до неба, опоясывал пространство величиною с маленький остров.»  
+>  
+> История о докторе Иоганне Фаусте, знаменитом чародее и чернокнижнике.  
 
 ![Data management](https://raw.githubusercontent.com/amaargiru/pycore/main/pics/02_Data_Management.png)  
 
@@ -2863,7 +2871,56 @@ if __name__ == '__main__':
 
 
 На самом деле Халк, конечно, не толстый, а профессиональный спортсмен, к которым формула ИМТ малоприменима, но крошка Кайли действительно вырывается вперед, даже с учетом своего небольшого роста.
+
+### Matplotlib/Seaborn
+
+Библиотеку визуализации matplotlib мы уже слегка задействовали в примере выше. Прямо здесь и прямо сейчас глубоко погружаться в разбор возможностей matplotlib/seaborn, наверное, смысла особого не имеет; все вы видели примеры иллюстраций в научной и бизнес-литературе и, разумеется, все эти графики и иллюстрации можно повторить при помощи рассматриваемых библиотек.
+
+Давайте просто для затравки нарисуем пару симпатичных визуализаций, чтобы наглядно показать полезность качественного оформления результатов проделанной работы.  
+
+Тепловая карта (heatmap), наглядно показывающая достижения отдельных членов команды:
+
+
+```python
+from random import randrange
+
+import numpy as np
+import matplotlib.pyplot as plt
+import uuid
+
+targets = ["authorities", "humans", "parrots", "cars", "motorcycles", "buildings", "warehouses"]
+robots = ["Terminator #" + str(uuid.uuid4())[:5] for i in range(7)]
+harvest = np.array([[randrange(i * j) for i in range(10, 80, 10)] for j in range(1, 8)])
+
+fig, ax = plt.subplots()
+im = ax.imshow(harvest)
+
+ax.set_xticks(np.arange(len(robots)), labels=robots)
+ax.set_yticks(np.arange(len(targets)), labels=targets)
+plt.setp(ax.get_xticklabels(), rotation=60, ha="right", rotation_mode="anchor")
+
+for i in range(len(targets)):
+    for j in range(len(robots)):
+        text = ax.text(j, i, harvest[i, j], ha="center", va="center", color="w")
+
+ax.set_title("Targets destroyed")
+fig.tight_layout()
+
+plt.rcParams['figure.figsize'] = [4, 4]
+plt.rcParams['figure.dpi'] = 200
+plt.show()
+```
+
+
+    
+![png](02_data_management_files/02_data_management_92_0.png)
+    
+
 ## 3. Потоки данных
+
+> «И не видели мы ни одной травы, которая не цвела бы, и ни одного дерева, которое не плодоносило бы. Камни же там — только драгоценные.»  
+> 
+> Плавание святого Брендана.
 
 ![Data Flows](https://raw.githubusercontent.com/amaargiru/pycore/main/pics/03_Data_Flows.png)  
 
@@ -3200,6 +3257,10 @@ class MyOpen:
 ...     print(file.read())
 Hello World!
 ## 4. ООП
+
+> «Место то несказанно прекрасно видом: всякое дерево благоцветно, и всякий плод зрел, и всевозможные явства изобилуют, всякое дуновение благовонно.»  
+> 
+> Славянская книга Еноха.  
 
 ![OOP](https://raw.githubusercontent.com/amaargiru/pycore/main/pics/04_OOP.png)  
 
@@ -3670,6 +3731,10 @@ MyMetaClass.__base__ == type         # MyMetaClass is a subclass of type.
 https://proglib.io/p/metaclasses-in-python  
 https://habr.com/ru/post/145835/  
 ## 5. Внутренности языка
+
+> «Эта стена тянется с юга на север, и в ней есть лишь один проход, скрываемый пылающим пламенем, так что ни один смертный не может туда проникнуть.»  
+>  
+> Приключения сэра Джона Мандевиля.  
 
 ![Language skeleton](https://raw.githubusercontent.com/amaargiru/pycore/main/pics/05_Language_Skeleton.png)  
 
