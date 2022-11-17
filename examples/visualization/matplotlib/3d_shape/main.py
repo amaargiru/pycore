@@ -1,18 +1,33 @@
-import random
+import uuid
+from random import randrange
+
+import matplotlib.cm as cm
+import matplotlib.colors as colors
 import matplotlib.pyplot as plt
 import numpy as np
 
-fig = plt.figure()
+targets = ["authorities", "humans", "parrots", "cars", "motorcycles", "buildings", "warehouses"]
+robots = ["Terminator #" + str(uuid.uuid4())[:5] for _ in range(7)]
+harvest = np.array([[randrange(i * j) for i in range(10, 80, 10)] for j in range(1, 8)])
+
+fig = plt.figure(figsize=(4, 4))
 ax = fig.add_subplot(projection='3d')
+ax.set_xticks(np.arange(len(robots)), labels=robots)
+ax.set_yticks(np.arange(len(targets)), labels=targets)
+plt.setp(ax.get_xticklabels(), rotation=45, ha="right", rotation_mode="anchor")
+plt.setp(ax.get_yticklabels(), ha="left", rotation_mode="anchor")
+ax.set_title("Our team")
 
-# u = np.linspace(0, 2 * np.pi, 100)
-u = np.array([[i + random.uniform(-0.3, 0.3) for i in np.linspace(0, 2 * np.pi, 50)]])
-# v = np.linspace(0, np.pi, 100)
-v = np.array([[i + random.uniform(-0.3, 0.3) for i in np.linspace(0, np.pi, 50)]])
-x = 10 * np.outer(np.cos(u), np.sin(v))
-y = 10 * np.outer(np.sin(u), np.sin(v))
-z = 10 * np.outer(np.ones(np.size(u)), np.cos(v))
+xx, yy = np.meshgrid(range(len(targets)), range(len(robots)))
+x1d, y1d = xx.ravel(), yy.ravel()
+harvest1d = harvest.ravel()
 
-ax.plot_surface(x, y, z)
-ax.set_aspect('equal')
+# Setup color scheme
+offset = harvest1d + np.abs(harvest1d.min())
+fracs = offset.astype(float) / offset.max()
+norm = colors.Normalize(fracs.min(), fracs.max())
+colors = cm.jet(norm(fracs))
+
+ax.bar3d(x1d, y1d, np.zeros_like(x1d + y1d), 0.7, 0.7, harvest1d, color=colors)
+
 plt.show()
