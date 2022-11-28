@@ -6,12 +6,13 @@ Decorator:
 (+)(-)(-) Parameterized decorator  
 
 Context_managers:  
-(-)(-)(-) __enter__, __exit__  
-(-)(-)(-) contextlib  
+(+)(-)(-) __enter__, __exit__  
+(+)(-)(-) contextlib  
 
 OOP Base  
-(-)(-) init, repr, str  
-(-)(-) @property  
+(+)(-) Magic methods
+(+)(-) init, repr, str  
+(+)(-) @property  
 (-)(-) @staticmethod  
 (-)(-) @classmethod, cls, self  
 (-)(-) slots  
@@ -38,7 +39,7 @@ Inheritance
 
 Metaprogramming  
 (-)(-) Meta Class  
-(-)(-) Разбор проблем, решаемых при помощи метапрограммирования  
+(-)(-) Разбор пары проблем, оптимально решаемых при помощи метапрограммирования  
 
 Introspection  
 (-)(-) variables  
