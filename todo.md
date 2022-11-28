@@ -2,7 +2,7 @@ TODO (Исходный код в папке examples) (Исходный код �
 
 Decorator:  
 (+)(-)(-) decorator  
-(-)(-)(-) LRU Cache  
+(+)(-)(-) LRU Cache  
 (+)(-)(-) Parameterized decorator  
 
 Context_managers:  
