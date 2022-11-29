@@ -70,3 +70,34 @@ circle = Circle(10, 100)
 circle.radius = 20  # OK
 # circle.radius = 101  # Raises ValueError
 print(circle.area)
+
+
+# Обычный метод (т. е. не помеченный декораторами @staticmethod или @classmethod) имеет доступ к свойствам конкретного экземпляра класса.
+
+# @staticmethod — метод, принадлежащий классу, а не экземпляру класса. Можно вызывать без создания экземпляра, т. к. метод
+# не имеет доступа к свойствам экземпляра. При помощи @staticmethod помечают функционал, логически связанный с классом,
+# но не требующий доступа к свойствам экземпляра.
+
+# Если метод не должен иметь доступа к свойствам конкретного экземпляра класса (как @staticmethod), но должен иметь доступ к другим
+# методам и переменным класса, то следует использовать @classmethod.
+
+class B(object):
+    def foo(self, x):
+        print(f"Run foo({self}, {x})")
+
+    @classmethod
+    def class_foo(cls, x):
+        print(f"Run class_foo({cls}, {x})")
+
+    @staticmethod
+    def static_foo(x):
+        print(f"Run static_foo({x})")
+
+
+b = B()
+b.foo(1)
+b.class_foo(1)
+b.static_foo(1)
+
+# У @classmethod первым параметром должен быть cls (класс), а у обычного метода - self (экземпляр класса).
+# Для @staticmethod не требуется ни cls, ни self.
