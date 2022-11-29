@@ -13,15 +13,15 @@ OOP Base
 (+)(-) Magic methods
 (+)(-) init, repr, str  
 (+)(-) @property  
-(-)(-) @staticmethod  
-(-)(-) @classmethod, cls, self  
-(-)(-) slots  
+(+)(-) @staticmethod  
+(+)(-) @classmethod, cls, self  
+(+)(-) slots  
 
 DuckTypes  
-(-)(-) Iterator  
-(-)(-) Comparable  
-(-)(-) Hashable  
-(-)(-) Sortable  
+(+)(-) Iterator  
+(+)(-) Comparable  
+(+)(-) Hashable  
+(+)(-) Sortable  
 
 Iterable Duck Types  
 (-)(-) Iterable  
