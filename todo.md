@@ -24,8 +24,8 @@ DuckTypes
 (+)(-) Sortable  
 
 Iterable Duck Types  
-(-)(-) Iterable  
-(-) Collection  
+(+)(-) Iterable  
+(+)(-) Collection  
 
 Object Copy  
 (-)(-) Shallow copy  
