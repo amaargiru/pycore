@@ -28,8 +28,9 @@ Iterable Duck Types
 (+)(-) Collection  
 
 Object Copy  
-(-)(-) Shallow copy  
-(-)(-) Deep copy  
+(+)(-) Assignment  
+(+)(-) Shallow copy  
+(+)(-) Deep copy  
 
 Inheritance  
 (-)(-) Inheritance  
