@@ -43,7 +43,7 @@ Metaprogramming
 (+)(-) Разбор проблем, оптимально решаемых при помощи метапрограммирования  
 
 Introspection  
-(-)(-) variables  
+(+)(-) variables  
 
 Language Skeleton / Other  
 (-)(-) GIL  
