@@ -1,9 +1,9 @@
 TODO (Исходный код в папке examples) (Исходный код в Jupiter Notebook) (Описание).  
 
 Decorator:  
-(+)(-)(-) decorator  
-(+)(-)(-) LRU Cache  
-(+)(-)(-) Parameterized decorator  
+(+)(+)(+) decorator  
+(+)(+)(+) LRU Cache  
+(+)(+)(+) Parameterized decorator  
 
 Context_managers:  
 (+)(-)(-) __enter__, __exit__  
