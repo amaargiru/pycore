@@ -24,4 +24,7 @@ del 08_algorithms.md
 del 09_database.md
 del 10_net.md
 
+rem Delete file from "Context manager" chapter
+del test_context_connect.db
+
 pause

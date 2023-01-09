@@ -6,8 +6,8 @@ Decorator:
 (+)(+)(+) Parameterized decorator  
 
 Context_managers:  
-(+)(-)(-) __enter__, __exit__  
-(+)(-)(-) contextlib  
+(+)(+)(+) __enter__, __exit__  
+(+)(+)(+) contextlib  
 
 OOP Base  
 (+)(-) Magic methods

@@ -2592,15 +2592,15 @@ print(my_decorated_function('Hello, world!'))
 
 ### Контекстный менеджер
 
-В питоне есть оператор with. Размещенный внутри код выполняется с особенностью: до и после гарантированно срабатывают события входа в блок with и выхода из него. Объект, который определяет логику событий, называется контекстным менеджером.
+Код, размещенный внутри оператора with выполняется с особенностью: как до , так и после срабатывают события входа в блок with и выхода из него. Объект, который определяет логику событий, называется контекстным менеджером.
 
-На уровне класса события определены методами __enter__ и __exit__. Первый срабатывает в тот момент, когда ход исполнения программы переходит внутрь with. Метод может вернуть значение. Оно будет доступно низлежащему внутри блока with коду.
-
-__exit__ срабатывает в момент выхода блока, в т.ч. и в случае исключения. В этом случае в метод будет передана тройка значений (exc_class, exc_instance, traceback).
+На уровне класса события определены методами \_\_enter\_\_ и \_\_exit\_\_.  
+\_\_enter\_\_ срабатывает в тот момент, когда ход исполнения программы переходит внутрь with. Метод может вернуть значение. Оно будет доступно расположенному внутри блока with коду.  
+\_\_exit\_\_ срабатывает в момент выхода блока, в т.ч. и в случае исключения. В этом случае в метод будет передана тройка значений (exc_class, exc_instance, traceback).
 
 Самый распространённый контекстный менеджер – класс, порожденный функцией open. Он гарантирует, что файл будет закрыт даже в том случае, если внутри блока возникнет ошибка.
 
-Желательно выходить из контекстного менеджера как можно быстрее, чтобы освобождать контекст и ресурсы.
+Желательно побыстрее выходить из контекстного менеджера, освобождая контекст и ресурсы.
 
 ```python
 with open('file.txt') as f:
@@ -2612,32 +2612,66 @@ process_data(data)
 
 Контекстные менеджеры можно использовать для временной замены параметров, переменных окружения, транзакций БД.
 
-Какие функции нужно переопределить в классе А, чтобы экземпляры этого класса могли реализовать протокол контекстного менеджера?
+Напишем свой контекстный менеджер для подключения к БД SQLite:
 
-Напишем свой контекстный менеджер:
-
-### Context Manager
-Enter() should lock the resources and optionally return an object.
-Exit() should release the resources.
-Any exception that happens inside the with block is passed to the exit() method.
-If it wishes to suppress the exception it must return a true value.
 
 ```python
-class MyOpen:
-    def __init__(self, filename):
-        self.filename = filename
+import sqlite3
+
+
+class db_conn:
+
+    def __init__(self, db_name):
+        self.db_name = db_name
+
+    # Открываем подключение к БД
     def __enter__(self):
-        self.file = open(self.filename)
-        return self.file
-    def __exit__(self, exc_type, exception, traceback):
-        self.file.close()
+        self.conn = sqlite3.connect(self.db_name)
+        return self.conn
+
+    # Закрываем подключение к БД
+    def __exit__(self, exc_type, exc_value, exc_traceback):
+        self.conn.close()
+        if exc_value:
+            raise
+
+
+if __name__ == "__main__":
+    db = "test_context_connect.db"
+
+    with db_conn(db) as conn:
+        cursor = conn.cursor()
 ```
 
->>> with open('test.txt', 'w') as file:
-...     file.write('Hello World!')
->>> with MyOpen('test.txt') as file:
-...     print(file.read())
-Hello World!
+### Контекстный менеджер на базе contextlib
+
+Перепишем наш контекстный менеджер для подключения к БД SQLite при помощи contextlib:
+
+
+```python
+import sqlite3
+from contextlib import contextmanager
+
+
+# Схема конструирования следующая: всё, что написано до оператора yield - вызывается в рамках функции __enter__,
+# всё что после – в рамках __exit__.
+@contextmanager
+def db_conn(db_name):
+    # Открываем подключение к БД
+    conn = sqlite3.connect(db_name)
+
+    yield conn
+
+    # Закрываем подключение к БД
+    conn.close()
+
+
+if __name__ == "__main__":
+    db = "test_contextlib_connect.db"
+
+    with db_conn(db) as conn:
+        cursor = conn.cursor()
+```
 ## 4. ООП
 
 > «Место то несказанно прекрасно видом: всякое дерево благоцветно, и всякий плод зрел, и всевозможные явства изобилуют, всякое дуновение благовонно.»  
