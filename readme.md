@@ -2844,6 +2844,328 @@ b.static_foo(1)
 У @classmethod первым параметром должен быть cls (класс), а у обычного метода - self (экземпляр класса).  
 Для @staticmethod не требуется ни cls, ни self.
 
+### Утиная типизация
+
+Утиная типизация (duck types) - постулирование реализации интерфейса классом не через явное объявление, а через реализацию методов интерфейса. Так, каждый класс, реализующий методы next() и iter(), автоматически становится итератором, несмотря на отсутствие явного объявления (что-нибудь вроде @iterator) или, скажем, наследования от класса Iterator.
+
+### Iterator
+
+Итератор - класс, реализующий методы next() и iter().  
+Метод next() должен возвращать следующее значение итератора или выкидывать исключение StopIteration, чтобы сигнализировать о том, что итератор исчерпал доступные значения.
+Метод iter() должен возвращать "self".
+
+
+```python
+class LimitCounter:
+    def __init__(self, max_value: int):
+        self.count = 0
+        self.max_value = max_value
+
+    def __next__(self):
+        self.count += 1
+
+        if self.count <= self.max_value:
+            return self.count
+        else:
+            raise StopIteration
+
+    def __iter__(self):
+        return self
+
+
+limit_counter = LimitCounter(2)
+print(next(limit_counter))
+print(next(limit_counter))
+
+
+# print(next(limit_counter))  # Raises StopIteration
+```
+
+    1
+    2
+    
+
+### Comparable
+Начиная с Python 3.4, для того, чтобы экземпляры метода можно было сравнивать между собой, достаточно определить методы lt (меньше) и eq (равно), а также задействовать декоратор @functools.total_ordering.
+
+
+```python
+from functools import total_ordering
+
+@total_ordering
+class Person:
+    def __init__(self, firstname: str, lastname: str):
+        self.firstname: str = firstname
+        self.lastname: str = lastname
+
+    def _is_valid_operand(self, other):
+        return hasattr(other, "lastname") and hasattr(other, "firstname")
+
+    def __eq__(self, other):
+        if not self._is_valid_operand(other):
+            return NotImplemented
+        return (self.lastname, self.firstname) == (other.lastname, other.firstname)
+
+    def __lt__(self, other):
+        if not self._is_valid_operand(other):
+            return NotImplemented
+        return (self.lastname, self.firstname) < (other.lastname, other.firstname)
+
+
+Finn = Person("Finn", "the Human")
+Jake = Person("Jake", "the Dog")
+
+print(Finn != Jake)
+```
+
+    True
+    
+
+### Hashable
+
+Хешируемые объекты должны реализовывать методы hash() и eq(). Хеш объекта должен быть неизменен в течении всего жизненного цикла. Хешируемые объекты можно использовать как ключи в словарях и как элементы множеств, так как эти структуры используют хеш-таблицу для внутреннего представления данных.
+
+Hashable objects that compare equal must have the same hash value, meaning default hash() that returns `'id(self)'` will not do. That is why Python automatically makes classes unhashable if you only implement eq().
+
+
+```python
+class Hero:
+    def __init__(self, name: str, level: int):
+        self.name: str = name
+        self.level: int = level
+
+    def _is_valid_operand(self, other):
+        return hasattr(other, "name") and hasattr(other, "level")
+
+    def __eq__(self, other):
+        if not self._is_valid_operand(other):
+            return NotImplemented
+        return (self.name, self.level) == (other.name, other.level)
+
+    def __hash__(self):
+        return hash((self.name, self.level))
+
+
+Finn = Hero("Finn the Human", 10_000)
+Jake = Hero("Jake the Dog", 10_000)
+
+print(hash(Finn))
+print(hash(Jake))
+```
+
+    -8707075988359731747
+    -2276052447712954388
+    
+
+### Sortable
+
+Для возможности применения к последовательностям объектов таких методов как sort() или max() необходимо, как и в случае Comparable, определить методы lt (меньше) и eq (равно), а также задействовать декоратор @functools.total_ordering.
+
+Для примера создадим класс студентов, которых можно будет сортировать не по имени, а по среднему баллу.
+
+
+```python
+from statistics import mean
+
+
+@total_ordering
+class Student:
+    def __init__(self, name: str, grades: list[int]):
+        self.name: str = name
+        self.grades: list[int] = grades
+
+    def _is_valid_operand(self, other):
+        return hasattr(other, "name") and hasattr(other, "grades")
+
+    def __eq__(self, other):
+        if not self._is_valid_operand(other):
+            return NotImplemented
+        return mean(self.grades) == mean(other.grades)
+
+    def __lt__(self, other):
+        if not self._is_valid_operand(other):
+            return NotImplemented
+        return mean(self.grades) < mean(other.grades)
+
+    # определим str для человеко-читаемой репрезентации объекта
+    def __str__(self):
+        return self.name + " " + str(mean(self.grades))
+
+
+Melissa = Student("Melissa Andrew", [4, 3, 4, 5, 4])
+Peter = Student("Peter Shining Jr.", [3, 3, 4, 5, 3])
+Joe = Student("Just Joe", [5, 5, 4, 5, 5])
+
+print([str(stud) for stud in sorted([Peter, Melissa, Joe], reverse=True)])
+```
+
+    ['Just Joe 4.8', 'Melissa Andrew 4', 'Peter Shining Jr. 3.6']
+    
+
+### Утиная типизация итерируемых объектов
+
+### Iterable
+
+[Iterable](https://docs.python.org/3/library/collections.abc.html#collections.abc.Iterable) — объект, который для предоставления возможности поочерёдного прохода по всем своим элементам должен реализовывать метод \_\_iter\_\_(), возвращающий итератор. У каждого объекта с методом \_\_iter\_\_() автоматически начинает работать метод \_\_contains\_\_().
+
+
+```python
+class MyIterable:
+    def __init__(self, *args):
+        self.a = list(args)
+
+    def __iter__(self):
+        return iter(self.a)
+
+
+mi = MyIterable(1, 2, 3, 4)
+print([el for el in mi])
+print(1 in mi)  # __contains__()
+```
+
+    [1, 2, 3, 4]
+    True
+    
+
+### Collection
+
+[Collection](https://docs.python.org/3/library/collections.abc.html#collections.abc.Collection) — объект, предоставляющий возможность поочерёдного прохода по всем своим элементам и обладающий конечным размером.  
+В дополнение к iter() должен быть реализован метод len(), возвращающий размер коллекции.
+
+
+```python
+class MyCollection:
+    def __init__(self, *args):
+        self.a = list(args)
+
+    def __iter__(self):
+        return iter(self.a)
+
+    def __len__(self):
+        return len(self.a)
+
+
+mc = MyCollection(1, 2, 3, 4)
+print([el for el in mc])
+print(1 in mc)
+print(len(mc))
+```
+
+    [1, 2, 3, 4]
+    True
+    4
+    
+
+### Sequence
+Only required methods are len() and getitem().
+Getitem() should return an item at the passed index or raise IndexError.
+Iter() and contains() automatically work on any object that has getitem() defined.
+Reversed() automatically works on any object that has len() and getitem() defined.
+
+
+```python
+class MySequence:
+    def __init__(self, a):
+        self.a = a
+    def __iter__(self):
+        return iter(self.a)
+    def __contains__(self, el):
+        return el in self.a
+    def __len__(self):
+        return len(self.a)
+    def __getitem__(self, i):
+        return self.a[i]
+    def __reversed__(self):
+        return reversed(self.a)
+```
+
+### ABC Sequence
+It's a richer interface than the basic sequence.
+Extending it generates iter(), contains(), reversed(), index() and count().
+Unlike `'abc.Iterable'` and `'abc.Collection'`, it is not a duck type. That is why `'issubclass(MySequence, abc.Sequence)'` would return False even if MySequence had all the methods defined.
+
+
+
+```python
+from collections import abc
+
+class MyAbcSequence(abc.Sequence):
+    def __init__(self, a):
+        self.a = a
+    def __len__(self):
+        return len(self.a)
+    def __getitem__(self, i):
+        return self.a[i]
+```
+
+#### Table of required and automatically available special methods:
+```text
++------------+------------+------------+------------+--------------+
+|            |  Iterable  | Collection |  Sequence  | abc.Sequence |
++------------+------------+------------+------------+--------------+
+| iter()     |    REQ     |    REQ     |    Yes     |     Yes      |
+| contains() |    Yes     |    Yes     |    Yes     |     Yes      |
+| len()      |            |    REQ     |    REQ     |     REQ      |
+| getitem()  |            |            |    REQ     |     REQ      |
+| reversed() |            |            |    Yes     |     Yes      |
+| index()    |            |            |            |     Yes      |
+| count()    |            |            |            |     Yes      |
++------------+------------+------------+------------+--------------+
+```
+
+Other ABCs that generate missing methods are: MutableSequence, Set, MutableSet, Mapping and MutableMapping.
+Names of their required methods are stored in `'<abc>.__abstractmethods__'`.
+
+#### Discrepancies between glossary definitions and abstract base classes:
+Glossary defines iterable as any object with iter() or getitem() and sequence as any object with len() and getitem(). It does not define collection.
+Passing ABC Iterable to isinstance() or issubclass() checks whether object/class has iter(), while ABC Collection checks for iter(), contains() and len().
+
+### Копирование объектов
+
+В Python оператор присваивания (=) не копирует объекты. Вместо этого он создает связь между существующим объектом и именем целевой переменной. Чтобы создать копии объекта в Python, необходимо использовать модуль copy. Более того, существует два способа создания копий для данного объекта с помощью модуля copy.
+
+Shallow Copy – это побитовая копия объекта. Созданный скопированный объект имеет точную копию значений в исходном объекте. Если одно из значений является ссылкой на другие объекты, копируются только адреса ссылок на них.
+
+Deep Copy – рекурсивно копирует все значения от исходного объекта к целевому, т. е. дублирует даже объекты, на которые ссылается исходный объект.
+
+
+```python
+from copy import copy, deepcopy
+
+
+class A:
+    def __init__(self, val: list):
+        self.val = val
+
+    def change_val(self, val: list):
+        self.val = val
+
+
+a = A(list("one"))
+
+# Просто копирование ссылки на объект
+b = a  # Assignment
+
+# Создание нового объекта и копирование ссылок на объекты, найденные в изначальном объекте
+c = copy(a)  # Shallow copy
+
+# Создание нового объекта с последующим рекурсивным копированием содержащихся внутри объектов
+d = deepcopy(a)  # Deep Copy
+
+b.change_val(list("two"))
+c.change_val(list("three"))
+d.change_val(list("four"))
+
+print(a.val, b.val, c.val, d.val)
+print(id(a), id(b), id(c), id(d))
+print(id(a.val[1]), id(c.val[1]))
+```
+
+    ['t', 'w', 'o'] ['t', 'w', 'o'] ['t', 'h', 'r', 'e', 'e'] ['f', 'o', 'u', 'r']
+    1795295519472 1795295519472 1793149281968 1793149273808
+    1795217224688 1795217321264
+    
+
 ### Abstract Base Classes
 Each abstract base class specifies a set of virtual subclasses. These classes are then recognized by isinstance() and issubclass() as subclasses of the ABC, although they are really not. ABC can also manually decide whether or not a specific class is its virtual subclass, usually based on which methods the class has implemented. For instance, Iterable ABC looks for method iter() while Collection ABC looks for methods iter(), contains() and len().
 
@@ -2960,24 +3282,6 @@ class MyComparable:
             return self.a == other.a
         return NotImplemented
 
-### Hashable
-Hashable object needs both hash() and eq() methods and its hash value should never change.
-Hashable objects that compare equal must have the same hash value, meaning default hash() that returns `'id(self)'` will not do.
-That is why Python automatically makes classes unhashable if you only implement eq().
-
-class MyHashable:
-    def __init__(self, a):
-        self._a = a
-    @property
-    def a(self):
-        return self._a
-    def __eq__(self, other):
-        if isinstance(other, type(self)):
-            return self.a == other.a
-        return NotImplemented
-    def __hash__(self):
-        return hash(self.a)
-
 ### Sortable
 With 'total_ordering' decorator, you only need to provide eq() and one of lt(), gt(), le() or ge() special methods and the rest will be automatically generated.
 Functions sorted() and min() only require lt() method, while max() only requires gt(). However, it is best to define them all so that confusion doesn't arise in other contexts.
@@ -3037,101 +3341,7 @@ class Counter:
 >>> counter(), counter(), counter()
 (1, 2, 3)
 
-### Iterable
-Only required method is iter(). It should return an iterator of object's items.
-Contains() automatically works on any object that has iter() defined.
-
-```python
-class MyIterable:
-    def __init__(self, a):
-        self.a = a
-    def __iter__(self):
-        return iter(self.a)
-    def __contains__(self, el):
-        return el in self.a
-```
- 
->>> obj = MyIterable([1, 2, 3])
->>> [el for el in obj]
-[1, 2, 3]
->>> 1 in obj
-True
-
 https://ru.stackoverflow.com/questions/1025914/%D0%A7%D0%B5%D0%BC-%D0%BE%D1%82%D0%BB%D0%B8%D1%87%D0%B0%D1%8E%D1%82%D1%81%D1%8F-%D0%BF%D0%BE%D0%BD%D1%8F%D1%82%D0%B8%D1%8F-iterable-%D0%B8-sequence
-
-### Collection
-Only required methods are iter() and len().
-This cheatsheet actually means `'<iterable>'` when it uses `'<collection>'`.
-I chose not to use the name 'iterable' because it sounds scarier and more vague than 'collection'. The only drawback of this decision is that a reader could think a certain function doesn't accept iterators when it does, since iterators are the only built-in objects that are iterable but are not collections.
- 
-class MyCollection:
-    def __init__(self, a):
-        self.a = a
-    def __iter__(self):
-        return iter(self.a)
-    def __contains__(self, el):
-        return el in self.a
-    def __len__(self):
-        return len(self.a)
-
-### Sequence
-Only required methods are len() and getitem().
-Getitem() should return an item at the passed index or raise IndexError.
-Iter() and contains() automatically work on any object that has getitem() defined.
-Reversed() automatically works on any object that has len() and getitem() defined.
- 
-class MySequence:
-    def __init__(self, a):
-        self.a = a
-    def __iter__(self):
-        return iter(self.a)
-    def __contains__(self, el):
-        return el in self.a
-    def __len__(self):
-        return len(self.a)
-    def __getitem__(self, i):
-        return self.a[i]
-    def __reversed__(self):
-        return reversed(self.a)
-
-### ABC Sequence
-It's a richer interface than the basic sequence.
-Extending it generates iter(), contains(), reversed(), index() and count().
-Unlike `'abc.Iterable'` and `'abc.Collection'`, it is not a duck type. That is why `'issubclass(MySequence, abc.Sequence)'` would return False even if MySequence had all the methods defined.
-
-```python
-from collections import abc
-
-class MyAbcSequence(abc.Sequence):
-    def __init__(self, a):
-        self.a = a
-    def __len__(self):
-        return len(self.a)
-    def __getitem__(self, i):
-        return self.a[i]
-```
-
-#### Table of required and automatically available special methods:
-```text
-+------------+------------+------------+------------+--------------+
-|            |  Iterable  | Collection |  Sequence  | abc.Sequence |
-+------------+------------+------------+------------+--------------+
-| iter()     |    REQ     |    REQ     |    Yes     |     Yes      |
-| contains() |    Yes     |    Yes     |    Yes     |     Yes      |
-| len()      |            |    REQ     |    REQ     |     REQ      |
-| getitem()  |            |            |    REQ     |     REQ      |
-| reversed() |            |            |    Yes     |     Yes      |
-| index()    |            |            |            |     Yes      |
-| count()    |            |            |            |     Yes      |
-+------------+------------+------------+------------+--------------+
-```
-
-Other ABCs that generate missing methods are: MutableSequence, Set, MutableSet, Mapping and MutableMapping.
-Names of their required methods are stored in `'<abc>.__abstractmethods__'`.
-
-#### Discrepancies between glossary definitions and abstract base classes:
-Glossary defines iterable as any object with iter() or getitem() and sequence as any object with len() and getitem(). It does not define collection.
-Passing ABC Iterable to isinstance() or issubclass() checks whether object/class has iter(), while ABC Collection checks for iter(), contains() and len().
 
 
 ### \_\_slots\_\_
@@ -3148,17 +3358,6 @@ class MyClassWithSlots:
 Слоты активно используются в библиотеках requests и falcon.
 
 Недостатки: нельзя присвоить классу поле, которого нет в слотах. Не работают методы __getattr__ и __setattr__.
-
-### Копирование объектов
-
-В Python оператор присваивания (=) не копирует объекты. Вместо этого он создает связь между существующим объектом и именем целевой переменной. Чтобы создать копии объекта в Python, необходимо использовать модуль copy. Более того, существует два способа создания копий для данного объекта с помощью модуля copy.
-
-Shallow Copy – это побитовая копия объекта. Созданный скопированный объект имеет точную копию значений в исходном объекте. Если одно из значений является ссылкой на другие объекты, копируются только адреса ссылок на них.
-Deep Copy – рекурсивно копирует все значения от исходного объекта к целевому, т. е. дублирует даже объекты, на которые ссылается исходный объект.
-
-from copy import copy, deepcopy
-<object> = copy(<object>)
-<object> = deepcopy(<object>)
 
 ## Что такое MRO? Какая разница между MRO2 и MR3 (diamond problem)?!!!
 

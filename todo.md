@@ -18,19 +18,19 @@ OOP Base
 (-)(-)(-) slots  
 
 DuckTypes  
-(+)(-)(-) Iterator  
-(+)(-)(-) Comparable  
-(+)(-)(-) Hashable  
-(+)(-)(-) Sortable  
+(+)(+)(+) Iterator  
+(+)(+)(+) Comparable  
+(+)(+)(+) Hashable  
+(+)(+)(+) Sortable  
 
 Iterable Duck Types  
-(+)(-)(-) Iterable  
-(+)(-)(-) Collection  
+(+)(+)(+) Iterable  
+(+)(+)(+) Collection  
 
 Object Copy  
-(+)(-)(-) Assignment  
-(+)(-)(-) Shallow copy  
-(+)(-)(-) Deep copy  
+(+)(+)(+) Assignment  
+(+)(+)(+) Shallow copy  
+(+)(+)(+) Deep copy  
 
 Inheritance  
 (+)(-)(-) Inheritance  
@@ -116,3 +116,5 @@ Net
 (-) Проверить, чтобы в pycore были освещены все "зеленые" темы
 (-) Проверить, чтобы в pycore не было чернового содержимого, должен быть хоть короткий, но чистовик
 (-) Проверить уникальность и другие онлайн-контролируемые метрики
+
+(-) Сделать отдельный сайт.
