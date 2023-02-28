@@ -10,12 +10,12 @@ Context_managers:
 (+)(+)(+) contextlib  
 
 OOP Base  
-(+)(-)(-) Magic methods
-(+)(-)(-) init, repr, str  
-(+)(-)(-) @property  
-(+)(-)(-) @staticmethod  
-(+)(-)(-) @classmethod, cls, self  
-(+)(-)(-) slots  
+(+)(+)(+) Magic methods
+(+)(+)(+) init, repr, str  
+(+)(+)(+) @property  
+(+)(+)(+) @staticmethod  
+(+)(+)(+) @classmethod, cls, self  
+(-)(-)(-) slots  
 
 DuckTypes  
 (+)(-)(-) Iterator  
@@ -115,3 +115,4 @@ Net
 (-)(-)(-)(-) 12. Администрирование/DevOps
 (-) Проверить, чтобы в pycore были освещены все "зеленые" темы
 (-) Проверить, чтобы в pycore не было чернового содержимого, должен быть хоть короткий, но чистовик
+(-) Проверить уникальность и другие онлайн-контролируемые метрики

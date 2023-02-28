@@ -2682,31 +2682,6 @@ if __name__ == "__main__":
 
 ### Классы и объекты
 
-Что такое магические методы, для чего нужны?
-
-Магическими методами называют методы, имена которых начинаются и заканчиваются двойным подчеркиванием. Магические они потому, что почти никогда не вызываются явно. Их вызывают встроенные функции или синтаксические конструкции. Например, функция len() вызывает метод __len__() переданного объекта. Метод __add__(self, other) вызывается автоматически при сложении оператором +.
-
-Перечислим некоторые магические методы:
-
-__init__: конструктор класса  
-__add__: сложение с другим объектом  
-__eq__: проверка на равенство с другим объектом  
-__cmp__: сравнение (больше, меньше, равно)  
-__iter__: при подстановке объекта в цикл  
-
-Как в классе сослаться на родительский класс?
-
-Функция super принимает класс и экземпляр:
-
-```python
-class NextClass(FirstClass):
-    def __init__(self, x):
-        super(NextClass, self).__init__()
-        self.x = x
-```
-
-### Классы
-
 Everything is an object.
 Every object has a type.
 Type and class are synonymous.
@@ -2714,12 +2689,160 @@ Type and class are synonymous.
 <type> = type(<el>)                          # Or: <el>.__class__
 <bool> = isinstance(<el>, <type>)            # Or: issubclass(type(<el>), <type>)
 
->>> type('a'), 'a'.__class__, str
+type('a'), 'a'.__class__, str
 (<class 'str'>, <class 'str'>, <class 'str'>)
 
 Some types do not have built-in names, so they must be imported:
  
 from types import FunctionType, MethodType, LambdaType, GeneratorType, ModuleType
+
+
+
+### Магические методы
+
+Специальные (называемые также magic или dunder) методы класса - перегрузка, позволяющая классам определять собственное поведение по отношению к операторам языка.  
+Магические они потому, что почти никогда не вызываются явно. Их вызывают встроенные функции или синтаксические конструкции. Например, функция len() вызывает метод \_\_len\_\_() переданного объекта. Метод \_\_add\_\_(self, other) вызывается автоматически при сложении оператором +.
+
+Примеры магических методы:
+
+\_\_init\_\_: конструктор класса  
+\_\_add\_\_: сложение с другим объектом  
+\_\_eq\_\_: проверка на равенство с другим объектом  
+\_\_cmp\_\_: сравнение (больше, меньше, равно)  
+\_\_iter\_\_: при подстановке объекта в цикл  
+
+
+```python
+print(dir(int), "\n")
+
+
+class A:  # An empty class
+    ...
+
+
+a = A()
+print(dir(a), "\n")
+print(repr(a), "\n")
+print(str(a))
+```
+
+    ['__abs__', '__add__', '__and__', '__bool__', '__ceil__', '__class__', '__delattr__', '__dir__', '__divmod__', '__doc__', '__eq__', '__float__', '__floor__', '__floordiv__', '__format__', '__ge__', '__getattribute__', '__getnewargs__', '__gt__', '__hash__', '__index__', '__init__', '__init_subclass__', '__int__', '__invert__', '__le__', '__lshift__', '__lt__', '__mod__', '__mul__', '__ne__', '__neg__', '__new__', '__or__', '__pos__', '__pow__', '__radd__', '__rand__', '__rdivmod__', '__reduce__', '__reduce_ex__', '__repr__', '__rfloordiv__', '__rlshift__', '__rmod__', '__rmul__', '__ror__', '__round__', '__rpow__', '__rrshift__', '__rshift__', '__rsub__', '__rtruediv__', '__rxor__', '__setattr__', '__sizeof__', '__str__', '__sub__', '__subclasshook__', '__truediv__', '__trunc__', '__xor__', 'as_integer_ratio', 'bit_count', 'bit_length', 'conjugate', 'denominator', 'from_bytes', 'imag', 'numerator', 'real', 'to_bytes'] 
+    
+    ['__class__', '__delattr__', '__dict__', '__dir__', '__doc__', '__eq__', '__format__', '__ge__', '__getattribute__', '__gt__', '__hash__', '__init__', '__init_subclass__', '__le__', '__lt__', '__module__', '__ne__', '__new__', '__reduce__', '__reduce_ex__', '__repr__', '__setattr__', '__sizeof__', '__str__', '__subclasshook__', '__weakref__'] 
+    
+    <__main__.A object at 0x000001A1FFF3AF20> 
+    
+    <__main__.A object at 0x000001A1FFF3AF20>
+    
+
+Особенностью метода \_\_init\_\_ является то, что он не должен ничего возвращать. При попытке возврата данных будет сгенерировано исключение.  
+\_\_repr\_\_ (representation) возвращает более-менее машино-читаемое представление объекта, полезное для отладки.  
+*Иногда* repr может содержать достаточно информации для восстановления объекта.  
+\_\_str\_\_ возвращает человеко-читаемое сообщение. Если \_\_str\_\_ не определён, то str использует repr.  
+
+
+```python
+class Person:  # A simple class with init, repr and str methods
+    def __init__(self, name: str):
+        self.name: str = name
+
+    def __repr__(self):
+        return f"Person '{self.name}'"
+
+    def __str__(self):
+        return f"{self.name}"
+
+    def say_hi(self):
+        print("Hi, my name is", self.name)
+
+
+p = Person("Charlie")
+p.say_hi()
+print(repr(p))
+print(str(p))
+```
+
+    Hi, my name is Charlie
+    Person 'Charlie'
+    Charlie
+    
+
+### @property
+
+Декоратор [@property](https://docs.python.org/3/library/functions.html?highlight=property#property) используется для определения методов, доступных как поля. Таким образом операции чтения/записи поля можно обрамить дополнительной логикой, например, проверкой допустимых значений входного аргумента.
+
+
+```python
+import math
+
+class Circle:
+    def __init__(self, radius, max_radius):
+        self._radius = radius
+        self.max_radius = max_radius
+
+    @property
+    def radius(self):
+        return self._radius
+
+    @radius.setter
+    def radius(self, value):
+        if value <= self.max_radius:
+            self._radius = value
+        else:
+            raise ValueError
+
+    @property
+    def area(self):
+        return 2 * self.radius * math.pi
+
+
+circle = Circle(10, 100)
+circle.radius = 20  # OK
+# circle.radius = 101  # Raises ValueError
+print(circle.area)
+```
+
+    125.66370614359172
+    
+
+### @staticmethod
+
+Обычный метод (т. е. не помеченный декораторами @staticmethod или @classmethod) имеет доступ к свойствам конкретного экземпляра класса.  
+
+@staticmethod — метод, принадлежащий классу, а не экземпляру класса. Можно вызывать без создания экземпляра, т. к. метод не имеет доступа к свойствам экземпляра. При помощи @staticmethod помечают функционал, логически связанный с классом, но не требующий доступа к свойствам экземпляра.
+
+### @classmethod, cls, self  
+
+Если метод не должен иметь доступа к свойствам конкретного экземпляра класса (как @staticmethod), но должен иметь доступ к другим методам и переменным класса, то следует использовать @classmethod.
+
+
+```python
+class B(object):
+    def foo(self, x):
+        print(f"Run foo({self}, {x})")
+
+    @classmethod
+    def class_foo(cls, x):
+        print(f"Run class_foo({cls}, {x})")
+
+    @staticmethod
+    def static_foo(x):
+        print(f"Run static_foo({x})")
+
+
+b = B()
+b.foo(1)
+b.class_foo(1)
+b.static_foo(1)
+```
+
+    Run foo(<__main__.B object at 0x000001A1FFF3A980>, 1)
+    Run class_foo(<class '__main__.B'>, 1)
+    Run static_foo(1)
+    
+
+У @classmethod первым параметром должен быть cls (класс), а у обычного метода - self (экземпляр класса).  
+Для @staticmethod не требуется ни cls, ни self.
 
 ### Abstract Base Classes
 Each abstract base class specifies a set of virtual subclasses. These classes are then recognized by isinstance() and issubclass() as subclasses of the ABC, although they are really not. ABC can also manually decide whether or not a specific class is its virtual subclass, usually based on which methods the class has implemented. For instance, Iterable ABC looks for method iter() while Collection ABC looks for methods iter(), contains() and len().
@@ -3142,6 +3265,17 @@ MyMetaClass.__base__ == type         # MyMetaClass is a subclass of type.
 |     str     |             |
 +-------------+-------------+
  
+
+ Как в классе сослаться на родительский класс?
+
+Функция super принимает класс и экземпляр:
+
+```python
+class NextClass(FirstClass):
+    def __init__(self, x):
+        super(NextClass, self).__init__()
+        self.x = x
+```
 
 
 https://proglib.io/p/metaclasses-in-python  
