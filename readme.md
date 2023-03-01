@@ -2886,7 +2886,8 @@ print(next(limit_counter))
     
 
 ### Comparable
-Начиная с Python 3.4, для того, чтобы экземпляры метода можно было сравнивать между собой, достаточно определить методы lt (меньше) и eq (равно), а также задействовать декоратор @functools.total_ordering.
+
+Начиная с Python 3.4, для того, чтобы экземпляры метода можно было сравнивать между собой, достаточно определить методы \_\_lt\_\_ (меньше) и \_\_eq\_\_ (равно), а также задействовать декоратор @functools.total_ordering.
 
 
 ```python
@@ -2923,7 +2924,7 @@ print(Finn != Jake)
 
 ### Hashable
 
-Хешируемые объекты должны реализовывать методы hash() и eq(). Хеш объекта должен быть неизменен в течении всего жизненного цикла. Хешируемые объекты можно использовать как ключи в словарях и как элементы множеств, так как эти структуры используют хеш-таблицу для внутреннего представления данных.
+Хешируемые объекты должны реализовывать методы \_\_hash\_\_() и \_\_eq\_\_(). Хеш объекта должен быть неизменен в течении всего жизненного цикла. Хешируемые объекты можно использовать как ключи в словарях и как элементы множеств, так как эти структуры используют хеш-таблицу для внутреннего представления данных.
 
 Hashable objects that compare equal must have the same hash value, meaning default hash() that returns `'id(self)'` will not do. That is why Python automatically makes classes unhashable if you only implement eq().
 
@@ -2959,12 +2960,15 @@ print(hash(Jake))
 
 ### Sortable
 
-Для возможности применения к последовательностям объектов таких методов как sort() или max() необходимо, как и в случае Comparable, определить методы lt (меньше) и eq (равно), а также задействовать декоратор @functools.total_ordering.
+Для возможности применения к последовательностям объектов таких методов как sort() или max() необходимо, как и в случае Comparable, определить методы \_\_lt\_\_ (меньше) и \_\_eq\_\_ (равно), а также задействовать декоратор @functools.total_ordering.
+
+Для более предсказумого поведения объекта в условиях различного контекста вы можете определить полное множество функций сравнения (\_\_lt()\_\_, \_\_gt()\_\_, \_\_le\_\_() и \_\_ge\_\_()).
 
 Для примера создадим класс студентов, которых можно будет сортировать не по имени, а по среднему баллу.
 
 
 ```python
+from functools import total_ordering
 from statistics import mean
 
 
@@ -3001,6 +3005,25 @@ print([str(stud) for stud in sorted([Peter, Melissa, Joe], reverse=True)])
 
     ['Just Joe 4.8', 'Melissa Andrew 4', 'Peter Shining Jr. 3.6']
     
+
+### Callable
+All functions and classes have a call() method, hence are callable.
+When this cheatsheet uses `'<function>'` as an argument, it actually means `'<callable>'`.
+ 
+class Counter:
+    def __init__(self):
+        self.i = 0
+    def __call__(self):
+        self.i += 1
+        return self.i
+ 
+>>> counter = Counter()
+>>> counter(), counter(), counter()
+(1, 2, 3)
+
+
+
+Контекстные менеджеры, описанные в предыдущей главе, тоже, как мы теперь видим, определяются через утиную типизацию при помощи методов \_\_enter\_\_ и \_\_exit\_\_.
 
 ### Утиная типизация итерируемых объектов
 
@@ -3166,6 +3189,93 @@ print(id(a.val[1]), id(c.val[1]))
     1795217224688 1795217321264
     
 
+### Наследование
+
+
+```python
+class Person:
+    def __init__(self, name, age):
+        self.name = name
+        self.age = age
+
+
+class Employee(Person):
+    def __init__(self, name, age, staff_num, email):
+        super().__init__(name, age)
+        self.staff_num = staff_num
+        self.email = email
+```
+
+### Множественное наследование
+
+При множественном наследовании порядок разрешения методов (method resolution order, MRO) позволяет Питону выяснить, из какого класса-предка нужно вызывать метод, если он не обнаружен непосредственно в классе-потомке.
+
+
+```python
+class PrivateStaffData:
+    def __init__(self, private_email):
+        self.private_email = private_email
+
+
+class PublicStaffData:
+    def __init__(self, work_email):
+        self.work_email = work_email
+
+
+class StaffData(PrivateStaffData, PublicStaffData):
+    def __init__(self, private_email, work_email):
+        super().__init__()
+
+print(StaffData.mro())
+```
+
+    [<class '__main__.StaffData'>, <class '__main__.PrivateStaffData'>, <class '__main__.PublicStaffData'>, <class 'object'>]
+    
+
+MRO строит иерархию наследования таким образом, чтобы более специфичные методы класса-потомка перекрывали менее специфичные методы  класса-предка. MRO строит упорядоченный список классов, в которых будет производиться поиск метода слева направо (линеаризация класса).  
+
+Для решения проблемы ромбовидной структуры (которая неявно присутствует даже в простейшем случае, так как все классы наследуются от object) линеаризация должна быть монотонной. Монотонность — свойство, которое требует соблюдения в линеаризации класса-потомка того же порядка следования классов-прародителей, что и в линеаризации класса-родителя.  Линеаризация по сути является [топологической сортировкой](https://en.wikipedia.org/wiki/Topological_sorting). В ранних версиях Python использовался алгоритм DLR, сейчас в ходу [C3-линеаризация](https://en.wikipedia.org/wiki/C3_linearization).  
+
+Если после удовлетворения свойства монотонности остаётся больше одного варианта линеаризации, то применяется порядок локального старшинства (local precedence ordering), т. е. порядок соблюдения для классов-родителей в линеаризации класса-потомка того же порядка, что и при его объявлении. Например, если класс объявлен как D(A, B, C), то в линеаризации D класс A должен стоять раньше B, а класс B — раньше C.  
+
+Если разрешение всех конфликтов при линеаризации невозможно, то остается три пути:  
+1 - переменой мест классов-предков в объявлении класса-потомка (но это помогает далеко не всегда);  
+2 - пересмотр иерархии наследования;  
+3 - определение своей собственной линеаризации через метаклассы при помощи метода mro(cls). Но при данном подходе надо быть готовым к тому, что будет использован менее специфичный метод класса-родителя вместо более специфичного метода класса-потомка.  
+
+При задании своей собственной линеаризации Python отключает встроенные проверки.  
+
+### @abstractmethod
+
+Абстрактный класс в Python - аналог интерфейса в других языках (например, в C#) - класс, содержащий только сигнатуры методов, без реализации. Реализация методов переложена на классы-потомки. Задача абстрактного класса соответствует задаче интерфейса - *обязать* классы-потомки реализовывать *все* методы, заложенные в классе-родителе.
+
+
+```python
+import abc
+
+
+class AbstractClass(metaclass=abc.ABCMeta):
+
+    @abc.abstractmethod
+    def return_anything(self):
+        return
+
+
+class ConcreteClass(AbstractClass):
+
+    def return_anything(self):
+        return 42
+
+
+c = ConcreteClass()
+print(c.return_anything())
+```
+
+    42
+    
+
+Если не специфицировать return_anything() в ConcreteClass, при попытке вызвать c.return_anything() будет выброшено исключение TypeError: Can't instantiate abstract class ConcreteClass with abstract method return_anything.
+
 ### Abstract Base Classes
 Each abstract base class specifies a set of virtual subclasses. These classes are then recognized by isinstance() and issubclass() as subclasses of the ABC, although they are really not. ABC can also manually decide whether or not a specific class is its virtual subclass, usually based on which methods the class has implemented. For instance, Iterable ABC looks for method iter() while Collection ABC looks for methods iter(), contains() and len().
 
@@ -3211,29 +3321,6 @@ class <name>:
     def __init__(self, a=None):
         self.a = a
 
-### Inheritance
- 
-class Person:
-    def __init__(self, name, age):
-        self.name = name
-        self.age  = age
-
-class Employee(Person):
-    def __init__(self, name, age, staff_num):
-        super().__init__(name, age)
-        self.staff_num = staff_num
-
-### Multiple Inheritance
- 
-class A: pass
-class B: pass
-class C(A, B): pass
-
-MRO determines the order in which parent classes are traversed when searching for a method:
- 
->>> C.mro()
-[<class 'C'>, <class 'A'>, <class 'B'>, <class 'object'>]
-
 ### Property
 Pythonic way of implementing getters and setters.
  
@@ -3264,44 +3351,6 @@ def func(<arg_name>: <type> [= <obj>]) -> <type>:
 <var_name>: typing.List/Set/Iterable/Sequence/Optional[<type>]
 <var_name>: typing.Dict/Tuple/Union[<type>, ...]
 
-Duck Types
-----------
-A duck type is an implicit type that prescribes a set of special methods. Any object that has those methods defined is considered a member of that duck type.
-
-### Comparable
-If eq() method is not overridden, it returns `'id(self) == id(other)'`, which is the same as `'self is other'`.
-That means all objects compare not equal by default.
-Only the left side object has eq() method called, unless it returns NotImplemented, in which case the right object is consulted.
-Ne() automatically works on any object that has eq() defined.
-
-class MyComparable:
-    def __init__(self, a):
-        self.a = a
-    def __eq__(self, other):
-        if isinstance(other, type(self)):
-            return self.a == other.a
-        return NotImplemented
-
-### Sortable
-With 'total_ordering' decorator, you only need to provide eq() and one of lt(), gt(), le() or ge() special methods and the rest will be automatically generated.
-Functions sorted() and min() only require lt() method, while max() only requires gt(). However, it is best to define them all so that confusion doesn't arise in other contexts.
-When two lists, strings or dataclasses are compared, their values get compared in order until a pair of unequal values is found. The comparison of this two values is then returned. The shorter sequence is considered smaller in case of all values being equal.
-
-from functools import total_ordering
-
-@total_ordering
-class MySortable:
-    def __init__(self, a):
-        self.a = a
-    def __eq__(self, other):
-        if isinstance(other, type(self)):
-            return self.a == other.a
-        return NotImplemented
-    def __lt__(self, other):
-        if isinstance(other, type(self)):
-            return self.a < other.a
-        return NotImplemented
-
 ### Iterator
 Any object that has methods next() and iter() is an iterator.
 Next() should return next item or raise StopIteration.
@@ -3326,21 +3375,6 @@ Objects returned by the [itertools](#itertools) module, such as count, repeat an
 Generators returned by the [generator functions](#generator) and [generator expressions](#comprehensions).
 File objects returned by the [open()](#open) function, etc.
 
-### Callable
-All functions and classes have a call() method, hence are callable.
-When this cheatsheet uses `'<function>'` as an argument, it actually means `'<callable>'`.
- 
-class Counter:
-    def __init__(self):
-        self.i = 0
-    def __call__(self):
-        self.i += 1
-        return self.i
- 
->>> counter = Counter()
->>> counter(), counter(), counter()
-(1, 2, 3)
-
 https://ru.stackoverflow.com/questions/1025914/%D0%A7%D0%B5%D0%BC-%D0%BE%D1%82%D0%BB%D0%B8%D1%87%D0%B0%D1%8E%D1%82%D1%81%D1%8F-%D0%BF%D0%BE%D0%BD%D1%8F%D1%82%D0%B8%D1%8F-iterable-%D0%B8-sequence
 
 
@@ -3358,21 +3392,6 @@ class MyClassWithSlots:
 Слоты активно используются в библиотеках requests и falcon.
 
 Недостатки: нельзя присвоить классу поле, которого нет в слотах. Не работают методы __getattr__ и __setattr__.
-
-## Что такое MRO? Какая разница между MRO2 и MR3 (diamond problem)?!!!
-
-Что такое множественное наследование? Возможно ли множественное наследование? Что такое MRO?
-
-Да, можно указать более одного родителя в классе потомка.
-
-MRO – method resolution order, порядок разрешения методов. Алгоритм, по которому следует искать метод в случае, если у класса два и более родителя. Алгоритм линеаризует граф наследования. Коротко можно описать так: ищи слева направо. Поэтому чем левее стоит класс, тем больше у него приоритет при поиске метода.
-
-
-Прокомментировать выражение object() == object()
-
-Всегда ложь, поскольку по умолчанию объекты сравниваются по полю id (адрес в памяти), если только не переопределен метод __eq__.
-
-Как удаляется объект?
 
 ### Метапрограммирование
 
@@ -3508,29 +3527,6 @@ gc.set_debug(gc.DEBUG_SAVEALL)
 <img src="garbage.svg" style="height:350px">
 
 В других интерпретаторах Python имеются другие механизмы сборки мусора, например, в интерпретаторе PyPy отсутствует алгоритм постоянного подсчета ссылок. Из-за этого, например, содержимое файла может быть обновлено только после прохода GC, а не тогда, когда файл был закрыт в программе.
-
-### GIL
-
-Global Interpreter Lock - собенность интерпретатора, когда одновременно может исполняться только один тред, остальные треды в это время простаивают.  
-
-GIL позволяет безопасно согласовывать изменения данных. Без этого, например, если один тред удалит все элемены из списка, а второй начнет итерацию по нему, произойдет ошибка. Аналогично, сборщик мусора может начать некорректно подсчитывать ссылки. Проблему можно решить, установив блокировки на все разделяемые структуры данных, но это привнесло бы дополнительные сложности: оверхед по коду, потерю производительности, возможные deadlocks. GIL позволяет осуществлять простую интеграцию C-библиотек, которые зачастую тоже не потокобезопасны, а также обеспечивает быструю работу однопоточных скриптов.
-
-GIL работает так: на каждый тред выделяется некоторый квант времени. Он измеряется в машинных единицах “тиках” и по умолчанию равен 100. Как только на тред было потрачено 100 тиков, интерпретатор бросает этот тред и переключается на второй, тратит 100 тактов на него, затем третий, и так по кругу. Этот алгоритм гаранитрует, что всем тредам будет выделено ресурсов поровну.
-
-Проблема в том, что из-за GIL далеко не все задачи могут быть решены в тредах. Напротив, их использование чаще всего снижает быстродействие программы. С использованием тредов требуется следить за доступом к общим ресурсам: словарям, файлам, соединением к БД.
-
-Как обойти ограничения, накладываемые GIL?  
-Вариант 1 - использовать альтернативные интерпретаторы Python, например PyPy.  
-Вариант 2 - уход от многопоточности в сторону мультипроцессности, используя модуль multiprocessing. Последний вариант подробно разобран ниже.
-
-
-### *args, **kwargs
-
-Выражения *args и **kwargs объявляют в сигнатуре функции. Они означают, что внутри функции будут доступны переменные с именами args и kwargs (без звездочек). Можно использовать другие имена, но это считается дурным тоном.
-
-args – это кортеж, который накапливает позиционные аргументы. kwargs – словарь позиционных аргументов, где ключ – имя параметра, значение – значение параметра.
-
-Важно: если в функцию не передано никаких параметров, переменные будут соответственно равны пустому кортежу и пустому словарю, а не None.
 
 Arguments
 ---------
@@ -3862,41 +3858,84 @@ class Stack(object):
 ```
 
 
-## Introspection
-
-Inspecting code at runtime.
+### Introspection
 
 ### Variables
 
-<list> = dir()                             # Names of local variables (incl. functions).
-<dict> = vars()                            # Dict of local variables. Also locals().
-<dict> = globals()                         # Dict of global variables.
+Inspecting code at runtime.
+
+При вызове функции dir() без аргументов она возвращает список атрибутов (включая функции), доступных в локальной области видимости.
+
+
+```python
+local_variables: list = dir()
+```
+
+locals() возвращает словарь текущей локальной таблицы символов (атрибут \_\_dict\_\_). locals() эквивалентна vars() без аргумента.
+
+
+```python
+local_vars: dict = locals()
+```
+
+globals() возвращает словарь глобальной таблицы символов
+
+
+```python
+global_variables: dict = globals()
+
+print(local_variables)
+print(local_vars)
+print(global_variables)
+```
+
+    ['In', 'Out', '_', '__', '___', '__annotations__', '__builtin__', '__builtins__', '__doc__', '__loader__', '__name__', '__package__', '__spec__', '__vsc_ipynb_file__', '_dh', '_i', '_i1', '_ih', '_ii', '_iii', '_oh', 'exit', 'get_ipython', 'quit']
+    {'__name__': '__main__', '__doc__': 'Automatically created module for IPython interactive environment', '__package__': None, '__loader__': None, '__spec__': None, '__builtin__': <module 'builtins' (built-in)>, '__builtins__': <module 'builtins' (built-in)>, '_ih': ['', 'local_variables: list = dir()', 'local_vars: dict = locals()', 'global_variables: dict = globals()', 'global_variables: dict = globals()\n\nprint(local_variables)\nprint(local_vars)\nprint(global_variables)'], '_oh': {}, '_dh': [WindowsPath('c:/Works/amaargiru/pycore')], 'In': ['', 'local_variables: list = dir()', 'local_vars: dict = locals()', 'global_variables: dict = globals()', 'global_variables: dict = globals()\n\nprint(local_variables)\nprint(local_vars)\nprint(global_variables)'], 'Out': {}, 'get_ipython': <bound method InteractiveShell.get_ipython of <ipykernel.zmqshell.ZMQInteractiveShell object at 0x000002CA9D542230>>, 'exit': <IPython.core.autocall.ZMQExitAutocall object at 0x000002CA9D542D10>, 'quit': <IPython.core.autocall.ZMQExitAutocall object at 0x000002CA9D542D10>, '_': '', '__': '', '___': '', '__vsc_ipynb_file__': 'c:\\Works\\amaargiru\\pycore\\05_language_skeleton.ipynb', '_i': 'global_variables: dict = globals()', '_ii': 'local_vars: dict = locals()', '_iii': 'local_variables: list = dir()', '_i1': 'local_variables: list = dir()', '__annotations__': {'local_variables': <class 'list'>, 'local_vars': <class 'dict'>, 'global_variables': <class 'dict'>}, 'local_variables': ['In', 'Out', '_', '__', '___', '__annotations__', '__builtin__', '__builtins__', '__doc__', '__loader__', '__name__', '__package__', '__spec__', '__vsc_ipynb_file__', '_dh', '_i', '_i1', '_ih', '_ii', '_iii', '_oh', 'exit', 'get_ipython', 'quit'], '_i2': 'local_vars: dict = locals()', 'local_vars': {...}, '_i3': 'global_variables: dict = globals()', 'global_variables': {...}, '_i4': 'global_variables: dict = globals()\n\nprint(local_variables)\nprint(local_vars)\nprint(global_variables)'}
+    {'__name__': '__main__', '__doc__': 'Automatically created module for IPython interactive environment', '__package__': None, '__loader__': None, '__spec__': None, '__builtin__': <module 'builtins' (built-in)>, '__builtins__': <module 'builtins' (built-in)>, '_ih': ['', 'local_variables: list = dir()', 'local_vars: dict = locals()', 'global_variables: dict = globals()', 'global_variables: dict = globals()\n\nprint(local_variables)\nprint(local_vars)\nprint(global_variables)'], '_oh': {}, '_dh': [WindowsPath('c:/Works/amaargiru/pycore')], 'In': ['', 'local_variables: list = dir()', 'local_vars: dict = locals()', 'global_variables: dict = globals()', 'global_variables: dict = globals()\n\nprint(local_variables)\nprint(local_vars)\nprint(global_variables)'], 'Out': {}, 'get_ipython': <bound method InteractiveShell.get_ipython of <ipykernel.zmqshell.ZMQInteractiveShell object at 0x000002CA9D542230>>, 'exit': <IPython.core.autocall.ZMQExitAutocall object at 0x000002CA9D542D10>, 'quit': <IPython.core.autocall.ZMQExitAutocall object at 0x000002CA9D542D10>, '_': '', '__': '', '___': '', '__vsc_ipynb_file__': 'c:\\Works\\amaargiru\\pycore\\05_language_skeleton.ipynb', '_i': 'global_variables: dict = globals()', '_ii': 'local_vars: dict = locals()', '_iii': 'local_variables: list = dir()', '_i1': 'local_variables: list = dir()', '__annotations__': {'local_variables': <class 'list'>, 'local_vars': <class 'dict'>, 'global_variables': <class 'dict'>}, 'local_variables': ['In', 'Out', '_', '__', '___', '__annotations__', '__builtin__', '__builtins__', '__doc__', '__loader__', '__name__', '__package__', '__spec__', '__vsc_ipynb_file__', '_dh', '_i', '_i1', '_ih', '_ii', '_iii', '_oh', 'exit', 'get_ipython', 'quit'], '_i2': 'local_vars: dict = locals()', 'local_vars': {...}, '_i3': 'global_variables: dict = globals()', 'global_variables': {...}, '_i4': 'global_variables: dict = globals()\n\nprint(local_variables)\nprint(local_vars)\nprint(global_variables)'}
+    
 
 ### Attributes
 
-<list> = dir(<object>)                     # Names of object's attributes (incl. methods).
-<dict> = vars(<object>)                    # Dict of writable attributes. Also <obj>.__dict__.
-<bool> = hasattr(<object>, '<attr_name>')  # Checks if getattr() raises an AttributeError.
-value  = getattr(<object>, '<attr_name>')  # Raises AttributeError if attribute is missing.
-setattr(<object>, '<attr_name>', value)    # Only works on objects with '__dict__' attribute.
-delattr(<object>, '<attr_name>')           # Same. Also `del <object>.<attr_name>`.
+<list> = dir(<object>)                     # Names of object's attributes (incl. methods).  
+<dict> = vars(<object>)                    # Dict of writable attributes. Also <obj>.__dict__.  
+<bool> = hasattr(<object>, '<attr_name>')  # Checks if getattr() raises an AttributeError.  
+value  = getattr(<object>, '<attr_name>')  # Raises AttributeError if attribute is missing.  
+setattr(<object>, '<attr_name>', value)    # Only works on objects with '__dict__' attribute.  
+delattr(<object>, '<attr_name>')           # Same. Also `del <object>.<attr_name>`.  
 
 ### Parameters
 
-from inspect import signature
-<Sig>  = signature(<function>)             # Function's Signature object.
-<dict> = <Sig>.parameters                  # Dict of function's Parameter objects.
-<str>  = <Param>.name                      # Parameter's name.
-<memb> = <Param>.kind                      # Member of ParameterKind enum.
+<Sig>  = inspect.signature(<function>)     # Function's Signature object.  
+<dict> = <Sig>.parameters                  # Dict of Parameter objects.  
+<memb> = <Param>.kind                      # Member of ParameterKind enum.  
+<obj>  = <Param>.default                   # Default value or <Param>.empty.  
+<type> = <Param>.annotation                # Type or <Param>.empty.  
 
-(использование dir(), dir, hasattr(), getattr())
+### GIL
 
-Как получить список атрибутов объекта?
+Global Interpreter Lock - собенность интерпретатора, когда одновременно может исполняться только один тред, остальные треды в это время простаивают.  
 
-Функция dir возвращает список строк – полей объекта. Поле __dict__ содержит словарь вида {поле -> значение}.
+GIL позволяет безопасно согласовывать изменения данных. Без этого, например, если один тред удалит все элемены из списка, а второй начнет итерацию по нему, произойдет ошибка. Аналогично, сборщик мусора может начать некорректно подсчитывать ссылки. Проблему можно решить, установив блокировки на все разделяемые структуры данных, но это привнесло бы дополнительные сложности: оверхед по коду, потерю производительности, возможные deadlocks. GIL позволяет осуществлять простую интеграцию C-библиотек, которые зачастую тоже не потокобезопасны, а также обеспечивает быструю работу однопоточных скриптов.
 
-Operator
---------
+GIL работает так: на каждый тред выделяется некоторый квант времени. Он измеряется в машинных единицах “тиках” и по умолчанию равен 100. Как только на тред было потрачено 100 тиков, интерпретатор бросает этот тред и переключается на второй, тратит 100 тактов на него, затем третий, и так по кругу. Этот алгоритм гаранитрует, что всем тредам будет выделено ресурсов поровну.
+
+Проблема в том, что из-за GIL далеко не все задачи могут быть решены в тредах. Напротив, их использование чаще всего снижает быстродействие программы. С использованием тредов требуется следить за доступом к общим ресурсам: словарям, файлам, соединением к БД.
+
+Как обойти ограничения, накладываемые GIL?  
+Вариант 1 - использовать альтернативные интерпретаторы Python, например PyPy.  
+Вариант 2 - уход от многопоточности в сторону мультипроцессности, используя модуль multiprocessing. Последний вариант подробно разобран ниже.
+
+
+### *args, **kwargs
+
+Выражения *args и **kwargs объявляют в сигнатуре функции. Они означают, что внутри функции будут доступны переменные с именами args и kwargs (без звездочек).
+
+args – это кортеж, который накапливает позиционные аргументы. kwargs – словарь позиционных аргументов, где ключ – имя параметра, значение – значение параметра. Вместо args и kwargs можно использовать другие имена (функция всё равно «поймёт», что от неё хотят, благодаря звездочке и двойной звездочке), но эта практика мало распространена.
+
+Важно: если в функцию не передано никаких параметров, переменные будут соответственно равны пустому кортежу и пустому словарю, а не None.
+
+### Operator
+
 Module of functions that provide the functionality of operators.
 
 import operator as op

@@ -33,10 +33,10 @@ Object Copy
 (+)(+)(+) Deep copy  
 
 Inheritance  
-(+)(-)(-) Inheritance  
-(+)(-)(-) Multiple Inheritance  
-(+)(-)(-) MRO  
-(+)(-)(-) @abstractmethod  
+(+)(+)(+) Inheritance  
+(+)(+)(+) Multiple Inheritance  
+(+)(+)(+) MRO  
+(+)(+)(+) @abstractmethod  
 
 Metaprogramming  
 (-)(-)(-) Meta Class  
