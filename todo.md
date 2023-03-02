@@ -1,43 +1,5 @@
 TODO (Исходный код в папке examples) (Исходный код в Jupiter Notebook) (Описание).  
 
-Decorator:  
-(+)(+)(+) decorator  
-(+)(+)(+) LRU Cache  
-(+)(+)(+) Parameterized decorator  
-
-Context_managers:  
-(+)(+)(+) __enter__, __exit__  
-(+)(+)(+) contextlib  
-
-OOP Base  
-(+)(+)(+) Magic methods
-(+)(+)(+) init, repr, str  
-(+)(+)(+) @property  
-(+)(+)(+) @staticmethod  
-(+)(+)(+) @classmethod, cls, self  
-(-)(-)(-) slots  
-
-DuckTypes  
-(+)(+)(+) Iterator  
-(+)(+)(+) Comparable  
-(+)(+)(+) Hashable  
-(+)(+)(+) Sortable  
-
-Iterable Duck Types  
-(+)(+)(+) Iterable  
-(+)(+)(+) Collection  
-
-Object Copy  
-(+)(+)(+) Assignment  
-(+)(+)(+) Shallow copy  
-(+)(+)(+) Deep copy  
-
-Inheritance  
-(+)(+)(+) Inheritance  
-(+)(+)(+) Multiple Inheritance  
-(+)(+)(+) MRO  
-(+)(+)(+) @abstractmethod  
-
 Metaprogramming  
 (-)(-)(-) Meta Class  
 (+)(-)(-) Разбор проблем, оптимально решаемых при помощи метапрограммирования  
