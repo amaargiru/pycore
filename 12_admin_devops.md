@@ -1,5 +1,9 @@
 ## 12. Администрирование/DevOps
 
+> «О Уннефер, дай этому человеку в тоем Царстве тысячу хлебов, тысячу быков, тысячу сосудов пива».  
+>  
+> Обращение к Осирису, перевод М. Э. Матье.  
+
 ![DevOps](https://raw.githubusercontent.com/amaargiru/pycore/main/pics/12_DevOps.png)  
 
 ### Git-flow
