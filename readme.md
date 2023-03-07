@@ -2840,15 +2840,69 @@ b.static_foo(1)
 У @classmethod первым параметром должен быть cls (класс), а у обычного метода - self (экземпляр класса).  
 Для @staticmethod не требуется ни cls, ни self.
 
+### \_\_dict\_\_
+
+Каждый класс и каждый объект имеет атрибут \_\_dict\_\_. Это «системный», определённый интерпретатором атрибут, его не нужно создавать вручную. \_\_dict\_\_ — словарь, который хранит пользовательские атрибуты, и в котором ключом является _имя атрибута_, значением, соответственно, _значение атрибута_.
+
+
+```python
+class Supercriminal:
+    publisher = 'DC Comics'
+
+Riddler = Supercriminal()
+print(Supercriminal.__dict__)
+print(Riddler.__dict__)
+
+Riddler.name = 'Edward Nygma'
+print(Riddler.__dict__)  # Values from object __dict__
+
+print(Riddler.publisher)  # Value from class __dict__
+```
+
+    {'__module__': '__main__', 'publisher': 'DC Comics', '__dict__': <attribute '__dict__' of 'Supercriminal' objects>, '__weakref__': <attribute '__weakref__' of 'Supercriminal' objects>, '__doc__': None}
+    {}
+    {'name': 'Edward Nygma'}
+    DC Comics
+    
+
+Каждый раз при запросе пользовательского атрибута Python последовательно обыскивает сам объект, класс объекта и классы, от которых унасаледован класс объекта.
+
+
+### \_\_slots\_\_, \_\_weakref\_\_
+
+Если вы припомните разницу между списком и кортежем, а также между множеством и иимутабельным множеством, то заметите, что создатели Python пытаются предоставлять разработчикам выбор между удобством и скоростью (тут Си с ассемблерными вставками слегка напрягается, но потом опадает, как будто хотел что-то сказать, но благоразумно передумал). К списку таких же особенностей языка, заточенных на увеличение производительности и уменьшение занимаемой памяти, относится и \_\_slots\_\_.
+
+Вот [официальная документация](https://docs.python.org/3/reference/datamodel.html?highlight=slots#object.__slots__) по \_\_slots\_\_, а вот [дополнительные разъяснения](https://stackoverflow.com/questions/472000/usage-of-slots/28059785#28059785) от одного из разработчиков официальной документации. При выборе «slots или не slots» не забывайте также про существование [PEP 412 – Key-Sharing Dictionary](https://peps.python.org/pep-0412/), который внёс некоторый раздрай в некогда однозначное отношение к \_\_slots\_\_.
+
+\_\_dict\_\_, рассмотренный чуть выше – изменяемая структура, и вы можете на лету добавлять и удалять поля из класса, что удобно, но порой медленно. Вы можете разменять удобство на скорость и размер занимаемой памяти, создав \_\_slots\_\_ — жестко заданный список атрибутов, резервирующий память, создание которого _запрещает дальнейшее создание \_\_dict\_\_ и \_\_weakref\_\__ (про__weakref__ мы поговорим чуть ниже). Слоты используются, когда у класса может быть очень много полей, например, в ORM, либо когда критична производительность, потому что доступ к списку работает быстрее, чем поиск в словаре.
+
+
+```python
+class Clan:
+    __slots__ = ["first", "second"]
+
+clan = Clan()
+clan.first = "Joker"
+clan.second = "Lex Luthor"
+# clan.third = "Green Goblin"  # Raises AttributeError
+# print(clan.__dict__)  # Raises AttributeError
+```
+
+Слоты используются, например в библиотеках requests (например, \_\_slots\_\_ = ["url", "netloc", "simple_url", "pypi_url", "file_storage_domain"]) или ORM peewee (\_\_slots\_\_ = ('stack', '_sql', '_values', 'alias_manager', 'state')).
+
+https://habr.com/ru/post/686220/
+
+https://docs.python.org/3/library/dataclasses.html#module-contents
+
 ### Утиная типизация
 
-Утиная типизация (duck types) - постулирование реализации интерфейса классом не через явное объявление, а через реализацию методов интерфейса. Так, каждый класс, реализующий методы next() и iter(), автоматически становится итератором, несмотря на отсутствие явного объявления (что-нибудь вроде @iterator) или, скажем, наследования от класса Iterator.
+[Утиная типизация](https://en.wikipedia.org/wiki/Duck_typing) (duck types) - постулирование реализации интерфейса классом не через явное объявление, а через реализацию методов интерфейса. Так, каждый класс, реализующий методы \_\_next\_\_() и \_\_iter\_\_(), автоматически становится итератором, несмотря на отсутствие явного объявления (что-нибудь вроде @iterator) или, скажем, наследования от класса Iterator.
 
 ### Iterator
 
-Итератор - класс, реализующий методы next() и iter().  
-Метод next() должен возвращать следующее значение итератора или выкидывать исключение StopIteration, чтобы сигнализировать о том, что итератор исчерпал доступные значения.
-Метод iter() должен возвращать "self".
+Итератор - класс, реализующий методы \_\_next\_\_() и \_\_iter\_\_().  
+Метод \_\_next\_\_() должен возвращать следующее значение итератора или выкидывать исключение StopIteration, чтобы сигнализировать о том, что итератор исчерпал доступные значения.
+Метод \_\_iter\_\_() должен возвращать "self".
 
 
 ```python
@@ -3373,22 +3427,6 @@ File objects returned by the [open()](#open) function, etc.
 
 https://ru.stackoverflow.com/questions/1025914/%D0%A7%D0%B5%D0%BC-%D0%BE%D1%82%D0%BB%D0%B8%D1%87%D0%B0%D1%8E%D1%82%D1%81%D1%8F-%D0%BF%D0%BE%D0%BD%D1%8F%D1%82%D0%B8%D1%8F-iterable-%D0%B8-sequence
 
-
-### \_\_slots\_\_
-
-Mechanism that restricts objects to attributes listed in 'slots' and significantly reduces their memory footprint.
-
-class MyClassWithSlots:
-    __slots__ = ['a']
-    def __init__(self):
-        self.a = 1
-
-Классы хранят поля и их значения в секретном словаре dict. Поскольку словарь – изменяемая структура, вы можете на лету добавлять и удалять из класса поля. Параметр slots в классе жестко фиксирует набор полей класса. Слоты используются когда у класса может быть очень много полей, например, в некоторых ORM, либо когда критична производительность, потому что доступ к слоту срабатывает быстрее, чем поиск в словаре.
-
-Слоты активно используются в библиотеках requests и falcon.
-
-Недостатки: нельзя присвоить классу поле, которого нет в слотах. Не работают методы __getattr__ и __setattr__.
-
 ### Метапрограммирование
 
 Code that generates code.
@@ -3886,8 +3924,8 @@ print(global_variables)
 ```
 
     ['In', 'Out', '_', '__', '___', '__annotations__', '__builtin__', '__builtins__', '__doc__', '__loader__', '__name__', '__package__', '__spec__', '__vsc_ipynb_file__', '_dh', '_i', '_i1', '_ih', '_ii', '_iii', '_oh', 'exit', 'get_ipython', 'quit']
-    {'__name__': '__main__', '__doc__': 'Automatically created module for IPython interactive environment', '__package__': None, '__loader__': None, '__spec__': None, '__builtin__': <module 'builtins' (built-in)>, '__builtins__': <module 'builtins' (built-in)>, '_ih': ['', 'local_variables: list = dir()', 'local_vars: dict = locals()', 'global_variables: dict = globals()', 'global_variables: dict = globals()\n\nprint(local_variables)\nprint(local_vars)\nprint(global_variables)'], '_oh': {}, '_dh': [WindowsPath('c:/Works/amaargiru/pycore')], 'In': ['', 'local_variables: list = dir()', 'local_vars: dict = locals()', 'global_variables: dict = globals()', 'global_variables: dict = globals()\n\nprint(local_variables)\nprint(local_vars)\nprint(global_variables)'], 'Out': {}, 'get_ipython': <bound method InteractiveShell.get_ipython of <ipykernel.zmqshell.ZMQInteractiveShell object at 0x000002CA9D542230>>, 'exit': <IPython.core.autocall.ZMQExitAutocall object at 0x000002CA9D542D10>, 'quit': <IPython.core.autocall.ZMQExitAutocall object at 0x000002CA9D542D10>, '_': '', '__': '', '___': '', '__vsc_ipynb_file__': 'c:\\Works\\amaargiru\\pycore\\05_language_skeleton.ipynb', '_i': 'global_variables: dict = globals()', '_ii': 'local_vars: dict = locals()', '_iii': 'local_variables: list = dir()', '_i1': 'local_variables: list = dir()', '__annotations__': {'local_variables': <class 'list'>, 'local_vars': <class 'dict'>, 'global_variables': <class 'dict'>}, 'local_variables': ['In', 'Out', '_', '__', '___', '__annotations__', '__builtin__', '__builtins__', '__doc__', '__loader__', '__name__', '__package__', '__spec__', '__vsc_ipynb_file__', '_dh', '_i', '_i1', '_ih', '_ii', '_iii', '_oh', 'exit', 'get_ipython', 'quit'], '_i2': 'local_vars: dict = locals()', 'local_vars': {...}, '_i3': 'global_variables: dict = globals()', 'global_variables': {...}, '_i4': 'global_variables: dict = globals()\n\nprint(local_variables)\nprint(local_vars)\nprint(global_variables)'}
-    {'__name__': '__main__', '__doc__': 'Automatically created module for IPython interactive environment', '__package__': None, '__loader__': None, '__spec__': None, '__builtin__': <module 'builtins' (built-in)>, '__builtins__': <module 'builtins' (built-in)>, '_ih': ['', 'local_variables: list = dir()', 'local_vars: dict = locals()', 'global_variables: dict = globals()', 'global_variables: dict = globals()\n\nprint(local_variables)\nprint(local_vars)\nprint(global_variables)'], '_oh': {}, '_dh': [WindowsPath('c:/Works/amaargiru/pycore')], 'In': ['', 'local_variables: list = dir()', 'local_vars: dict = locals()', 'global_variables: dict = globals()', 'global_variables: dict = globals()\n\nprint(local_variables)\nprint(local_vars)\nprint(global_variables)'], 'Out': {}, 'get_ipython': <bound method InteractiveShell.get_ipython of <ipykernel.zmqshell.ZMQInteractiveShell object at 0x000002CA9D542230>>, 'exit': <IPython.core.autocall.ZMQExitAutocall object at 0x000002CA9D542D10>, 'quit': <IPython.core.autocall.ZMQExitAutocall object at 0x000002CA9D542D10>, '_': '', '__': '', '___': '', '__vsc_ipynb_file__': 'c:\\Works\\amaargiru\\pycore\\05_language_skeleton.ipynb', '_i': 'global_variables: dict = globals()', '_ii': 'local_vars: dict = locals()', '_iii': 'local_variables: list = dir()', '_i1': 'local_variables: list = dir()', '__annotations__': {'local_variables': <class 'list'>, 'local_vars': <class 'dict'>, 'global_variables': <class 'dict'>}, 'local_variables': ['In', 'Out', '_', '__', '___', '__annotations__', '__builtin__', '__builtins__', '__doc__', '__loader__', '__name__', '__package__', '__spec__', '__vsc_ipynb_file__', '_dh', '_i', '_i1', '_ih', '_ii', '_iii', '_oh', 'exit', 'get_ipython', 'quit'], '_i2': 'local_vars: dict = locals()', 'local_vars': {...}, '_i3': 'global_variables: dict = globals()', 'global_variables': {...}, '_i4': 'global_variables: dict = globals()\n\nprint(local_variables)\nprint(local_vars)\nprint(global_variables)'}
+    {'__name__': '__main__', '__doc__': 'Automatically created module for IPython interactive environment', '__package__': None, '__loader__': None, '__spec__': None, '__builtin__': <module 'builtins' (built-in)>, '__builtins__': <module 'builtins' (built-in)>, '_ih': ['', 'local_variables: list = dir()', 'local_vars: dict = locals()', 'global_variables: dict = globals()\n\nprint(local_variables)\nprint(local_vars)\nprint(global_variables)'], '_oh': {}, '_dh': [WindowsPath('c:/Works/amaargiru/pycore')], 'In': ['', 'local_variables: list = dir()', 'local_vars: dict = locals()', 'global_variables: dict = globals()\n\nprint(local_variables)\nprint(local_vars)\nprint(global_variables)'], 'Out': {}, 'get_ipython': <bound method InteractiveShell.get_ipython of <ipykernel.zmqshell.ZMQInteractiveShell object at 0x000002B22DC22260>>, 'exit': <IPython.core.autocall.ZMQExitAutocall object at 0x000002B22DC22D10>, 'quit': <IPython.core.autocall.ZMQExitAutocall object at 0x000002B22DC22D10>, '_': '', '__': '', '___': '', '__vsc_ipynb_file__': 'c:\\Works\\amaargiru\\pycore\\05_language_skeleton.ipynb', '_i': 'local_vars: dict = locals()', '_ii': 'local_variables: list = dir()', '_iii': '', '_i1': 'local_variables: list = dir()', '__annotations__': {'local_variables': <class 'list'>, 'local_vars': <class 'dict'>, 'global_variables': <class 'dict'>}, 'local_variables': ['In', 'Out', '_', '__', '___', '__annotations__', '__builtin__', '__builtins__', '__doc__', '__loader__', '__name__', '__package__', '__spec__', '__vsc_ipynb_file__', '_dh', '_i', '_i1', '_ih', '_ii', '_iii', '_oh', 'exit', 'get_ipython', 'quit'], '_i2': 'local_vars: dict = locals()', 'local_vars': {...}, '_i3': 'global_variables: dict = globals()\n\nprint(local_variables)\nprint(local_vars)\nprint(global_variables)', 'global_variables': {...}}
+    {'__name__': '__main__', '__doc__': 'Automatically created module for IPython interactive environment', '__package__': None, '__loader__': None, '__spec__': None, '__builtin__': <module 'builtins' (built-in)>, '__builtins__': <module 'builtins' (built-in)>, '_ih': ['', 'local_variables: list = dir()', 'local_vars: dict = locals()', 'global_variables: dict = globals()\n\nprint(local_variables)\nprint(local_vars)\nprint(global_variables)'], '_oh': {}, '_dh': [WindowsPath('c:/Works/amaargiru/pycore')], 'In': ['', 'local_variables: list = dir()', 'local_vars: dict = locals()', 'global_variables: dict = globals()\n\nprint(local_variables)\nprint(local_vars)\nprint(global_variables)'], 'Out': {}, 'get_ipython': <bound method InteractiveShell.get_ipython of <ipykernel.zmqshell.ZMQInteractiveShell object at 0x000002B22DC22260>>, 'exit': <IPython.core.autocall.ZMQExitAutocall object at 0x000002B22DC22D10>, 'quit': <IPython.core.autocall.ZMQExitAutocall object at 0x000002B22DC22D10>, '_': '', '__': '', '___': '', '__vsc_ipynb_file__': 'c:\\Works\\amaargiru\\pycore\\05_language_skeleton.ipynb', '_i': 'local_vars: dict = locals()', '_ii': 'local_variables: list = dir()', '_iii': '', '_i1': 'local_variables: list = dir()', '__annotations__': {'local_variables': <class 'list'>, 'local_vars': <class 'dict'>, 'global_variables': <class 'dict'>}, 'local_variables': ['In', 'Out', '_', '__', '___', '__annotations__', '__builtin__', '__builtins__', '__doc__', '__loader__', '__name__', '__package__', '__spec__', '__vsc_ipynb_file__', '_dh', '_i', '_i1', '_ih', '_ii', '_iii', '_oh', 'exit', 'get_ipython', 'quit'], '_i2': 'local_vars: dict = locals()', 'local_vars': {...}, '_i3': 'global_variables: dict = globals()\n\nprint(local_variables)\nprint(local_vars)\nprint(global_variables)', 'global_variables': {...}}
     
 
 ### Attributes
