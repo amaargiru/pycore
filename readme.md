@@ -2894,11 +2894,12 @@ clan.second = "Lex Luthor"
 
 Наследование \_\_slots\_\_ имеет определенную специфику и будет рассмотрено ниже.
 
-Чтобы было понятно, о каком приросте производительности идёт речь, сделаем простое сравнение:
+Чтобы было понятно, о каком приросте производительности и снижении потребления памяти идёт речь, сделаем простое сравнение:
 
 
 ```python
 import timeit
+import pympler.asizeof  # В нашем случае sys.getsizeof - не лучший вариант, берем стороннее решение
 
 
 class NotSlotted():
@@ -2925,12 +2926,17 @@ ns = min(timeit.repeat(get_set_delete_fn(not_slotted)))
 s = min((timeit.repeat(get_set_delete_fn(slotted))))
 
 print(ns, s, f'{(ns - s) / s * 100} %')
+
+print(pympler.asizeof.asizeof(not_slotted), 'bytes')
+print(pympler.asizeof.asizeof(slotted), 'bytes')
 ```
 
-    0.10488740028813481 0.0814032000489533 28.849234704604815 %
+    0.10838449979200959 0.08712740009650588 24.39772066187959 %
+    280 bytes
+    40 bytes
     
 
-Я в Python 3.10 в Windows вижу почти 29 % разницы.
+Я в Python 3.10 в Windows вижу 24 % разницы.
 
 На всякий случай напоминаю еще раз — этот материал написан в Jupiter Notebook, исходный код [скачивается отсюда](https://github.com/amaargiru/pycore), все примеры кода интерактивны, не надо на них *смотреть*, их можно и нужно корректировать и видоизменять. Попробуйте, например, самостоятельно посмотреть потребление памяти объектов с \_\_dict\_\_ и \_\_slots\_\_. А заодно на практике испытайте давно напршивающийся, и наконец появившийся в Python 3.10 [симбиоз](https://docs.python.org/3/library/dataclasses.html#module-contents) между \_\_slots\_\_ и dataclass.
 
@@ -3098,8 +3104,9 @@ print([str(stud) for stud in sorted([Peter, Melissa, Joe], reverse=True)])
 
 ### Callable
 
-All functions and classes have a call() method, hence are callable.
-When this cheatsheet uses `'<function>'` as an argument, it actually means `'<callable>'`.
+Для возможности вызова объекта в качестве функции необходимо реализовать метод \_\_call\_\_. Типы, поддерживающие возможность их вызова в качестве функции, могут принимать набор аргументов.
+
+
 
 ```python
 class Counter:
@@ -3108,11 +3115,44 @@ class Counter:
     def __call__(self):
         self.i += 1
         return self.i
-```
  
 counter = Counter()
-counter(), counter(), counter()
-(1, 2, 3)
+
+print(counter())
+print(counter())
+print(counter())
+```
+
+    1
+    2
+    3
+    
+
+@classmethod нельзя вызывать в качестве функции:
+
+
+```python
+class Check():
+    @classmethod 
+    def class_method(cls):
+        pass 
+
+    @staticmethod
+    def static_method():
+        pass
+
+    def instance_method(self):
+        pass 
+
+for attr, val in vars(Check).items():
+    if not attr.startswith("__"):
+        print (attr, f"{'is' if callable(val) else 'is NOT'} callable")
+```
+
+    class_method is NOT callable
+    static_method is callable
+    instance_method is callable
+    
 
 Контекстные менеджеры, описанные в предыдущей главе, тоже, как мы теперь видим, определяются через утиную типизацию при помощи методов \_\_enter\_\_ и \_\_exit\_\_.
 
@@ -3171,33 +3211,25 @@ print(len(mc))
     
 
 ### Sequence
-Only required methods are len() and getitem().
-Getitem() should return an item at the passed index or raise IndexError.
-Iter() and contains() automatically work on any object that has getitem() defined.
-Reversed() automatically works on any object that has len() and getitem() defined.
+
+Требует методы len() and getitem(). getitem() должен отдавать элемент с требуемым индексом или вызывать исключение IndexError.  
+Автоматически будут порождены методы iter(), reversed() и contains().
 
 
 ```python
 class MySequence:
     def __init__(self, a):
         self.a = a
-    def __iter__(self):
-        return iter(self.a)
-    def __contains__(self, el):
-        return el in self.a
     def __len__(self):
         return len(self.a)
     def __getitem__(self, i):
         return self.a[i]
-    def __reversed__(self):
-        return reversed(self.a)
 ```
 
 ### ABC Sequence
-It's a richer interface than the basic sequence.
-Extending it generates iter(), contains(), reversed(), index() and count().
-Unlike `'abc.Iterable'` and `'abc.Collection'`, it is not a duck type. That is why `'issubclass(MySequence, abc.Sequence)'` would return False even if MySequence had all the methods defined.
 
+Коллекция Sequence из [Abstract Base Classes for Containers](https://docs.python.org/3/library/collections.abc.html) предоставляет расширенный интерфейс по сравнению с обычной Sequence.  
+Всё так же требуя \_\_getitem\_\_ и \_\_len\_\_, предоставляет \_\_contains__, \_\_iter\_\_, \_\_reversed\_\_, index и count.
 
 
 ```python
@@ -3212,27 +3244,23 @@ class MyAbcSequence(abc.Sequence):
         return self.a[i]
 ```
 
-#### Table of required and automatically available special methods:
+### Таблица требуемых и доступных методов:
+
 ```text
 +------------+------------+------------+------------+--------------+
-|            |  Iterable  | Collection |  Sequence  | abc.Sequence |
+|            |  Iterable  | Collection |  Sequence  | ABC Sequence |
 +------------+------------+------------+------------+--------------+
-| iter()     |    REQ     |    REQ     |    Yes     |     Yes      |
-| contains() |    Yes     |    Yes     |    Yes     |     Yes      |
-| len()      |            |    REQ     |    REQ     |     REQ      |
-| getitem()  |            |            |    REQ     |     REQ      |
-| reversed() |            |            |    Yes     |     Yes      |
-| index()    |            |            |            |     Yes      |
-| count()    |            |            |            |     Yes      |
+| iter()     |   нужен    |   нужен    |     +      |      +       |
+| contains() |     +      |     +      |     +      |      +       |
+| len()      |            |   нужен    |   нужен    |    нужен     |
+| getitem()  |            |            |   нужен    |    нужен     |
+| reversed() |            |            |     +      |      +       |
+| index()    |            |            |            |      +       |
+| count()    |            |            |            |      +       |
 +------------+------------+------------+------------+--------------+
 ```
 
-Other ABCs that generate missing methods are: MutableSequence, Set, MutableSet, Mapping and MutableMapping.
-Names of their required methods are stored in `'<abc>.__abstractmethods__'`.
-
-#### Discrepancies between glossary definitions and abstract base classes:
-Glossary defines iterable as any object with iter() or getitem() and sequence as any object with len() and getitem(). It does not define collection.
-Passing ABC Iterable to isinstance() or issubclass() checks whether object/class has iter(), while ABC Collection checks for iter(), contains() and len().
+И вообще, потщательнее присмотритесь с collections.abc, там есть множество заготовок, которые помогут вам сэкономить немало времени. Например, если к упомянутым относительно ABC Sequence \_\_getitem\_\_ и \_\_len\_\_ добавить \_\_setitem\_\_, \_\_delitem\_\_ и insert, то в ответ вы получите коллекцию MutableSequence, которая, кроме возможностей Sequence, имеет еще методы append, reverse, extend, pop, remove и \_\_iadd\_\_.
 
 ### Копирование объектов
 
@@ -3367,212 +3395,111 @@ print(c.return_anything())
 
 Если не специфицировать return_anything() в ConcreteClass, при попытке вызвать c.return_anything() будет выброшено исключение TypeError: Can't instantiate abstract class ConcreteClass with abstract method return_anything.
 
-### Abstract Base Classes
-Each abstract base class specifies a set of virtual subclasses. These classes are then recognized by isinstance() and issubclass() as subclasses of the ABC, although they are really not. ABC can also manually decide whether or not a specific class is its virtual subclass, usually based on which methods the class has implemented. For instance, Iterable ABC looks for method iter() while Collection ABC looks for methods iter(), contains() and len().
+### Наследование классов со \_\_slots\_\_
 
-Class
------
- 
-class <name>:
-    def __init__(self, a):
-        self.a = a
-    def __repr__(self):
-        class_name = self.__class__.__name__
-        return f'{class_name}({self.a!r})'
-    def __str__(self):
-        return str(self.a)
+При одиночном наследовании \_\_slots\_\_ нормально наследуется, но это не предотвращает создание \_\_dict\_\_:
 
-    @classmethod
-    def get_class_name(cls):
-        return cls.__name__
- 
-Return value of repr() should be unambiguous and of str() readable.
-If only repr() is defined, it will also be used for str().
 
-#### Str() use cases:
- 
-print(<el>)
-f'{<el>}'
-logging.warning(<el>)
-csv.writer(<file>).writerow([<el>])
-raise Exception(<el>)
- 
+```python
+class SlotsClass:
+  __slots__ = 'foo', 'bar'
 
-#### Repr() use cases:
- 
-print/str/repr([<el>])
-f'{<el>!r}'
-Z = dataclasses.make_dataclass('Z', ['a']); print/str/repr(Z(<el>))
->>> <el>
- 
+  
+class ChildSlotsClass(SlotsClass):
+  ...
 
-### Constructor Overloading
- 
-class <name>:
-    def __init__(self, a=None):
-        self.a = a
 
-### Property
-Pythonic way of implementing getters and setters.
- 
-class Person:
-    @property
-    def name(self):
-        return ' '.join(self._name)
+obj = ChildSlotsClass()
+print(obj.__slots__)
 
-    @name.setter
-    def name(self, value):
-        self._name = value.split()
+obj.something_new = "underwater stones"
+print(obj.__dict__)
+```
 
->>> person = Person()
->>> person.name = '\t Guido  van Rossum \n'
->>> person.name
-'Guido van Rossum'
+    ('foo', 'bar')
+    {'something_new': 'underwater stones'}
+    
 
-#### Inline:
- 
-from dataclasses import make_dataclass
-<class> = make_dataclass('<class_name>', <coll_of_attribute_names>)
-<class> = make_dataclass('<class_name>', <coll_of_tuples>)
-<tuple> = ('<attr_name>', <type> [, <default_value>])
+Для ограничения дочернего класса слотами нужно в нём снова присвоить значение атрибуту \_\_slots\_\_, родительские поля дублировать не нужно.
 
-#### Rest of type annotations (CPython interpreter ignores them all):
- 
-def func(<arg_name>: <type> [= <obj>]) -> <type>:
-<var_name>: typing.List/Set/Iterable/Sequence/Optional[<type>]
-<var_name>: typing.Dict/Tuple/Union[<type>, ...]
 
-### Iterator
-Any object that has methods next() and iter() is an iterator.
-Next() should return next item or raise StopIteration.
-Iter() should return 'self'.
- 
-class Counter:
-    def __init__(self):
-        self.i = 0
-    def __next__(self):
-        self.i += 1
-        return self.i
-    def __iter__(self):
-        return self
+```python
+class SlotsClass:
+  __slots__ = 'foo', 'bar'
 
->>> counter = Counter()
->>> next(counter), next(counter), next(counter)
-(1, 2, 3)
+  
+class ChildSlotsClass(SlotsClass):
+  __slots__ = 'baz'
 
-#### Python has many different iterator objects:
-Sequence iterators returned by the [iter()](#iterator) function, such as list\_iterator and set\_iterator.
-Objects returned by the [itertools](#itertools) module, such as count, repeat and cycle.
-Generators returned by the [generator functions](#generator) and [generator expressions](#comprehensions).
-File objects returned by the [open()](#open) function, etc.
 
-https://ru.stackoverflow.com/questions/1025914/%D0%A7%D0%B5%D0%BC-%D0%BE%D1%82%D0%BB%D0%B8%D1%87%D0%B0%D1%8E%D1%82%D1%81%D1%8F-%D0%BF%D0%BE%D0%BD%D1%8F%D1%82%D0%B8%D1%8F-iterable-%D0%B8-sequence
+obj = ChildSlotsClass()
+# obj.something_new = "underwater stones"  # Raises AttributeError: 'ChildSlotsClass' object has no attribute 'something_new'
+```
+
+Множественное же наследование классов с _непустыми_ \_\_slots\_\_ невозможно.
 
 ### Метапрограммирование
 
-Code that generates code.
+Что такое класс? Это, в принципе, просто кусок кода, описывающий, как создать объект. Но в Python класс — это нечто большее; классы также являются объектами; как только используется ключевое слово class, Python исполняет команду и создаёт объект:
 
-### Type
-Type is the root class. If only passed an object it returns its type (class). Otherwise it creates a new class.
-
-```
-<class> = type('<class_name>', <tuple_of_parents>, <dict_of_class_attributes>)
-```
-
-```
->>> Z = type('Z', (), {'a': 'abcde', 'b': 12345})
->>> z = Z()
-```
-
-Singleton через метаклассы
-
-Какие задачи решали с помощью метаклассов?
-
-### Meta Class
-A class that creates classes.
-
- 
-def my_meta_class(name, parents, attrs):
-    attrs['a'] = 'abcde'
-    return type(name, parents, attrs)
- 
-
-#### Or:
-```python
-class MyMetaClass(type):
-    def __new__(cls, name, parents, attrs):
-        attrs['a'] = 'abcde'
-        return type.__new__(cls, name, parents, attrs)
-```
- 
-New() is a class method that gets called before init(). If it returns an instance of its class, then that instance gets passed to init() as a 'self' argument.
-It receives the same arguments as init(), except for the first one that specifies the desired type of the returned instance (MyMetaClass in our case).
-Like in our case, new() can also be called directly, usually from a new() method of a child class (`def __new__(cls): return super().__new__(cls)`).
-The only difference between the examples above is that my\_meta\_class() returns a class of type type, while MyMetaClass() returns a class of type MyMetaClass.
-
-### Metaclass Attribute
-Right before a class is created it checks if it has the 'metaclass' attribute defined. If not, it recursively checks if any of his parents has it defined and eventually comes to type().
-
- 
-class MyClass(metaclass=MyMetaClass):
-    b = 12345
- 
-
- 
->>> MyClass.a, MyClass.b
-('abcde', 12345)
- 
-
-### Type Diagram
- 
-type(MyClass)     == MyMetaClass     # MyClass is an instance of MyMetaClass.
-type(MyMetaClass) == type            # MyMetaClass is an instance of type.
- 
-
- text
-+-------------+-------------+
-|   Classes   | Metaclasses |
-+-------------+-------------|
-|   MyClass --> MyMetaClass |
-|             |     v       |
-|    object -----> type <+  |
-|             |     ^ +--+  |
-|     str ----------+       |
-+-------------+-------------+
- 
-
-### Inheritance Diagram
- 
-MyClass.__base__     == object       # MyClass is a subclass of object.
-MyMetaClass.__base__ == type         # MyMetaClass is a subclass of type.
- 
-
- text
-+-------------+-------------+
-|   Classes   | Metaclasses |
-+-------------+-------------|
-|   MyClass   | MyMetaClass |
-|      v      |     v       |
-|    object <----- type     |
-|      ^      |             |
-|     str     |             |
-+-------------+-------------+
- 
-
- Как в классе сослаться на родительский класс?
-
-Функция super принимает класс и экземпляр:
 
 ```python
-class NextClass(FirstClass):
-    def __init__(self, x):
-        super(NextClass, self).__init__()
-        self.x = x
+class A:
+    ...
 ```
 
+В памяти будет создан объект с именем A.
 
-https://proglib.io/p/metaclasses-in-python  
-https://habr.com/ru/post/145835/  
+Классы, как и другие объекты, можно создавать на ходу:
+
+
+```python
+def custom_class(name):
+    if name == "foo":
+        class Foo:
+            ...
+
+        return Foo  # Возвращает именно класс, а не экземпляр
+    else:
+        class Bar:
+            ...
+
+        return Bar
+
+
+MyClass = custom_class("foo")
+print(MyClass)  # Функция возвращает класс, а не экземпляр
+print(my_class := MyClass())  # Можно создать экземпляр класса
+```
+
+    <class '__main__.custom_class.<locals>.Foo'>
+    <__main__.custom_class.<locals>.Foo object at 0x000001F0ECF97610>
+    
+
+Но это не очень удобно, так как нам до сих пор приходится писать весь код класса.
+
+Основная цель метаклассов — автоматически изменять класс в момент создания, генерируя классы в соответствии с текущим контекстом.  
+Сами по себе метаклассы достаточно просты и работают примерно следующим образом:  
+перехватывают создание класса,  
+изменяют класс,  
+возвращают модифицированный класс.
+
+Но обычно логику работы метаклассов насыщают вещами вроде интроспекции или манипуляцией наследованием, поэтому конечный код выглядит достаточно громоздко.
+
+Здесь неплохо было бы добавить еще пару страниц про ньюансы создания и работы метаклассов, но позвольте переадресовать вас на вот эту [прекрасную статью](https://habr.com/ru/post/145835/).
+
+При помощи метаклассов хорошо решаются задачи, например, генерации классов для ORM. Скажем, для
+```python
+class Person(models.Model):
+    name = models.CharField(max_length=30)
+    age = models.IntegerField()
+```
+код
+```python
+keanu = Person(name="Keanu Reeves", age=58)
+    print(keanu.age)
+```
+распечатает число, взятое из БД, потому что models.Model определяет \_\_metaclass\_\_, который сотворит некоторую магию и превратит класс Person, который мы только что определили достаточно простым выражением, в сложную привязку к базе данных.
 ## 5. Внутренности языка
 
 > «Эта стена тянется с юга на север, и в ней есть лишь один проход, скрываемый пылающим пламенем, так что ни один смертный не может туда проникнуть.»  
