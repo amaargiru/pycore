@@ -3532,6 +3532,17 @@ gc.set_debug(gc.DEBUG_SAVEALL)
 
 В других интерпретаторах Python имеются другие механизмы сборки мусора, например, в интерпретаторе PyPy отсутствует алгоритм постоянного подсчета ссылок. Из-за этого, например, содержимое файла может быть обновлено только после прохода GC, а не тогда, когда файл был закрыт в программе.
 
+Если в процессе работы вы строите большую структуру данных, которая вам точно не нужна сразу после использования, то имеет смысл вызвать сборщик мусора в ручном режиме для уменьшения фрагментации памяти:
+
+```python
+import gc
+
+del my_big_object
+gc.collect()
+```
+
+На необходимость ручного вызова сборщика мусора есть разные точки зрения, но в целом такая процедура признаётся полезной ([обсуждение](https://stackoverflow.com/questions/1316767/how-can-i-explicitly-free-memory-in-python), смотрите оживлённые комметарии к первому ответу).
+
 Arguments
 ---------
 ### Inside Function Call
@@ -3668,7 +3679,9 @@ except ZeroDivisionError as e:
     Error: division by zero
     
 
-Более сложный пример. Code inside the *else* block will only be executed if *try* block had no exceptions. Code inside the *finally* block will always be executed (unless a signal is received).
+Более сложный пример.  
+Код в блоке _else_ исполняется только в случае отсутствия исключения.  
+Код в блоке _finally_ исполнится в любом случае, было ли вызвано исключение или нет.
 
 
 ```python
@@ -3696,6 +3709,9 @@ finally:
     
 
 ### Встроенные исключения
+
+Сокращенное иерархическое дерево встроенных исключений показано ниже:
+
 ```text
 BaseException
  +-- SystemExit                   # Raised by the sys.exit() function
@@ -3719,6 +3735,8 @@ BaseException
            +-- UnicodeError       # Encoding/decoding strings to/from bytes fails
 ```
 
+Полное дерево доступно [здесь](https://docs.python.org/3/library/exceptions.html#exception-hierarchy).
+
 ### Вызов исключений
 
 
@@ -3732,12 +3750,12 @@ def div(a: Decimal, b: Decimal) -> Decimal:
 
 try:
     c: Decimal = div(1, 0)
-except ValueError:
-    print("We have ValueError, as a planned!")
+except ValueError as ve:
+    print(f"{ve}. We have ValueError, as a planned!")
     # raise # We can re-raise exception
 ```
 
-    We have ValueError, as a planned!
+    Second argument must be non-zero. We have ValueError, as a planned!
     
 
 ### Выход из программы при помощи вызова исключения SystemExit
@@ -3747,7 +3765,7 @@ except ValueError:
 import sys
 
 # sys.exit()  # Exits with exit code 0 (success)
-# sys.exit(777)  # Exits with passed exit code
+# sys.exit(8)  # Exits with passed exit code
 ```
 
 ### Исключения, определяемые пользователем
@@ -3762,62 +3780,36 @@ raise MyException("My car is broken")
 
 
     ---------------------------------------------------------------------------
-    
-
-    
-    
 
     MyException                               Traceback (most recent call last)
-    
 
-    
-    
-
-    c:\Works\amaargiru\pycore\01_python.ipynb Ячейка 103 in <cell line: 4>()
-    
-
-    
-    
-
-          <a href='vscode-notebook-cell:/c%3A/Works/amaargiru/pycore/01_python.ipynb#Y204sZmlsZQ%3D%3D?line=0'>1</a> class MyException(Exception):
-    
-
-    
-    
-
-          <a href='vscode-notebook-cell:/c%3A/Works/amaargiru/pycore/01_python.ipynb#Y204sZmlsZQ%3D%3D?line=1'>2</a>     pass
-    
-
-    
-    
-
-    ----> <a href='vscode-notebook-cell:/c%3A/Works/amaargiru/pycore/01_python.ipynb#Y204sZmlsZQ%3D%3D?line=3'>4</a> raise MyException("My car is broken")
-    
-
-    
-    
-
-    
-    
-
-    
+    c:\Works\amaargiru\pycore\05_language_skeleton.ipynb Cell 18 in <cell line: 4>()
+          <a href='vscode-notebook-cell:/c%3A/Works/amaargiru/pycore/05_language_skeleton.ipynb#X23sZmlsZQ%3D%3D?line=0'>1</a> class MyException(Exception):
+          <a href='vscode-notebook-cell:/c%3A/Works/amaargiru/pycore/05_language_skeleton.ipynb#X23sZmlsZQ%3D%3D?line=1'>2</a>     pass
+    ----> <a href='vscode-notebook-cell:/c%3A/Works/amaargiru/pycore/05_language_skeleton.ipynb#X23sZmlsZQ%3D%3D?line=3'>4</a> raise MyException("My car is broken")
     
 
     MyException: My car is broken
 
 
-Exception Object
+### Дополнение исключений
 
-arguments = <name>.args
-exc_type = <name>.__class__
-filename = <name>.__traceback__.tb_frame.f_code.co_filename
-func_name = <name>.__traceback__.tb_frame.f_code.co_name
-line = linecache.getline(filename, <name>.__traceback__.tb_lineno)
-error_msg = ''.join(traceback.format_exception(exc_type, <name>, <name>.__traceback__))
+Начиная с Python 3.11 отлавливаемые исключения можно обогащать дополнительной информацией:
 
-## PEP8
+```python
+try:
+    raise TypeError('Bad type')
+except Exception as e:
+    e.add_note('We are powerless, we rely on a higher authority')
+    raise
+```
 
-Пробовал flake8 + black, остановился на линтере, встроенном в Pycharm + mypy.
+Исключения — немного спорная тема, так как систематизация обработки ошибок сильно пересекается с темой общей архитектуры приложения. Поэтому кто-то предлагает использовать обёртки [Success/Failure](https://github.com/dry-python/returns), кто-то создаёт свои классы исключений, которые имеют расширенные функции логгирования и сильно облегчает отладку.
+
+Лично я предпочитаю путь, который, на мой взгляд, можно назвать «классическим»:  
+много исключений на этапе отладки, которые помогают сделать отдельные функции более стабильными;  
+каждое ожидаемое исключение должно быть обработано как можно раньше;  
+на самый верх должны проникнуть только неожиданные исключения (которые, в результате, попадут или в отчет тестировщика или в баг-репорт пользователя и тоже будут купированы).
 
 ### Одинарное (_) и двойное (__) подчеркивания. Name mangling.
 
@@ -3862,11 +3854,11 @@ class Stack(object):
 ```
 
 
-### Introspection
+### Интроспекция
 
-### Variables
+Анализ метаданных классов во время выполнения.
 
-Inspecting code at runtime.
+### Переменные
 
 При вызове функции dir() без аргументов она возвращает список атрибутов (включая функции), доступных в локальной области видимости.
 
@@ -3898,14 +3890,17 @@ print(global_variables)
     {'__name__': '__main__', '__doc__': 'Automatically created module for IPython interactive environment', '__package__': None, '__loader__': None, '__spec__': None, '__builtin__': <module 'builtins' (built-in)>, '__builtins__': <module 'builtins' (built-in)>, '_ih': ['', 'local_variables: list = dir()', 'local_vars: dict = locals()', 'global_variables: dict = globals()\n\nprint(local_variables)\nprint(local_vars)\nprint(global_variables)'], '_oh': {}, '_dh': [WindowsPath('c:/Works/amaargiru/pycore')], 'In': ['', 'local_variables: list = dir()', 'local_vars: dict = locals()', 'global_variables: dict = globals()\n\nprint(local_variables)\nprint(local_vars)\nprint(global_variables)'], 'Out': {}, 'get_ipython': <bound method InteractiveShell.get_ipython of <ipykernel.zmqshell.ZMQInteractiveShell object at 0x000002B22DC22260>>, 'exit': <IPython.core.autocall.ZMQExitAutocall object at 0x000002B22DC22D10>, 'quit': <IPython.core.autocall.ZMQExitAutocall object at 0x000002B22DC22D10>, '_': '', '__': '', '___': '', '__vsc_ipynb_file__': 'c:\\Works\\amaargiru\\pycore\\05_language_skeleton.ipynb', '_i': 'local_vars: dict = locals()', '_ii': 'local_variables: list = dir()', '_iii': '', '_i1': 'local_variables: list = dir()', '__annotations__': {'local_variables': <class 'list'>, 'local_vars': <class 'dict'>, 'global_variables': <class 'dict'>}, 'local_variables': ['In', 'Out', '_', '__', '___', '__annotations__', '__builtin__', '__builtins__', '__doc__', '__loader__', '__name__', '__package__', '__spec__', '__vsc_ipynb_file__', '_dh', '_i', '_i1', '_ih', '_ii', '_iii', '_oh', 'exit', 'get_ipython', 'quit'], '_i2': 'local_vars: dict = locals()', 'local_vars': {...}, '_i3': 'global_variables: dict = globals()\n\nprint(local_variables)\nprint(local_vars)\nprint(global_variables)', 'global_variables': {...}}
     
 
-### Attributes
+Дабы не углублятся в дебри интроспекции особо глубоко (суть, думаю, вы уже уловили), давайте просто перечислим возможности, предоставляемые ею относительно атрибутов и параметров.
 
-<list> = dir(<object>)                     # Names of object's attributes (incl. methods).  
-<dict> = vars(<object>)                    # Dict of writable attributes. Also <obj>.__dict__.  
-<bool> = hasattr(<object>, '<attr_name>')  # Checks if getattr() raises an AttributeError.  
-value  = getattr(<object>, '<attr_name>')  # Raises AttributeError if attribute is missing.  
-setattr(<object>, '<attr_name>', value)    # Only works on objects with '__dict__' attribute.  
-delattr(<object>, '<attr_name>')           # Same. Also `del <object>.<attr_name>`.  
+Атрибуты
+```text
+l: list = dir(object)                      # Имена атрибутов объекта (включая методы)  
+d: dict = vars(object)                    # Возвращает object.__dict__.  
+value  = getattr(object, 'attr_name')  # Raises AttributeError if attribute is missing.  
+b: bool = hasattr(object, 'attr_name')  # Checks if getattr() raises an AttributeError.  
+setattr(object, 'attr_name', value)    # Only works on objects with '__dict__' attribute.  
+delattr(object, 'attr_name')           # Same. Also `del <object>.<attr_name>`.  
+```
 
 ### Parameters
 
@@ -3930,7 +3925,7 @@ GIL работает так: на каждый тред выделяется н�
 Вариант 2 - уход от многопоточности в сторону мультипроцессности, используя модуль multiprocessing. Последний вариант подробно разобран ниже.
 
 
-### *args, **kwargs
+### *args, **kwargs, *
 
 Выражения *args и **kwargs объявляют в сигнатуре функции. Они означают, что внутри функции будут доступны переменные с именами args и kwargs (без звездочек).
 
@@ -3942,21 +3937,23 @@ args – это кортеж, который накапливает позици
 
 Module of functions that provide the functionality of operators.
 
-import operator as op
-<el>      = op.add/sub/mul/truediv/floordiv/mod(<el>, <el>)  # +, -, *, /, //, %
-<int/set> = op.and_/or_/xor(<int/set>, <int/set>)            # &, |, ^
-<bool>    = op.eq/ne/lt/le/gt/ge(<sortable>, <sortable>)     # ==, !=, <, <=, >, >=
-<func>    = op.itemgetter/attrgetter/methodcaller(<obj>)     # [index/key], .name, .name()
+```text
+import operator as op  
+<el>      = op.add/sub/mul/truediv/floordiv/mod(<el>, <el>)  # +, -, *, /, //, %  
+<int/set> = op.and_/or_/xor(<int/set>, <int/set>)            # &, |, ^  
+<bool>    = op.eq/ne/lt/le/gt/ge(<sortable>, <sortable>)     # ==, !=, <, <=, >, >=  
+<func>    = op.itemgetter/attrgetter/methodcaller(<obj>)     # [index/key], .name, .name()  
 
-elementwise_sum  = map(op.add, list_a, list_b)
-sorted_by_second = sorted(<collection>, key=op.itemgetter(1))
-sorted_by_both   = sorted(<collection>, key=op.itemgetter(1, 0))
-product_of_elems = functools.reduce(op.mul, <collection>)
-union_of_sets    = functools.reduce(op.or_, <coll_of_sets>)
-first_element    = op.methodcaller('pop', 0)(<list>)
+elementwise_sum  = map(op.add, list_a, list_b)  
+sorted_by_second = sorted(<collection>, key=op.itemgetter(1))  
+sorted_by_both   = sorted(<collection>, key=op.itemgetter(1, 0))  
+product_of_elems = functools.reduce(op.mul, <collection>)  
+union_of_sets    = functools.reduce(op.or_, <coll_of_sets>)  
+first_element    = op.methodcaller('pop', 0)(<list>)  
  
-Binary operators require objects to have and(), or(), xor() and invert() special methods, unlike logical operators that work on all types of objects.
+Binary operators require objects to have and(), or(), xor() and invert() special methods, unlike logical operators that work on all types of objects.  
 Also: `'<bool> = <bool> &|^ <bool>'` and `'<int> = <bool> &|^ <int>'`.
+```
 ## 6. Многопоточность и многозадачность
 
 > «И долго оставались на месте там, а солнца не видели, но свет был многообразно светящийся, сияющий ярче солнца. А на горах тех слышали они пение, ликованья и веселья исполненное.»  
@@ -4028,7 +4025,7 @@ An object with the same interface called ProcessPoolExecutor provides true paral
 
 ### Многопоточность
 
-Многопоточность достигается модулем Threading. Это нативные Posix-треды, такие треды исполняются операционной системой, а не виртуальной машиной.
+Многопоточность реализуется модулем Threading. Это нативные Posix-треды, такие треды исполняются операционной системой, а не виртуальной машиной.
 
 В чем отличие тредов от мультипроцессинга?
 
@@ -4480,15 +4477,12 @@ if __name__ == '__main__':
 Какие есть виды импорта?  
 Что такое класс, итератор, генератор?  
 В чем разница между итераторами и генераторами?  
-В чем разница между staticmethod и classmethod?  
-
-
+В чем разница между staticmethod и classmethod? 
 Как работает thread locals?  
 Что такое type annotation?  
 Что такое @property?  
 Как работать с stdlib?  
 Что такое дескрипторы?  
-
 Какой будет результат операции -12 % 10?  
 Какой будет результат операции -12 // 10?  
 Какая последовательность вызова операторов в выражении a * b * c?  
@@ -4500,7 +4494,7 @@ if __name__ == '__main__':
 Как можно расширить зону видимости глобальных переменных на другие модули?
 Как создать класс без инструкции class?
 
-
+```text
 Почему def foo(bar=[]): плохо? Приведите пример плохого случая. Как исправить?
 Почему нельзя сделать пустой список аргументом по умолчанию?  
 
@@ -4530,7 +4524,7 @@ foo()
 [1]
 foo()
 [1]
-
+```
 
 ### Тестирование, pytest
 
@@ -5269,6 +5263,7 @@ SQL - декларативный (описательный, непроцедур
 операторы манипулирования данными (data manipulation language, DML) и  
 операторы управления привилегиями доступа (data control language, DCL).
 
+```text
 SQLite
 
 **Server-less database engine that stores each database into a separate file.**
@@ -5319,11 +5314,13 @@ with <conn>:                                    # Exits the block with commit() 
 1
 >>> conn.execute('SELECT * FROM person').fetchall()
 [(1, 'Jean-Luc', 187)]
+```
 
 
-SQLite 
-Small. Fast. Reliable. Choose any three.
+SQLite  
+Small. Fast. Reliable. Choose any three.  
 
+```text
 https://sqlite.org/index.html
 https://github.com/sqlite/sqlite
 https://habr.com/ru/post/149356/
@@ -5355,6 +5352,7 @@ Memory View
 <mview> = <mview>[<slice>]                     # Mview with rearranged elements.
 <mview> = <mview>.cast('<typecode>')           # Casts memoryview to the new format.
 <mview>.release()                              # Releases the object's memory buffer.
+```
 
 ### PostgreSQL
 
