@@ -1,8 +1,4 @@
-TODO (Исходный код в папке examples) (Исходный код в Jupiter Notebook) (Описание).  
-
-Metaprogramming  
-(-)(-)(-) Meta Class  
-(+)(-)(-) Разбор проблем, оптимально решаемых при помощи метапрограммирования  
+TODO (Исходный код в папке examples) (Исходный код в Jupiter Notebook) (Описание).
 
 Introspection  
 (+)(-)(-) variables  
