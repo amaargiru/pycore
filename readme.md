@@ -3962,66 +3962,6 @@ Also: `'<bool> = <bool> &|^ <bool>'` and `'<int> = <bool> &|^ <int>'`.
 
 ![Multithreading & Multiprocessing](https://raw.githubusercontent.com/amaargiru/pycore/main/pics/06_Multithreading_Multiprocessing.png)  
 
-Threading
----------
-CPython interpreter can only run a single thread at a time. That is why using multiple threads won't result in a faster execution, unless at least one of the threads contains an I/O operation.
-
-```
-from threading import Thread, RLock, Semaphore, Event, Barrier
-from concurrent.futures import ThreadPoolExecutor
-```
-
-### Thread
-
-```
-<Thread> = Thread(target=<function>)           # Use `args=<collection>` to set the arguments.
-<Thread>.start()                               # Starts the thread.
-<bool> = <Thread>.is_alive()                   # Checks if the thread has finished executing.
-<Thread>.join()                                # Waits for the thread to finish.
-```
-
-Use `'kwargs=<dict>'` to pass keyword arguments to the function.
-Use `'daemon=True'`, or the program will not be able to exit while the thread is alive.**
-
-### Lock
-
-```
-<lock> = RLock()                               # Lock that can only be released by the owner.
-<lock>.acquire()                               # Waits for the lock to be available.
-<lock>.release()                               # Makes the lock available again.
-```
-
-#### Or:
-
-```
-with <lock>:                                   # Enters the block by calling acquire(),
-    ...                                        # and exits it with release().
-``` 
-
-### Semaphore, Event, Barrier
-
-```
-<Semaphore> = Semaphore(value=1)               # Lock that can be acquired by 'value' threads.
-<Event>     = Event()                          # Method wait() blocks until set() is called.
-<Barrier>   = Barrier(n_times)                 # Wait() blocks until it's called n_times.
-```
-
-### Thread Pool Executor
-Object that manages thread execution.
-An object with the same interface called ProcessPoolExecutor provides true parallelism by running a separate interpreter in each process. All arguments must be [pickable](#pickle).
-
-```
-<Exec> = ThreadPoolExecutor(max_workers=None)  # Or: `with ThreadPoolExecutor() as <name>: …`
-<Exec>.shutdown(wait=True)                     # Blocks until all threads finish executing.
-```
-
-```
-<iter> = <Exec>.map(<func>, <args_1>, ...)     # A multithreaded and non-lazy map().
-<Futr> = <Exec>.submit(<func>, <arg_1>, ...)   # Starts a thread and returns its Future object.
-<bool> = <Futr>.done()                         # Checks if the thread has finished executing.
-<obj>  = <Futr>.result()                       # Waits for thread to finish and returns result.
-```
-
 
 ### Многопоточность
 
@@ -4051,24 +3991,6 @@ An object with the same interface called ProcessPoolExecutor provides true paral
 
 3. Многопроцессность - вариант реализации вычислений, когда для решения некоторой прикладной задачи запускается несколько независимых процессов. В системах, где под процессом понимается сущность, владеющая ресурсами (памятью, открытыми файлами, сетевыми подключениями), несколько процессов запускаются с целью повышения отказоустойчивости приложения, а также с целью повышения безопасности. Т.к. ОС выполняет разделение памяти и прочих ресурсов именно между процессами (в то время как потоки работают в едином адресном пространстве), то а) внезапно упавший (читай - убитый ОС) процесс не уронит остальные; б) если в процессе начал выполняться чужеродный код (например, из-за RCE уязвимости), то он не получит доступ к содержимому памяти в других процессах. Многопроцессность сегодня можно увидеть в браузерах, когда отдельные вкладки выполняются в разных процессах, и упавшая вкладка (из-за js или из-за кривого плагина) тянет за собой не весь браузер, а только себя или еще пару вкладок.
 
-## asyncio
-
-https://realpython.com/async-io-python/
-
-В JavaScript async / await сделаны жадными как Promise. При вызове async функции автоматически создается задача и отправляется в очередь на исполнение в event loop. await, в свою очередь, просто ждёт результат.
-
-В питоне асинхронщину задизайнили иначе - лениво.
-
-Вызов async функции возвращает объект — корутину, — которая ни чего не делает.
-
-asyncio.run() создаёт event loop, запускает (корневую) корутину и блокирует поток до получения результата.
-
-await запускает корутину изнутри другой корутины в текущем event loop и ждёт результат.
-
-Для запуска корутины без ожидания (как это делает Promise) используется asyncio.create_task(coro). Либо asyncio.gather(*aws), если надо запустить сразу несколько. Нужно только следить, чтобы ссылка на возвращаемое значение сохранялась до конца вычисления, иначе его пожрет GC и все оборвется на самом интересном месте (промис бы отработал до конца не смотря ни на что).
-
-В JS только один event loop, поэтому было вполне разумно закопать его внутрь promise / async / await как деталь реализации, упростив работу прикладному программисту. В питоне отзеркалили более ранний вариант корутин на генераторах, дали возможность использовать разные event loop и выставили все кишки наружу.
-
 
 ```python
 # Однопоточное приложение
@@ -4081,7 +4003,7 @@ def countdown(n):
         n -= 1
 
 start = time.time()
-countdown(COUNT)
+countdown(COUNT)    
 end = time.time()
 
 print("Count time", end - start)
@@ -4143,6 +4065,84 @@ if __name__ ==  '__main__':
 ```
 
 Count time 2.0029137134552
+
+Threading
+---------
+CPython interpreter can only run a single thread at a time. That is why using multiple threads won't result in a faster execution, unless at least one of the threads contains an I/O operation.
+
+```
+from threading import Thread, RLock, Semaphore, Event, Barrier
+from concurrent.futures import ThreadPoolExecutor
+```
+
+### Thread
+
+```
+<Thread> = Thread(target=<function>)           # Use `args=<collection>` to set the arguments.
+<Thread>.start()                               # Starts the thread.
+<bool> = <Thread>.is_alive()                   # Checks if the thread has finished executing.
+<Thread>.join()                                # Waits for the thread to finish.
+```
+
+Use `'kwargs=<dict>'` to pass keyword arguments to the function.
+Use `'daemon=True'`, or the program will not be able to exit while the thread is alive.**
+
+### Lock
+
+```
+<lock> = RLock()                               # Lock that can only be released by the owner.
+<lock>.acquire()                               # Waits for the lock to be available.
+<lock>.release()                               # Makes the lock available again.
+```
+
+#### Or:
+
+```
+with <lock>:                                   # Enters the block by calling acquire(),
+    ...                                        # and exits it with release().
+``` 
+
+### Semaphore, Event, Barrier
+
+```
+<Semaphore> = Semaphore(value=1)               # Lock that can be acquired by 'value' threads.
+<Event>     = Event()                          # Method wait() blocks until set() is called.
+<Barrier>   = Barrier(n_times)                 # Wait() blocks until it's called n_times.
+```
+
+### Thread Pool Executor
+Object that manages thread execution.
+An object with the same interface called ProcessPoolExecutor provides true parallelism by running a separate interpreter in each process. All arguments must be [pickable](#pickle).
+
+```
+<Exec> = ThreadPoolExecutor(max_workers=None)  # Or: `with ThreadPoolExecutor() as <name>: …`
+<Exec>.shutdown(wait=True)                     # Blocks until all threads finish executing.
+```
+
+```
+<iter> = <Exec>.map(<func>, <args_1>, ...)     # A multithreaded and non-lazy map().
+<Futr> = <Exec>.submit(<func>, <arg_1>, ...)   # Starts a thread and returns its Future object.
+<bool> = <Futr>.done()                         # Checks if the thread has finished executing.
+<obj>  = <Futr>.result()                       # Waits for thread to finish and returns result.
+```
+
+## asyncio
+
+https://realpython.com/async-io-python/
+
+В JavaScript async / await сделаны жадными как Promise. При вызове async функции автоматически создается задача и отправляется в очередь на исполнение в event loop. await, в свою очередь, просто ждёт результат.
+
+В питоне асинхронщину задизайнили иначе - лениво.
+
+Вызов async функции возвращает объект — корутину, — которая ни чего не делает.
+
+asyncio.run() создаёт event loop, запускает (корневую) корутину и блокирует поток до получения результата.
+
+await запускает корутину изнутри другой корутины в текущем event loop и ждёт результат.
+
+Для запуска корутины без ожидания (как это делает Promise) используется asyncio.create_task(coro). Либо asyncio.gather(*aws), если надо запустить сразу несколько. Нужно только следить, чтобы ссылка на возвращаемое значение сохранялась до конца вычисления, иначе его пожрет GC и все оборвется на самом интересном месте (промис бы отработал до конца не смотря ни на что).
+
+В JS только один event loop, поэтому было вполне разумно закопать его внутрь promise / async / await как деталь реализации, упростив работу прикладному программисту. В питоне отзеркалили более ранний вариант корутин на генераторах, дали возможность использовать разные event loop и выставили все кишки наружу.
 ## 7. Популярные библиотеки
 
 > «Красота и благолепие этого города таковы, каковых глаз человеческий не видел, и ухо не слышало, и мысль не может представить, и ум не в состоянии постигнуть — ни человеческий, ни ангельский.»  
@@ -4471,61 +4471,6 @@ if __name__ == '__main__':
     Decrypted message: b'A am the Message'
     
 
-Разница между is и ==?  
-Как создается объект в Python, разница между __init __() и __new __()?  
-В чем разница между потоками и процессами?  
-Какие есть виды импорта?  
-Что такое класс, итератор, генератор?  
-В чем разница между итераторами и генераторами?  
-В чем разница между staticmethod и classmethod? 
-Как работает thread locals?  
-Что такое type annotation?  
-Что такое @property?  
-Как работать с stdlib?  
-Что такое дескрипторы?  
-Какой будет результат операции -12 % 10?  
-Какой будет результат операции -12 // 10?  
-Какая последовательность вызова операторов в выражении a * b * c?  
-Что делает функция id()?  
-Для чего зарезервировано ключевое слово yield?  
-В чем разница между __iter__ и __next__?
-Что такое проверка типов? Какие есть типы в Python?
-
-Как можно расширить зону видимости глобальных переменных на другие модули?
-Как создать класс без инструкции class?
-
-```text
-Почему def foo(bar=[]): плохо? Приведите пример плохого случая. Как исправить?
-Почему нельзя сделать пустой список аргументом по умолчанию?  
-
-Функция создается однажды при загрузке модуля. Именованные параметры и их дефолтные значения тоже создаются один раз и хранятся в одном из полей объекта-функции.
-
-В нашем примере bar равен пустому списку. Список – изменяемая коллекция, поэтому значение bar может изменяться от вызова к вызову. Пример:
-
-def foo(bar=[]):
-    bar.append(1)
-    return bar
-foo()
-[1]
-foo()
-[1, 1]
-foo()
-[1, 1, 1]
-Хорошим тоном считается указывать параметру пустое неизменяемое значение, например 0, None, '', False. В теле функции проверять на заполненность и создавать новую коллекцию:
-
-def foo(bar=None):
-    if bar is None:
-        bar = []
-    bar.append(1)
-    return bar
-foo()
-[1]
-foo()
-[1]
-foo()
-[1]
-```
-
 ### Тестирование, pytest
 
 Для работы с pytest внутри Jupiter notebook воспользуемся инструментом [ipytest](https://github.com/chmp/ipytest)
@@ -4637,9 +4582,15 @@ for i in range(1, n + 1):
 
     1 2 Fizz 4 Buzz Fizz 7 8 Fizz Buzz 11 Fizz 13 14 FizzBuzz 16 17 Fizz 19 Buzz Fizz 22 23 Fizz Buzz 26 Fizz 28 29 FizzBuzz 31 32 Fizz 34 Buzz Fizz 37 38 Fizz Buzz 41 Fizz 43 44 FizzBuzz 46 47 Fizz 49 Buzz Fizz 52 53 Fizz Buzz 56 Fizz 58 59 FizzBuzz 61 62 Fizz 64 Buzz Fizz 67 68 Fizz Buzz 71 Fizz 73 74 FizzBuzz 76 77 Fizz 79 Buzz Fizz 82 83 Fizz Buzz 86 Fizz 88 89 FizzBuzz 91 92 Fizz 94 Buzz Fizz 97 98 Fizz Buzz 
 
+### О-о-о! Большое! <a name="bigo"></a>  
+
+Нотация O - характеристика асимптотической сложности алгоритма без учета константы.  
+
+n! >> 2^n >> n^3 >> n^2 >> nlogn >> n >> logn >> 1
+
 ### Пузырьковая сортировка (BubbleSort) <a name="bubblesort"></a>
 
-Простейший алгоритм, состоит из повторяющихся проходов по сортируемому массиву. В процессе каждого прохода элементы массива сравниваются попарно; элементы, не удовлетворяющие условию сортировки, меняются местами.
+Простейший алгоритм сортировки, состоит из повторяющихся проходов по сортируемому массиву. В процессе каждого прохода элементы массива сравниваются попарно; элементы, не удовлетворяющие условию сортировки, меняются местами.
 
 
 ```python
@@ -5087,12 +5038,6 @@ print(visited)
 | Матрица инцидентности<br>(Incidence matrix) | V*E | V*E | V*E | V*E | V*E | E |
 | Список смежности<br>(Adjacency list) | V+E | 1 | 1 | V+E | E | V |
 | Список инцидентности<br>(Incidence list) | V+E | 1 | 1 | E | E | E |
-
-### О-о-о! Большое! <a name="bigo"></a>  
-
-Нотация O - характеристика асимптотической сложности алгоритма без учета константы.  
-
-n! >> 2^n >> n^3 >> n^2 >> nlogn >> n >> logn >> 1
 
 ### P vs NP <a name="algorithmspvsnp"></a>  
 
@@ -5645,17 +5590,6 @@ RabbitMQ более простой в установке и настройке, 
 
 ![DevOps](https://raw.githubusercontent.com/amaargiru/pycore/main/pics/12_DevOps.png)  
 
-### Git-flow
-
-<img src="gitflow.svg" style="height:320px">
-
-В целом, в настоящее время модель git-flow используется сравнительно редко. Эта модель ветвления основана на предсказуемом, долгосрочном цикле релиза новых версий, а не на выпуске нового кода каждые несколько часов. Git-flow сильно усложняет continuous delivery, когда разработчики выпускают частые обновления путем слияния с мастером (фактически, непосредственно в production) и плохо подходит для проектов, разбитых на сервисы.  
-Единственный вариант, неплохо подходящий под git-flow — большая команда (20+ человек), планомерно выпускающая несколько параллельных релизов или занимающаяся поддержкой нескольких версий приложения параллельно. В таком случае git-flow действительно может помочь навести порядок.  
-
-### Магистральная разработка
-
-Магистральная разработка (trunk-based development) фактически является обязательной практикой CI/CD и предполагает небольшие частые обновления главной ветки. Подразумевает ежедневные коммиты, многоуровневое автоматическое тестирование и быструю кеширующую сборку.
-
 ### Работа с git <a name="gitflowminimum"></a>
 
 git config --global core.editor "'C:/Program Files/Notepad++/notepad++.exe' -multiInst -notabbar -nosession -noPlugin"  
@@ -5702,6 +5636,16 @@ Containers
 Docker
 Kubernetes
 
+### Git-flow
+
+<img src="gitflow.svg" style="height:320px">
+
+В целом, в настоящее время модель git-flow используется сравнительно редко. Эта модель ветвления основана на предсказуемом, долгосрочном цикле релиза новых версий, а не на выпуске нового кода каждые несколько часов. Git-flow сильно усложняет continuous delivery, когда разработчики выпускают частые обновления путем слияния с мастером (фактически, непосредственно в production) и плохо подходит для проектов, разбитых на сервисы.  
+Единственный вариант, неплохо подходящий под git-flow — большая команда (20+ человек), планомерно выпускающая несколько параллельных релизов или занимающаяся поддержкой нескольких версий приложения параллельно. В таком случае git-flow действительно может помочь навести порядок.  
+
+### Магистральная разработка
+
+Магистральная разработка (trunk-based development) фактически является обязательной практикой CI/CD и предполагает небольшие частые обновления главной ветки. Подразумевает ежедневные коммиты, многоуровневое автоматическое тестирование и быструю кеширующую сборку.
 
 ## Источники  
 
