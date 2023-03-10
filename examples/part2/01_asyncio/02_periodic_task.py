@@ -1,17 +1,18 @@
 import asyncio
 from datetime import datetime
 
+# 2. Пример запуска на исполнение двух асинхронных периодических задач.
 
 async def periodic_fun1(a, b):
     while True:
         await asyncio.sleep(1)
-        print(f"periodic_fun1 complete with result {a + b}")
+        print(f'periodic_fun1 complete with result {a + b}')
 
 
 async def periodic_fun2(a, b):
     while True:
         await asyncio.sleep(0.5)
-        print(f"periodic_fun2 complete with result {a - b}")
+        print(f'periodic_fun2 complete with result {a - b}')
 
 
 async def main():
@@ -26,7 +27,7 @@ async def main():
     task2.cancel()
 
     duration_time = datetime.now() - start_time
-    print(f"Total duration time: {duration_time}")
+    print(f'Total duration time: {duration_time}')
 
 
 if __name__ == '__main__':

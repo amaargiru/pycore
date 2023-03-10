@@ -2,12 +2,13 @@ import asyncio
 import random
 from datetime import datetime
 
+# Пример накопления данных от двух асинхронных периодических задач в одной разделяемой структуре данных asyncio.Queue().
 
 async def produce_small_random(queue):
     while True:
         await asyncio.sleep(0.5)
         r: int = random.randint(1, 9)
-        print(f"Small random produced {r}")
+        print(f'Small random produced {r}')
         await queue.put(r)
 
 
@@ -15,7 +16,7 @@ async def produce_big_random(queue):
     while True:
         await asyncio.sleep(1)
         r: int = random.randint(100, 999)
-        print(f"Big random produced {r}")
+        print(f'Big random produced {r}')
         await queue.put(r)
 
 
@@ -39,8 +40,8 @@ async def main():
 
     duration_time = datetime.now() - start_time
 
-    print(f"Total queue = {randl}")
-    print(f"Total duration time: {duration_time}")
+    print(f'Total queue = {randl}')
+    print(f'Total duration time: {duration_time}')
 
 
 if __name__ == '__main__':

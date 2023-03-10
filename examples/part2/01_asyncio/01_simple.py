@@ -3,6 +3,9 @@ import time
 from time import perf_counter
 
 
+# Простейший пример, одновременный запуск двух функций, последовательное выполнение которых в "синхронном" мире заняло бы 2 секунды,
+# но в "асинхронном" мире они выполняются приблизительно за 1 секунду.
+
 # Без asyncio, просто две функции с имитацией некоторого полезного вычисления и последующего ожидания
 def fun1():
     sumi: int = 0
@@ -72,11 +75,3 @@ asyncio.run(amain())
 
 duration = perf_counter() - start_time
 print(f'Total duration: {duration} seconds')
-
-# Разберёмся с типами
-
-# print(type(fun1))
-# print(type(fun1()))
-
-# print(type(afun1))
-# print(type(afun1()))
