@@ -5,7 +5,6 @@ jupyter nbconvert --to markdown 04_oop.ipynb --output 04_oop.md
 jupyter nbconvert --to markdown 05_language_skeleton.ipynb --output 05_language_skeleton.md
 jupyter nbconvert --to markdown 06_multithreading_multiprocessing.ipynb --output 06_multithreading_multiprocessing.md
 jupyter nbconvert --to markdown 07_common_practice.ipynb --output 07_common_practice.md
-
 jupyter nbconvert --to markdown 08_algorithms.ipynb --output 08_algorithms.md
 jupyter nbconvert --to markdown 09_database.ipynb --output 09_database.md
 jupyter nbconvert --to markdown 10_net.ipynb --output 10_net.md

@@ -302,12 +302,8 @@ foo()
 foo()
 [1]
 
-Q1. What is the difference between list and tuples in Python?
-Q2. What are the key features of Python?
-Q3. What type of language is python?
-Q5. What is pep 8?
 Q6. How is memory managed in Python?
-Q7. What is name space in Python?
+
 Q8. What is PYTHON PATH?
 Q9. What are python modules?
 Q10. What are local variables and global variables in Python?
@@ -318,6 +314,7 @@ LIST	TUPLES
 Lists are mutable i.e they can be edited.	Tuples are immutable (tuples are lists which can’t be edited).
 Lists are slower than tuples.	Tuples are faster than list.
 Syntax: list_1 = [10, ‘Chelsea’, 20]	Syntax: tup_1 = (10, ‘Chelsea’ , 20)
+
 Q2. What are the key features of Python?
 Python is an interpreted language. That means that, unlike languages like C and its variants, Python does not need to be compiled before it is run. Other interpreted languages include PHP and Ruby.
 Python is dynamically typed, this means that you don’t need to state the types of variables when you declare them or anything like that. You can do things like x=111 and then x="I'm a string" without error
@@ -325,6 +322,7 @@ Python is well suited to object orientated programming in that it allows the def
 In Python, functions are first-class objects. This means that they can be assigned to variables, returned from other functions and passed into functions. Classes are also first class objects
 Writing Python code is quick but running it is often slower than compiled languages. Fortunately，Python allows the inclusion of C-based extensions so bottlenecks can be optimized away and often are. The numpy package is a good example of this, it’s really quite quick because a lot of the number-crunching it does isn’t actually done by Python
 Python finds use in many spheres – web applications, automation, scientific modeling, big data applications and many more. It’s also often used as “glue” code to get other languages and components to play nice. Learn more about Big Data and its applications from the Data Engineering Training.
+
 Q3. What type of language is python? Programming or scripting?
 Ans: Python is capable of scripting, but in general sense, it is considered as a general-purpose programming language. To know more about Scripting, you can refer to the Python Scripting Tutorial.
 
@@ -339,6 +337,7 @@ Built-in namespace– These namespaces contain all the built-in objects in pytho
 Global namespace– These are namespaces for all the objects created at the level of the main program.
 Enclosing namespaces– These namespaces are at the higher level or outer function.
 Local namespaces– These namespaces are at the local or inner function.
+
 Q8.What are decorators in Python?
 
 Ans: Decorators are used to add some design patterns to a function without changing its structure. Decorators generally are defined before the function they are enhancing. To apply a decorator we first define the decorator function. Then we write the function it is applied to and simply add the decorator function above the function it has to be applied to. For this, we use the @ symbol before the decorator.
@@ -1593,7 +1592,6 @@ Global Namespace includes names from various imported packages/ modules that are
 Built-in Namespace includes built-in functions of core Python and built-in names for various types of exceptions.
 The lifecycle of a namespace depends upon the scope of objects they are mapped to. If the scope of an object ends, the lifecycle of that namespace comes to an end. Hence, it isn't possible to access inner namespace objects from an outer namespace.
 
-
 21. What is Scope Resolution in Python?
 Sometimes objects within the same scope have the same name but function differently. In such cases, scope resolution comes into play in Python automatically. A few examples of such behavior are:
 
@@ -1742,7 +1740,6 @@ Unpickling:
 Unpickling is the complete inverse of pickling. It deserializes the byte stream to recreate the objects stored in the file and loads the object to memory.
 The function used for the above process is pickle.load().
 Note: Python has another, more primitive, serialization module called marshall, which exists primarily to support .pyc files in Python and differs significantly from the pickle.
-
 
 28. What are generators in Python?
 Generators are functions that return an iterable collection of items, one at a time, in a set manner. Generators, in general, are used to create iterators with a different approach. They employ the use of yield keyword rather than return to return a generator object.
@@ -2479,10 +2476,8 @@ Pickling is the conversion of python objects to binary form. Whereas, unpickling
 
 Python provides a pickle module for achieving this. Pickling uses the pickle.dump() method to dump python objects into disks. Unpickling uses the pickle.load() method to get back the data as python objects.
 
-
 76. Define GIL.
 GIL stands for Global Interpreter Lock. This is a mutex used for limiting access to python objects and aids in effective thread synchronization by avoiding deadlocks. GIL helps in achieving multitasking (and not parallel computing). The following diagram represents how GIL works.
-
 
 Based on the above diagram, there are three threads. First Thread acquires the GIL first and starts the I/O execution. When the I/O operations are done, thread 1 releases the acquired GIL which is then taken up by the second thread. The process repeats and the GIL are used by different threads alternatively until the threads have completed their execution. The threads not having the GIL lock goes into the waiting state and resumes execution only when it acquires the lock.
 
@@ -2520,7 +2515,7 @@ func(1)
 func(20,1,6)
 The * in the function argument represents variable arguments in the function.
 
-83. WAP (Write a program) which takes a sequence of numbers and check if all numbers are unique.
+83. Write a program which takes a sequence of numbers and check if all numbers are unique.
 You can do this by converting the list to set by using set() method and comparing the length of this set with the length of the original list. If found equal, return True.
 
 def check_distinct(data_list):

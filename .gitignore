@@ -4,6 +4,9 @@
 ##          github.com/github/gitignore/blob/main/Python.gitignore
 ##          github.com/github/gitignore/blob/main/Global/JetBrains.gitignore
 
+# Build html
+index.html
+
 ## Global
 
 # Private settings like passwords etc
