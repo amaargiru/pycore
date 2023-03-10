@@ -1,55 +1,36 @@
-Part I. Junior
+Junior
 
 Q: What is Python?
-
 Q: What is the lambda function in Python? Why does it exist in Python?
-
 Q: What is pass in Python?
-
 Q: What is *args, **kwargs in function definition?
 Q: What is docstring in Python? How to write them? Are they required?
-
 Q: What are the built-in data types that Python provides? Which of them are mutable, which are immutable?
-
 Q: What is the difference between list and tuple types in Python?
-
 Q: What keywords can be used in conjunction with the for keyword?
 Q: What could be the key in dict?
-
 Q: What's the difference between globals(), locals(), and vars()?
 Q: What is PEP8?
-
 Q: What is slicing in Python?
-
 Q: Is it possible to have a negative index in iterative types in Python?
-
 Q: What is the __init__.py module? What it's for?
-
+Как создается объект в Python, разница между __init__ и __new__?  
 Q: How can I swap values of variables in Python?
-
 Q: How do I view object methods?
-
 Q: How do you get documentation on objects' methods in Python?
-
 Q: What is a module in python? What is a package? What is the difference between packages and modules in Python?
-
 Q: Can you write multithreading applications in Python? What is the difference between multithreading and multiprocessing?
-
 Q: What is a decorator? How to create a custom decorator?
 Q: What is @classmethod, @staticmethod, @property?
-
 Q: What is the difference between @classmethod and @staticmethod?
-
 Q: Does Python fully support OOP?
-
 Q: What is the __dict__ attribute of an object in Python?
+Что такое класс, итератор, генератор?  
 Q: What the `self' keyword is used for in Python?
-
 Q: What is the __init__ function used for?
-
 Q: Explain how to make a Python script executable on Unix?
-
 Q: What is pickling and unpickling(marshaling and unmarshaling)?
+Разница между is и ==?  
 
 Code involving questions
 Q: Write a function that produces the Fibonacci sequence.
@@ -77,45 +58,45 @@ Q: Make a list of prime numbers from the range (1, 100) using Python.
 
 Q: Write a program that prints the numbers from 1 to 20. But for multiples of three print “Fizz” instead of the number and for the multiples of five print “Buzz”. For numbers that are multiples of both three and five print “FizzBuzz”.
 
-Part II. Middle
+Middle
 
+В чем разница между потоками и процессами?  
+Какие есть виды импорта?  
+
+В чем разница между итераторами и генераторами?  
+В чем разница между staticmethod и classmethod? 
+Как работает thread locals?  
+Что такое type annotation?  
+Как работать с stdlib?  
+Что такое дескрипторы?  
+
+Для чего зарезервировано ключевое слово yield?  
+В чем разница между __iter__ и __next__?
+Что такое проверка типов? Какие есть типы в Python?
+Как можно расширить зону видимости глобальных переменных на другие модули?
+Как создать класс без инструкции class?
+s
 Q: What is the output of -12 % 10?
 Q: What is the output of -12 // 10?
-
 Q: What is the sequence of call operators in the expression a * b * c?
-
 Q: Why shouldn't you make the default arguments an empty list?
 Q: What id() function in Python is for?
-
 Q: What is the yield keyword used for in Python?
-
 Q: What is an iterator in Python? Can you write an example?
-
 Q: What is a generator in Python? How are they different from iterators?
 Q: What is the difference between __iter__ and __next__?
-
 Q: How do you create a dictionary which can preserve the order of pairs?
 Q: What is a context manager? How are they different from try ... finally?
-
 Q: Which functions must be overridden in a class in order for its instances to implement the context manager protocol?
-
 Q: What is the synchronous code? What is asynchronous code? How to write asynchronous code?
-
 Q: What is unittest module in Python? How to write tests in Python?
-
 Q: What is type checking? Why Python is a strongly typed language? Do we have types in Python?
-
 Q: How can you copy an object in Python? How to make a deep copy?
-
 Q: How memory is managed in Python? Why garbage collector exists in Python?
-
 Q: How the garbage collector works in Python? Describe Python's garbage collection mechanism in brief.
-
 Q: How can you share global variables across modules? Is it a good idea to do that?
-
 Q: What is the __slots__ attribute used in a class for?
 Q: What are metaclasses in Python?
-
 Q: How to create a class without a class statement?
 
 Code involving questions
@@ -185,68 +166,41 @@ Q: What's the output of the following code?
 x = [[0], [1]]
 print(len(' '.join(list(map(str, x)))))
 
-Part III. Senior
+Senior
 
 Q: Python always called an easy language. Will you agree with it?
-
 Q: What are the pitfalls and problems of Python language?
-
 Q: Is it possible to use the construction True = False?
 Q: When will the else part of try...except...else be executed?
-
 Q: What is monkey patching? How to use it in Python? Example? Is it ever a good idea?
-
 Q: How are dict and set implemented internally? What is the complexity of retrieving an item? How much memory do these structures consume?
-
 Q: Does Python support multiple inheritance? How does it solve the diamond problem?
 Q: What is MRO in Python? How does it work?
-
 Q: Does Python has an assignment operator? How is the assignment process in Python different from C/C++?
 Q: What are descriptors? Is there a difference between a descriptor and a decorator?
-
 Q: How are arguments passed to function in Python — by value or by reference?
-
 Q: What tools help you find code smells in code or perform static code analysis? What else do you know/use to make your code maintainable and readable?
-
 Q: Whenever Python exits, why isn't all the memory de-allocated?
-
 Q: Is it possible to have a producer thread reading from the network and a consumer thread writing to a file, really work in parallel? What about GIL?
-
 Q: What is GIL? Why GIL still exists?
-
 Q: What is string interning? Why it Python have it?
-
 Q: Why Python doesn't have a tail recursion optimization? How to implement it?
-
 Q: What is the process of compilation and linking in Python?
-
 Q: How to distribute Python code?
 Q: How to package code in Python?
-
 Q: What is a package manager? What package managers do you know and which one do you recommend?
-
 Q: How to work with Python transitive dependencies?
-
 Q: What are the wheels and eggs? What is the difference?
 Q: How to package binary dependencies in Python?
-
 Q: What is Cython? What is IronPython? What is PyPy? Why do they still exist?
-
 Q: Explain how can you access a module written in Python from C? Vise versa?
-
 Q: What is __pycache__? What are .pyc files?
-
 Q: How to speed up existing Python code? How would you speed up your, say, web app?
 Q: How to isolate Python code? What are virtualenvs?
-
 Q: Is Python a functional language? Specify the requirements for code written in a functional paradigm.
-
 Q: Identify the pitfalls/limitations of the functional code.
-
 Q: What are .pth files?
-
 Q: What advantages do NumPy arrays offer over (nested) Python lists?
-
 Q: What does the PYTHONOPTIMIZE flag do?
 Q: You have a memory leak in the working production application on one of your company servers. How would you start debugging it?
 
@@ -317,30 +271,7 @@ Q: You saw the following piece of code. What is wrong with this code? Why is it 
 if __debug__:
     assert False, ("error")
 
-Разница между is и ==?  
-Как создается объект в Python, разница между __init __() и __new __()?  
-В чем разница между потоками и процессами?  
-Какие есть виды импорта?  
-Что такое класс, итератор, генератор?  
-В чем разница между итераторами и генераторами?  
-В чем разница между staticmethod и classmethod? 
-Как работает thread locals?  
-Что такое type annotation?  
-Что такое @property?  
-Как работать с stdlib?  
-Что такое дескрипторы?  
-Какой будет результат операции -12 % 10?  
-Какой будет результат операции -12 // 10?  
-Какая последовательность вызова операторов в выражении a * b * c?  
-Что делает функция id()?  
-Для чего зарезервировано ключевое слово yield?  
-В чем разница между __iter__ и __next__?
-Что такое проверка типов? Какие есть типы в Python?
 
-Как можно расширить зону видимости глобальных переменных на другие модули?
-Как создать класс без инструкции class?
-
-```text
 Почему def foo(bar=[]): плохо? Приведите пример плохого случая. Как исправить?
 Почему нельзя сделать пустой список аргументом по умолчанию?  
 
@@ -370,16 +301,10 @@ foo()
 [1]
 foo()
 [1]
-```
 
-
-
-Want to Upskill yourself to get ahead in your Career? Check out the Top Trending Technologies or join our masters in python programming course.
-Let us start by taking a look at some of the most frequently asked interview questions on Python.
 Q1. What is the difference between list and tuples in Python?
 Q2. What are the key features of Python?
 Q3. What type of language is python?
-Q4. How is Python an interpreted language?
 Q5. What is pep 8?
 Q6. How is memory managed in Python?
 Q7. What is name space in Python?
@@ -387,25 +312,6 @@ Q8. What is PYTHON PATH?
 Q9. What are python modules?
 Q10. What are local variables and global variables in Python?
 
-We have compiled a list of top Python interview questions which are classified into 7 sections, namely:
-Basic Interview Questions
-OOPS Interview Questions
-Basic Python Programs
-Python Libraries Interview Questions
-Web Scraping Interview Questions
-Data Analysis Interview Questions
-Multiple Choice Questions (MCQ)
-Before moving ahead, you may go through the recording of Python Interview Questions where our instructor has shared his experience and expertise that will help you to crack any Python Interview:
-Python Interview Questions And Answers 2023 | Python Training | Edureka
-
-
-If you have other doubts regarding Python or about this Python Interview Questions blog, feel free to post them in our QnA Forum. Our expert team will get back to you at the earliest.
-
- 
-
-Let us first begin with some Basic Python Interview Questions.
-
-Basic Python Interview Questions for Freshers
 Q1. What is the difference between list and tuples in Python?
 LIST vs TUPLES
 LIST	TUPLES
@@ -422,35 +328,9 @@ Python finds use in many spheres – web applications, automation, scientific mo
 Q3. What type of language is python? Programming or scripting?
 Ans: Python is capable of scripting, but in general sense, it is considered as a general-purpose programming language. To know more about Scripting, you can refer to the Python Scripting Tutorial.
 
-Q4.Python an interpreted language. Explain.
-Ans: An interpreted language is any programming language which is not in machine-level code before runtime. Therefore, Python is an interpreted language.
-
 Q5.What is pep 8?
 Ans: PEP stands for Python Enhancement Proposal. It is a set of rules that specify how to format Python code for maximum readability.
 
-Q6.What are the benefits of using Python?
-
-Ans: The benefits of using python are-
-
-Easy to use– Python is a high-level programming language that is easy to use, read, write and learn.
-Interpreted language– Since python is interpreted language, it executes the code line by line and stops if an error occurs in any line.
-Dynamically typed– the developer does not assign data types to variables at the time of coding. It automatically gets assigned during execution.
-Free and open-source– Python is free to use and distribute. It is open source.
-Extensive support for libraries– Python has vast libraries that contain almost any function needed. It also further provides the facility to import other packages using Python Package Manager(pip).
-Portable– Python programs can run on any platform without requiring any change.
-The data structures used in python are user friendly.
-It provides more functionality with less coding.
-Find out our Python Training in Top Cities/Countries
-
-India	USA	Other Cities/Countries
-Bangalore	New York	UK
-Hyderabad	Chicago	London
-Delhi	Atlanta	Canada
-Chennai	Houston	Toronto
-Mumbai	Los Angeles	Australia
-Pune	Boston	UAE
-Kolkata	Miami	Dubai
-Ahmedabad	San Francisco	Philippines
 Q7.What are Python namespaces?
 
 Ans: A namespace in python refers to the name which is assigned to each object in python. The objects are variables and functions. As each object is created, its name along with space(the address of the outer function in which the object is), gets created. The namespaces are maintained in python like a dictionary where the key is the namespace and value is the address of the object. There 4 types of namespace in python-
@@ -463,35 +343,7 @@ Q8.What are decorators in Python?
 
 Ans: Decorators are used to add some design patterns to a function without changing its structure. Decorators generally are defined before the function they are enhancing. To apply a decorator we first define the decorator function. Then we write the function it is applied to and simply add the decorator function above the function it has to be applied to. For this, we use the @ symbol before the decorator.
 
-ChatGPT Tutorial | ChatGPT Explained | What is ChatGPT ? | Edureka
 
-
-
-This 𝐂𝐡𝐚𝐭𝐆𝐏𝐓 𝐓𝐮𝐭𝐨𝐫𝐢𝐚𝐥 is intended as a Crash Course on 𝐂𝐡𝐚𝐭𝐆𝐏𝐓 for Beginners. 𝐂𝐡𝐚𝐭𝐆𝐏𝐓 has been growing in popularity exponentially. But, 𝐂𝐡𝐚𝐭𝐆𝐏𝐓 is still not known to many people. In this video, I aim to show you the different ways in which you can use 𝐂𝐡𝐚𝐭𝐆𝐏𝐓 for yourself. 𝐂𝐡𝐚𝐭𝐆𝐏𝐓 has been the buzzword for a while now. This yap lab was put on the throne 5 days after its release and has been changing the game ever since.
- 
-
-Q9.What are Dict and List comprehensions?
-
-Ans: Dictionary and list comprehensions are just another concise way to define dictionaries and lists.
-
-Example of list comprehension is-
-
-1
-x=[i for i in range(5)]
-The above code creates a list as below-
-
-1
-2
-4
-[0,1,2,3,4]
-Example of dictionary comprehension is-
-
-1
-x=[i : i+2 for i in range(5)]
-The above code creates a list as below-
-
-1
-[0: 2, 1: 3, 2: 4, 3: 5, 4: 6]
 Q10.What are the common built-in data types in Python?
 
 Ans: The common built-in data types in python are-
@@ -607,22 +459,12 @@ Python also has an inbuilt garbage collector, which recycles all the unused memo
 Q18. What is namespace in Python?
 Ans: A namespace is a naming system used to make sure that names are unique to avoid naming conflicts.
 
-Course Curriculum
-Data Science with Python Certification Course
 Q19. What is PYTHONPATH?
 Ans: It is an environment variable which is used when a module is imported. Whenever a module is imported, PYTHONPATH is also looked up to check for the presence of the imported modules in various directories. The interpreter uses it to determine which module to load.
 
 Q20. What are python modules? Name some commonly used built-in modules in Python?
 Ans: Python modules are files containing Python code. This code can either be functions classes or variables. A Python module is a .py file containing executable code.
 
-Some of the commonly used built-in modules are:
-
-os
-sys
-math
-random
-data time
-JSON
 Q21.What are local variables and global variables in Python?
 Global Variables:
 
@@ -678,50 +520,6 @@ str() – Used to convert integer into a string.
 
 complex(real,imag) – This function converts real numbers to complex(real,imag) number.
 
-Q24. How to install Python on Windows and set path variable?
-
-Ans: To install Python on Windows, follow the below steps:
-
-Install python from this link: https://www.python.org/downloads/
-After this, install it on your PC. Look for the location where PYTHON has been installed on your PC using the following command on your command prompt: cmd python. 
-Then go to advanced system settings and add a new variable and name it as PYTHON_NAME and paste the copied path.
-Look for the path variable, select its value and select ‘edit’.
-Add a semicolon towards the end of the value if it’s not present and then type %PYTHON_HOME% 
-Q25. Is indentation required in python?
-Ans: Indentation is necessary for Python. It specifies a block of code. All code within loops, classes, functions, etc is specified within an indented block. It is usually done using four space characters. If your code is not indented necessarily, it will not execute accurately and will throw errors as well.
-
-Q26. What is the difference between Python Arrays and lists?
-Ans: Arrays and lists, in Python, have the same way of storing data. But, arrays can hold only a single data type elements whereas lists can hold any data type elements.
-
-Example:
-
-1
-2
-3
-4
-5
-import array as arr
-My_Array=arr.array('i',[1,2,3,4])
-My_list=[1,'abc',1.20]
-print(My_Array)
-print(My_list)
-Output:
-
-array(‘i’, [1, 2, 3, 4]) [1, ‘abc’, 1.2]
-
-Q27. What are functions in Python?
-Ans: A function is a block of code which is executed only when it is called. To define a Python function, the def keyword is used.
-
-Example:
-
-1
-2
-3
-def Newfunc():
-print("Hi, Welcome to Edureka")
-Newfunc(); #calling the function
-Output: Hi, Welcome to Edureka
-
 Q28.What is __init__?
 Ans: __init__ is a method or constructor in Python. This method is automatically called to allocate memory when a new object/ instance of a class is created. All classes have the __init__ method.
 
@@ -760,36 +558,10 @@ XYZ
 Q29.What is a lambda function?
 Ans: An anonymous function is known as a lambda function. This function can have any number of parameters but, can have just one statement.
 
-Example:
-
-1
-2
-a = lambda x,y : x+y
-print(a(5, 6))
-Output: 11
-
-Q30. What is self in Python?
-Ans: Self is an instance or an object of a class. In Python, this is explicitly included as the first parameter. However, this is not the case in Java where it’s optional.  It helps to differentiate between the methods and attributes of a class with local variables.
-
-The self variable in the init method refers to the newly created object while in other methods, it refers to the object whose method was called.
-
 Q31. How does break, continue and pass work?
 Break	Allows loop termination when some condition is met and the control is transferred to the next statement.
 Continue	Allows skipping some part of a loop when some specific condition is met and the control is transferred to the beginning of the loop
 Pass	Used when you need some block of code syntactically, but you want to skip its execution. This is basically a null operation. Nothing happens when this is executed.
-Q32. What does [::-1} do?
-Ans: [::-1] is used to reverse the order of an array or a sequence.
-For example:
-1
-2
-3
-import array as arr
-My_Array=arr.array('i',[1,2,3,4,5])
-My_Array[::-1]
-Output: array(‘i’, [5, 4, 3, 2, 1])
-
-[::-1] reprints a reversed copy of ordered data structures such as an array or a list. the original array or list remains unchanged.
- 
 
 Q33. How can you randomize the items of a list in place in Python?
 Ans: Consider the example shown below:
@@ -864,29 +636,6 @@ Output: abcd
 
 Q42. How to comment multiple lines in python?
 Ans: Multi-line comments appear in more than one line. All the lines to be commented are to be prefixed by a #. You can also a very good shortcut method to comment multiple lines. All you need to do is hold the ctrl key and left click in every place wherever you want to include a # character and type a # just once. This will comment all the lines where you introduced your cursor.
-
-Q43.What are docstrings in Python?
-Ans: Docstrings are not actually comments, but, they are documentation strings. These docstrings are within triple quotes. They are not assigned to any variable and therefore, at times, serve the purpose of comments as well.
-
-Example:
-
-1
-2
-3
-4
-5
-6
-7
-8
-"""
-Using docstring as a comment.
-This code divides 2 numbers
-"""
-x=8
-y=4
-z=x/y
-print(z)
-Output: 2.0
 
 Q44. What is the purpose of ‘is’, ‘not’ and ‘in’ operators?
 Ans: Operators are special functions. They take one or more values and produce a corresponding result.
@@ -986,65 +735,9 @@ Complex numbers
 Strings
 Boolean
 Built-in functions
-Q56. What advantages do NumPy arrays offer over (nested) Python lists?
-Ans: 
-
-Python’s lists are efficient general-purpose containers. They support (fairly) efficient insertion, deletion, appending, and concatenation, and Python’s list comprehensions make them easy to construct and manipulate.
-They have certain limitations: they don’t support “vectorized” operations like elementwise addition and multiplication, and the fact that they can contain objects of differing types mean that Python must store type information for every element, and must execute type dispatching code when operating on each element.
-NumPy is not just more efficient; it is also more convenient. You get a lot of vector and matrix operations for free, which sometimes allow one to avoid unnecessary work. And they are also efficiently implemented.
-NumPy array is faster and You get a lot built in with NumPy, FFTs, convolutions, fast searching, basic statistics, linear algebra, histograms, etc. 
-Q57. How to add values to a python array?
-Ans: Elements can be added to an array using the append(), extend() and the insert (i,x) functions.
-
-Example:
-
-1
-2
-3
-4
-5
-6
-7
-a=arr.array('d', [1.1 , 2.1 ,3.1] )
-a.append(3.4)
-print(a)
-a.extend([4.5,6.3,6.8])
-print(a)
-a.insert(2,3.8)
-print(a)
-Output:
-
-array(‘d’, [1.1, 2.1, 3.1, 3.4])
-
-array(‘d’, [1.1, 2.1, 3.1, 3.4, 4.5, 6.3, 6.8])
-
-array(‘d’, [1.1, 2.1, 3.8, 3.1, 3.4, 4.5, 6.3, 6.8])
 
 Q58. How to remove values to a python array?
 Ans: Array elements can be removed using pop() or remove() method. The difference between these two functions is that the former returns the deleted value whereas the latter does not.
-
-Example:
-
-1
-2
-3
-4
-5
-a=arr.array('d', [1.1, 2.2, 3.8, 3.1, 3.7, 1.2, 4.6])
-print(a.pop())
-print(a.pop(3))
-a.remove(1.1)
-print(a)
-Output:
-
-4.6
-
-Course Curriculum
-Data Science with Python Certification Course
-Weekday / Weekend Batches
-3.1
-
-array(‘d’, [2.2, 3.8, 3.7, 1.2])
 
 Q59. Does Python have OOps concepts?
 Ans: Python is an object-oriented programming language. This means that any program can be solved in python by creating an object model. However, Python can be treated as a procedural as well as structural language.
@@ -1080,14 +773,6 @@ Python libraries are a collection of Python packages. Some of the majorly used p
 Q64. What is split used for?
 The split() method is used to separate a given String in Python.
 
-Example:
-
-1
-2
-a="edureka python"
-print(a.split())
-Output:  [‘edureka’, ‘python’]
-
 Q65. How to import modules in python?
 
 Modules can be imported using the import keyword.  You can import modules in three ways-
@@ -1101,10 +786,6 @@ import array           #importing using the original module name
 import array as arr    # importing using an alias name
 from array import *    #imports everything present in the array module
 Next, in this Python Interview Questions blog, let’s have a look at Object Oriented Concepts in Python.
-
-Here is the list of Top 10 Trending Technologies in 2023 that will be in demand!
-
-These Python Interview Questions and Answers will help you prepare for Python job interviews. Start your preparation by going through the most frequently asked questions on Python.
 
 OOPS Python Interview Questions
 Q66. Explain Inheritance in Python with an example.
@@ -1715,7 +1396,6 @@ Type-checking can be done at two stages -
 Static - Data Types are checked before execution.
 Dynamic - Data Types are checked during execution.
 Python is an interpreted language, executes each statement line by line and thus type-checking is done on the fly, during execution. Hence, Python is a Dynamically Typed Language.
-
 
 3. What is an Interpreted language?
 An Interpreted language executes its statements line by line. Languages such as Python, Javascript, R, PHP, and Ruby are prime examples of Interpreted languages. Programs written in an interpreted language runs directly from the source code, with no intermediary compilation step.
@@ -2939,5 +2619,3 @@ csv_link = "https://docs.google.com/spreadsheets/d/..."
 data_source = StringIO.StringIO(requests.get(csv_link).content))
 dataframe = pd.read_csv(data_source)
 print(dataframe.head())
-Conclusion:
-In this article, we have seen commonly asked interview questions for a python developer. These questions along with regular problem practice sessions will help you crack any python based interviews. Over the years, python has gained a lot of popularity amongst the developer’s community due to its simplicity and ability to support powerful computations. Due to this, the demand for good python developers is ever-growing. Nevertheless, to mention, the perks of being a python developer are really good. Along with theoretical knowledge in python, there is an emphasis on the ability to write good quality code as well. So, keep learning and keep practicing problems and without a doubt, you can crack any interviews.
