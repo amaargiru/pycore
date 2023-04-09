@@ -5,7 +5,7 @@
 ##          github.com/github/gitignore/blob/main/Global/JetBrains.gitignore
 
 # Build html
-index.html
+*.html
 
 ## Global
 
