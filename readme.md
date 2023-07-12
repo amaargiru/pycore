@@ -5345,8 +5345,14 @@ def fact(N, acc=1):
 
 ### Реляционная модель данных
 
-[Реляционная модель данных](https://en.wikipedia.org/wiki/Relational_model) (РМД) основана на математическом понятии отношение (relation), которое неформально можно толковать как "таблица". Соответственно, реляционную модель данных можно упрощенно воспринимать как "табличную модель данных", т. е. построенную на основе двумерных таблиц, состоящих из строк и столбцов.  
+[Реляционная модель данных](https://en.wikipedia.org/wiki/Relational_model) (РМД) основана на математическом понятии отношения (relation), которое неформально можно толковать как "таблица". Соответственно, реляционную модель данных можно упрощенно воспринимать как "табличную модель данных", т. е. построенную на основе двумерных таблиц, состоящих из строк и столбцов.
+
 Работая с реляционной БД, программисту не нужно заботиться о низкоуровневом доступе к данным, достаточно описать, *что* нужно получить, а *как* именно — описывать не нужно, эту работу берет на себя БД.
+
+Отсутствие низкоуровневого доступа — сильное ограничение, порождающее удобство использования БД (о плюсах ограничений мы поговорим чуть позже, в разделе «Архитектура»). Но это ограничение буквально «ломает мозг» программисту, не имевшему до этого дела с [декларативными](https://en.wikipedia.org/wiki/Declarative_programming) языками программирования.  
+Когда программист, работающий в императивной парадигме, пытается решить SQL-задачу, руки сами тянутся применить привычный набор инструментов. «Так, проходимся по таблице в цикле, отсеянные значения складываем во временную переменную», но — SQL предлагает совсем другой, непривычный набор инструментов: «Скажи, что ты хочешь, а о деталях я позабочусь сам».
+
+Если такое подход для вас непривычен, не отчаивайтесь; Джо Селко в своей книге «Thinking in Sets» сразу рекомендует готовиться к длительной перестройке процесса мышления: «Я ориентирую студентов на срок около года, полностью посвященного программированию на SQL, только тогда вас может посетить прозрение и вы начнете думать на языке SQL» («I have been telling students that you need about one year of full-time SQL programming before you have an epiphany and start thinking in SQL»). Так что потихоньку избавляйтесь от своего (продолжаю цитировать книгу Селко) «procedural programming mindset», который приводит к «overly complex and inefficient code», и «change the way you think about the problems you solve with SQL programs». Или, по простому, как советуют пользователи Stackoverflow в этом [топике](https://stackoverflow.com/questions/1119505/how-to-think-in-sql), «прекратите думать о построчной обработке, подумайте над решением задачи, основанном на работе с множествами».
 
 
 ### Транзакция
@@ -5431,11 +5437,6 @@ SQL - декларативный (описательный, непроцедур
 
 The key thing is you're manipulating SETS & elements of sets; and relating different sets (and corresponding elements) together. That's really the heart of it, imho. That's why every table should have a primary key; why you see set operators in the language; and why set operators like UNION won't (by defualt) return duplicate rows.  
 Of course in practice, the rules of sets are bent or broken but it's not that hard to see when this is necessary (otherwise, SQL would be TOO limited). Imho, just crack open your discrete math book and reacquaint yourself with some set exercises.
-
-Best advice I can give you is that every time you think about processing something row-by-row, that you stop and ask yourself if there is a set-based way to do this.
-
-Joe Celko's Thinking in Sets:
-I have been telling students that you need about one year of full-time SQL programming before you have an epiphany and start thinking in SQL.
 
 ### DDL
 
