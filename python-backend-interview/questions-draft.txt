@@ -1,23 +1,10 @@
 Вопросы для собеседования Python программиста, отсортированные по темам и отранжированные по вероятности появления:  
 
 Python
-   
-Что такое MRO  
-Разница между list и tuple, как в памяти хранятся списки и кортежи    
-Что такое магические методы и для чего они нужны  
-What is the \_\_dict__ attribute of an object in Python?
-В чем отличие списка от кортежа  
-Что относится к изменяемым типам данных и к неизменяемым  
-Что такое list comprehension  
-Что такое метаклассы  
-Is it possible to have a negative index in iterative types in Python?
-Что делает декоратор @property  
-В чем разница сравнения через is и через ==  
-Python компилируемый или интерпретируемый  
-Explain how to make a Python script executable on Linux?
+
 Что такое \_\_slots__  
 Что такое GIL  
-What is docstring in Python? How to write them? Are they required?
+Что такое docstring? Это обязательная конструкция?
 Что происходит в момент итерации по списку  
 Разница между одинарным и двойным подчеркиванием Python  
 Чем отличаются декораторы @classmethod и @staticmethod  
@@ -75,7 +62,6 @@ How do you get documentation on objects' methods in Python?
 Какие области видимости есть  
 Для чего нужно ключевое слово global  
 Какая область видимости над глобальной областью  
-С помощью чего можно сделать свой контекстный менеджер  
 Что такое многопоточность/многопроцессорность  
 Как можно отправить переменную в декоратор  
 Какие декораторы использовал  
@@ -89,7 +75,6 @@ How do you get documentation on objects' methods in Python?
 Как можно сделать копию словаря  
 Как можно скачать конкретную версию библиотеки через pip  
 Как устроен список  
-Как создать контекстный менеджер  
 Какие еще есть основные методы в Python, кроме магических  
 Пустой словарь определяется как True или False  
 В чем сходства и отличия dataclass и namedtuple  
@@ -168,10 +153,7 @@ How do you get documentation on objects' methods in Python?
 Как сделать package  
 Какие плюсы и минусы у Python для тебя  
 Какие неизменяемые типы данных знаешь  
-Почему стоит использовать менеджер контекста  
-Какие методы есть у итератора  
-Что должен содержать метод next для итерации  
-Какие объекты можно положить в множество  
+Какие объекты можно положить во множество  
 Что нужно положить в класс, чтобы он стал хешируемым  
 Как множества и словари реализованы внутри  
 Что будет если у двух элементов будет одинаковый хеш  
@@ -185,10 +167,8 @@ How do you get documentation on objects' methods in Python?
 Чем iterator отличается от iterable  
 Как поменять значения 2 переменных местами  
 Какие виды аргументов есть у функций  
-Что быстрее, списки или кортежи  
 Что такое хешируемые типы данных  
 Что такое хеш и как он используется в словарях  
-Приведи пример использования контекстного менеджера  
 Что значит динамически менять поведение функции  
 Как написать декоратор, чтобы он работал с параметрами  
 Что такое callable-объект  
@@ -304,7 +284,7 @@ Array
 Как итерировать словарь по парам ключ-значение  
 Какие знаешь итераторы  
 Как мы можем понять, что итератор это итератор  
-Разница между итератором и итерируемым объектом и генератором в Python  
+Разница между итератором, итерируемым объектом и генератором в Python  
 Что такое замыкание (closure)  
 Можно ли декорировать классы  
 Можно ли создать декоратор из класса  
@@ -374,11 +354,8 @@ pickle.dumps / pickle.dump, pickle.loads / pickle.load
 Что если в функции не будет return, будет ли она что-то возвращать  
 Как конвертировать список в строку  
 Почему мы используем enumerate() при итерации последовательности  
-What is the sequence of call operators in the expression a * b * c?  
-What is an iterator in Python? Can you write an example?  
-What is a generator in Python? How are they different from iterators?  
-How do you create a dictionary which can preserve the order of pairs?  
-What is a context manager? How are they different from try ... finally?  
+В какой последовательности вызываются операторы при вычислении выражения a * b * c?  
+Как создать словарь, который сохранит порядок вставляемых значений?  
 Which functions must be overridden in a class in order for its instances to implement the context manager protocol?  
 What is the synchronous code? What is asynchronous code? How to write asynchronous code?  
 What is unittest module in Python? How to write tests in Python?  
@@ -426,7 +403,7 @@ You have a memory leak in the working production application on one of your comp
 
 ООП
 
-Does Python fully support OOP?
+Python полностью поддерживает ООП?
 Что такое SOLID  
 Какие знаешь принципы ООП  
 Что такое полиморфизм  
