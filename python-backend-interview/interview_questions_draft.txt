@@ -61,10 +61,6 @@ MRO – сокращение от method resolution order. То есть это 
 проблемы множественного наследования классов. Для конструирования
 линеаризации класса в версиях Python с новым стилем классов используется
 алгоритм C3 линеаризации.
-12. Для чего в Python используются слоты?
-Магический атрибут __slots__ позволяет задать ограниченный набор атрибутов,
-которыми будет обладать экземпляр класса. За счет такого ограничения можно
-повысить скорость работы при доступе к атрибутам и сэкономить место в памяти.
 13. Что такое контекстные менеджеры? Где они применяются? Как
 создать свой контекстный менеджер? Что такое with в питоне?
 Данная инструкция обеспечивает исполнение кода очистки после исполнения
@@ -2748,11 +2744,6 @@ print(bool(re.match('[A-Za-z0-9]+$','xyz@123$'))) # Output: False
 Pickling is the conversion of Python objects to binary form. Whereas, unpickling is the conversion of binary form data to Python objects. The pickled objects are used for storing in disks or external memory locations. Unpickled objects are used for getting the data back as Python objects upon which processing can be done in Python.
 
 Python provides a pickle module for achieving this. Pickling uses the pickle.dump() method to dump Python objects into disks. Unpickling uses the pickle.load() method to get back the data as Python objects.
-
-76. Define GIL.
-GIL stands for Global Interpreter Lock. This is a mutex used for limiting access to Python objects and aids in effective thread synchronization by avoiding deadlocks. GIL helps in achieving multitasking (and not parallel computing). The following diagram represents how GIL works.
-
-Based on the above diagram, there are three threads. First Thread acquires the GIL first and starts the I/O execution. When the I/O operations are done, thread 1 releases the acquired GIL which is then taken up by the second thread. The process repeats and the GIL are used by different threads alternatively until the threads have completed their execution. The threads not having the GIL lock goes into the waiting state and resumes execution only when it acquires the lock.
 
 77. Define PythonPATH.
 It is an environment variable used for incorporating additional directories during the import of a module or a package. PythonPATH is used for checking if the imported packages or modules are available in the existing directories. Not just that, the interpreter uses this environment variable to identify which module needs to be loaded.
