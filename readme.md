@@ -3548,86 +3548,17 @@ gc.collect()
 
 На необходимость ручного вызова сборщика мусора есть разные точки зрения, но в целом такая процедура признаётся полезной ([обсуждение](https://stackoverflow.com/questions/1316767/how-can-i-explicitly-free-memory-in-python), смотрите оживлённые комментарии к первому ответу).
 
-Arguments
----------
-### Inside Function Call
- 
-<function>(<positional_args>)                  # f(0, 0)
-<function>(<keyword_args>)                     # f(x=0, y=0)
-<function>(<positional_args>, <keyword_args>)  # f(0, y=0)
-
-### Inside Function Definition
- 
-def f(<nondefault_args>):                      # def f(x, y):
-def f(<default_args>):                         # def f(x=0, y=0):
-def f(<nondefault_args>, <default_args>):      # def f(x, y=0):
- 
-A function has its default values evaluated when it's first encountered in the scope.
-Any changes to default values that are mutable will persist between invocations.
-
-Splat Operator
---------------
-### Inside Function Call
-Splat expands a collection into positional arguments, while splatty-splat expands a dictionary into keyword arguments.
- 
-args   = (1, 2)
-kwargs = {'x': 3, 'y': 4, 'z': 5}
-func(*args, **kwargs)
-
-#### Is the same as:
- 
-func(1, 2, x=3, y=4, z=5)
-
-### Inside Function Definition
-Splat combines zero or more positional arguments into a tuple, while splatty-splat combines zero or more keyword arguments into a dictionary.
- 
-def add(*a):
-    return sum(a)
-
->>> add(1, 2, 3)
-6
-
-#### Legal argument combinations:
- 
-def f(*, x, y, z):          # f(x=1, y=2, z=3)
-def f(x, *, y, z):          # f(x=1, y=2, z=3) | f(1, y=2, z=3)
-def f(x, y, *, z):          # f(x=1, y=2, z=3) | f(1, y=2, z=3) | f(1, 2, z=3)
-
-def f(*args):               # f(1, 2, 3)
-def f(x, *args):            # f(1, 2, 3)
-def f(*args, z):            # f(1, 2, z=3)
-
-def f(**kwargs):            # f(x=1, y=2, z=3)
-def f(x, **kwargs):         # f(x=1, y=2, z=3) | f(1, y=2, z=3)
-def f(*, x, **kwargs):      # f(x=1, y=2, z=3)
-
-def f(*args, **kwargs):     # f(x=1, y=2, z=3) | f(1, y=2, z=3) | f(1, 2, z=3) | f(1, 2, 3)
-def f(x, *args, **kwargs):  # f(x=1, y=2, z=3) | f(1, y=2, z=3) | f(1, 2, z=3) | f(1, 2, 3)
-def f(*args, y, **kwargs):  # f(x=1, y=2, z=3) | f(1, y=2, z=3)
-
-### Other Uses
- 
-<list>  = [*<collection> [, ...]]
-<set>   = {*<collection> [, ...]}
-<tuple> = (*<collection>, [...])
-<dict>  = {**<dict> [, ...]}
- 
-head, *body, tail = <collection>
-
-Как передаются значения аргументов в функцию или метод?
-Как передаются аргументы функций в Python (by value or reference)?  
-
 ### Lambda
  
-<func> = lambda: <return_value>
+<func> = lambda: <return_value>  
 <func> = lambda <arg_1>, <arg_2>: <return_value>
 
 ### Conditional Expression
 ```
 <obj> = <exp_if_true> if <condition> else <exp_if_false>
  
->>> [a if a else 'zero' for a in (0, 1, 2, 3)]
-['zero', 1, 2, 3]
+>>> [a if a else 'zero' for a in (0, 1, 2, 3)]  
+['zero', 1, 2, 3]  
 ```
 
 Closure
@@ -3952,6 +3883,76 @@ print(b)
 
     [1, 2, 3, 4, 5, 6]
     
+
+### Arguments
+
+### Inside Function Call
+ 
+<function>(<positional_args>)                  # f(0, 0)  
+<function>(<keyword_args>)                     # f(x=0, y=0)  
+<function>(<positional_args>, <keyword_args>)  # f(0, y=0)  
+
+### Inside Function Definition
+ 
+def f(<nondefault_args>):                      # def f(x, y):  
+def f(<default_args>):                         # def f(x=0, y=0):  
+def f(<nondefault_args>, <default_args>):      # def f(x, y=0):  
+ 
+A function has its default values evaluated when it's first encountered in the scope.  
+Any changes to default values that are mutable will persist between invocations.
+
+### Splat Operator
+
+### Inside Function Call
+Splat expands a collection into positional arguments, while splatty-splat expands a dictionary into keyword arguments.
+ 
+args   = (1, 2)  
+kwargs = {'x': 3, 'y': 4, 'z': 5}  
+func(*args, **kwargs)  
+
+#### Is the same as:
+ 
+func(1, 2, x=3, y=4, z=5)
+
+### Inside Function Definition
+
+Splat combines zero or more positional arguments into a tuple, while splatty-splat combines zero or more keyword arguments into a dictionary.
+ 
+def add(*a):  
+    return sum(a)
+
+>>> add(1, 2, 3)  
+6
+
+#### Legal argument combinations:
+ 
+def f(*, x, y, z):          # f(x=1, y=2, z=3)  
+def f(x, *, y, z):          # f(x=1, y=2, z=3) | f(1, y=2, z=3)  
+def f(x, y, *, z):          # f(x=1, y=2, z=3) | f(1, y=2, z=3) | f(1, 2, z=3)
+
+def f(*args):               # f(1, 2, 3)  
+def f(x, *args):            # f(1, 2, 3)  
+def f(*args, z):            # f(1, 2, z=3)
+
+def f(**kwargs):            # f(x=1, y=2, z=3)  
+def f(x, **kwargs):         # f(x=1, y=2, z=3) | f(1, y=2, z=3)  
+def f(*, x, **kwargs):      # f(x=1, y=2, z=3)
+
+def f(*args, **kwargs):     # f(x=1, y=2, z=3) | f(1, y=2, z=3) | f(1, 2, z=3) | f(1, 2, 3)  
+def f(x, *args, **kwargs):  # f(x=1, y=2, z=3) | f(1, y=2, z=3) | f(1, 2, z=3) | f(1, 2, 3)  
+def f(*args, y, **kwargs):  # f(x=1, y=2, z=3) | f(1, y=2, z=3)
+
+### Other Uses
+ 
+<list>  = [*<collection> [, ...]]  
+<set>   = {*<collection> [, ...]}  
+<tuple> = (*<collection>, [...])  
+<dict>  = {**<dict> [, ...]}
+ 
+head, *body, tail = <collection>
+
+Как передаются значения аргументов в функцию или метод?  
+Как передаются аргументы функций в Python (by value or reference)?  
 
 ### Лямбда-функция
 
@@ -4297,7 +4298,7 @@ print(f'Total duration: {duration} seconds')
 
     Sum: 499999500000
     Product: 620448401733239439360000
-    Total duration: 1.0792618000414222 seconds
+    Total duration: 1.0424554999917746 seconds
     
 
 Пример запуска на исполнение двух асинхронных периодических задач:
@@ -4845,49 +4846,55 @@ def test_fixture(my_fixture):
 
 ![Algorithms](https://raw.githubusercontent.com/amaargiru/pycore/main/pics/08_Algorithms.png)  
 
-FizzBuzz  
-Массивы (Array)  
-- Sliding window  
-- Two pointers  
-- Traversing from the right  
-- Precomputation
-- Index as a hash key
-- Traversing the array more than once
-Строки (String)  
-- Common string algorithms:
-Rabin Karp for efficient searching of substring using a rolling hash
-KMP for efficient searching of substring
+FizzBuzz
+
+Массивы (Array):  
+• Sliding window  
+• Two pointers  
+• Traversing from the right  
+• Precomputation  
+• Index as a hash key  
+• Traversing the array more than once
+
+Строки (String):  
+• Common string algorithms:  
+• • Rabin Karp for efficient searching of substring using a rolling hash  
+• • KMP for efficient searching of substring
 
 Матрицы (двумерные массивы) (Matrix)
-Связные списки (Linked List)  
-- Sentinel/dummy nodes  
-- Two pointers  
-- Using space  
-- Elegant modification operations
 
-Деревья и графы  
-- Бинарные деревья (binary tree)  
-- Бинарные деревья поиска (BST) 
-- - Use recursion
-- - Traversing by level
-- - Summation of nodes 
-- Графы  
--- BFS  
--- DFS  
--- Дейкстра  
--- Флойд-Warshall  
--- Topological sorting
-- Heap  
--- Mention of k
-- Trie  
--- Sometimes preprocessing a dictionary of words (given in a list) into a trie, will improve the efficiency of searching for a word of length k, among n words. Searching becomes O(k) instead of O(n).
+Связные списки (Linked List):  
+• Sentinel/dummy nodes  
+• Two pointers  
+• Using space  
+• Elegant modification operations
+
+Деревья и графы:  
+• Бинарные деревья (binary tree)  
+• Бинарные деревья поиска (BST):  
+• • Use recursion  
+• • Traversing by level  
+• • Summation of nodes  
+• Графы:  
+• • BFS  
+• • DFS  
+• Дейкстра  
+• • Флойд-Warshall  
+• • Topological sorting  
+• Heap  
+• • Mention of k  
+• Trie  
+• • Sometimes preprocessing a dictionary of words (given in a list) into a trie, will improve the efficiency of searching for a word of length k, among n words. Searching becomes O(k) instead of O(n).  
+
 Binary search  
-Сортировка  
-- Пузырьковая  
-- Выбором  
-- Вставками  
-- Быстрая  
-- Слиянием  
+
+Сортировка:  
+• Пузырьковая  
+• Выбором  
+• Вставками  
+• Быстрая  
+• Слиянием  
+
 Hash Table  
 Stack  
 Queue  
