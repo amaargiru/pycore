@@ -1,0 +1,38 @@
+{
+	"nodes":[
+		{"id":"9de407d0eefcdf9d","type":"group","x":-260,"y":-460,"width":1420,"height":820,"label":"Net"},
+		{"id":"95964f1df4df2cc5","type":"group","x":520,"y":-420,"width":260,"height":740,"label":"API"},
+		{"id":"1088c5bd8951a619","type":"group","x":820,"y":-250,"width":300,"height":400,"label":"Frameworks"},
+		{"id":"39ab13da0021c301","type":"group","x":-220,"y":-180,"width":260,"height":260,"label":"HTTP"},
+		{"id":"1cc33be44507fbfd","type":"text","text":"websocket","x":300,"y":-80,"width":180,"height":60,"color":"4"},
+		{"id":"3ed49dfe9bc7a060","type":"text","text":"requests","x":80,"y":-80,"width":180,"height":60,"color":"4"},
+		{"id":"5204ad8bee0fd1df","type":"text","text":"HTTPS","x":-180,"y":-140,"width":180,"height":60,"color":"4"},
+		{"id":"02347f8ef353e505","type":"text","text":"CORS","x":-180,"y":-20,"width":180,"height":60,"color":"3"},
+		{"id":"f2c015c18e58c92d","type":"text","text":"Postman","x":560,"y":-280,"width":180,"height":60,"color":"4"},
+		{"id":"672a560f163a1a81","type":"text","text":"Authentication","x":560,"y":-180,"width":180,"height":60,"color":"3"},
+		{"id":"c8e74d2e34340b0f","type":"text","text":"JWT tokens","x":560,"y":-80,"width":180,"height":60,"color":"3"},
+		{"id":"4548a27d3545d66e","type":"text","text":"Swagger","x":560,"y":20,"width":180,"height":60,"color":"3"},
+		{"id":"0bf60bb864faa507","type":"text","text":"FastAPI","x":560,"y":120,"width":180,"height":60,"color":"1"},
+		{"id":"2a7751daac1aa3cb","type":"text","text":"GraphQL","x":560,"y":220,"width":180,"height":60,"color":"1"},
+		{"id":"7adf3d7f465224ef","type":"text","text":"REST","x":560,"y":-380,"width":180,"height":60,"color":"4"},
+		{"id":"270da04cab9e9dd9","type":"text","text":"Flask","x":860,"y":-190,"width":180,"height":60,"color":"1"},
+		{"id":"d16fadcf04f57e9a","type":"text","text":"aiohttp","x":860,"y":-50,"width":180,"height":60,"color":"3"},
+		{"id":"c117e7e60085ee7a","type":"text","text":"Django","x":860,"y":50,"width":180,"height":60,"color":"1"},
+		{"id":"867b00db4e6ed37a","type":"text","text":"Jinja","x":950,"y":-150,"width":130,"height":60,"color":"3"}
+	],
+	"edges":[
+		{"id":"2b499caf5c92d119","fromNode":"5204ad8bee0fd1df","fromSide":"bottom","toNode":"02347f8ef353e505","toSide":"top","color":"6"},
+		{"id":"04d86c906e14ee2f","fromNode":"02347f8ef353e505","fromSide":"right","toNode":"3ed49dfe9bc7a060","toSide":"left","color":"6"},
+		{"id":"a19b1137532b2fee","fromNode":"3ed49dfe9bc7a060","fromSide":"right","toNode":"1cc33be44507fbfd","toSide":"left","color":"6"},
+		{"id":"36b5585950b22428","fromNode":"d16fadcf04f57e9a","fromSide":"bottom","toNode":"c117e7e60085ee7a","toSide":"top","color":"6"},
+		{"id":"641876d7b7473c6d","fromNode":"7adf3d7f465224ef","fromSide":"bottom","toNode":"f2c015c18e58c92d","toSide":"top","color":"6"},
+		{"id":"b802f817ed00f8c2","fromNode":"f2c015c18e58c92d","fromSide":"bottom","toNode":"672a560f163a1a81","toSide":"top","color":"6"},
+		{"id":"2597f67d907a5235","fromNode":"672a560f163a1a81","fromSide":"bottom","toNode":"c8e74d2e34340b0f","toSide":"top","color":"6"},
+		{"id":"0911861479c14516","fromNode":"c8e74d2e34340b0f","fromSide":"bottom","toNode":"4548a27d3545d66e","toSide":"top","color":"6"},
+		{"id":"80557abc54657b17","fromNode":"4548a27d3545d66e","fromSide":"bottom","toNode":"0bf60bb864faa507","toSide":"top","color":"6"},
+		{"id":"a48848441f4796a0","fromNode":"0bf60bb864faa507","fromSide":"bottom","toNode":"2a7751daac1aa3cb","toSide":"top","color":"6"},
+		{"id":"9d73a6449b416428","fromNode":"867b00db4e6ed37a","fromSide":"bottom","toNode":"d16fadcf04f57e9a","toSide":"top","color":"6"},
+		{"id":"a88e098ac5b11f14","fromNode":"1cc33be44507fbfd","fromSide":"right","toNode":"7adf3d7f465224ef","toSide":"left","color":"6"},
+		{"id":"e94a9fe92afb3a34","fromNode":"2a7751daac1aa3cb","fromSide":"right","toNode":"270da04cab9e9dd9","toSide":"left","color":"6"}
+	]
+}
