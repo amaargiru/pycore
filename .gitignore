@@ -725,3 +725,6 @@ cmake-build-*/
 
 # Android studio 3.1+ serialized cache file
 .idea/caches/build_file_checksums.ser
+pycore-pics.md
+pycore.md
+python-backend-interview.md
