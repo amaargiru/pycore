@@ -1,6 +1,6 @@
 {
 	"nodes":[
-		{"id":"9de407d0eefcdf9d","type":"group","x":-560,"y":-260,"width":3120,"height":840,"label":"Data Flows"},
+		{"id":"9de407d0eefcdf9d","type":"group","x":-560,"y":-260,"width":3120,"height":840,"label":"Data flows"},
 		{"id":"074366cf26e1d394","type":"group","x":-520,"y":-200,"width":1060,"height":740,"label":"itertools"},
 		{"id":"36dcee522832e33f","type":"group","x":580,"y":-200,"width":300,"height":740,"label":"more-itertools"},
 		{"id":"3fac051100ae7f04","type":"group","x":1840,"y":-200,"width":320,"height":640,"label":"functools 2"},
@@ -22,7 +22,7 @@
 		{"id":"41e2160821321175","type":"text","text":"compress","x":-140,"y":100,"width":180,"height":60,"color":"4"},
 		{"id":"2729363cc4dec867","type":"text","text":"dropwhile","x":-140,"y":200,"width":180,"height":60,"color":"4"},
 		{"id":"ec9ee00e05188908","type":"text","text":"takewhile","x":-140,"y":300,"width":180,"height":60,"color":"4"},
-		{"id":"79dbf48793ab098e","type":"text","text":"Iterator chains","x":1180,"y":140,"width":220,"height":60,"color":"1"},
+		{"id":"79dbf48793ab098e","type":"text","text":"Generator chains","x":1180,"y":140,"width":220,"height":60,"color":"1"},
 		{"id":"a40bf9494d00347a","type":"text","text":"combinations","x":160,"y":0,"width":300,"height":60,"color":"4"},
 		{"id":"ce222a64ea0d3ad2","type":"text","text":"permutations","x":160,"y":100,"width":300,"height":60,"color":"3"},
 		{"id":"bac0694a86e1cbd3","type":"text","text":"combinations_with_replacement","x":160,"y":200,"width":300,"height":60,"color":"3"},
