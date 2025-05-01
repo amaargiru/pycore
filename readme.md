@@ -40,11 +40,11 @@
 
 ![Data structures](https://raw.githubusercontent.com/amaargiru/pycore/main/pics/01_Data_Structures.png)  
 
-Как известно, программирование = структуры данных + алгоритмы (у Никлауса Вирта даже [книжка](https://en.wikipedia.org/wiki/Algorithms_%2B_Data_Structures_%3D_Programs) такая есть). Начнем с данных, а потом плавненько перейдем к методам их обработки.
+Как известно, программирование = структуры данных + алгоритмы (у Никлауса Вирта даже [книга](https://en.wikipedia.org/wiki/Algorithms_%2B_Data_Structures_%3D_Programs) такая есть). Начнем с данных, а потом плавненько перейдем к методам их обработки.
 
 ### Список (list)
 
-Список — самая универсальная и популярная структура данных в Python. Если вы пока точно не определились, какая структура понадобится в вашем проекте, просто возьмите список, с него достаточно просто мигрировать на что-нибудь более специализированное.
+Список — самая универсальная и популярная структура данных в Python. Если вы пока точно не определились, какая структура понадобится в вашем проекте, просто возьмите список, с него относительно просто мигрировать на что-нибудь более специализированное.
 
 Список представляет собой упорядоченную изменяемую коллекцию объектов произвольного типа. [Внутреннее строение](https://github.com/python/cpython/blob/main/Objects/listobject.c) списка — [динамический массив](https://en.wikipedia.org/wiki/Dynamic_array) указателей, т. е. внутри списки хранят не сами объекты, а ссылки на них, что позволяет им содержать элементы разных типов.
 
@@ -68,7 +68,17 @@ print(f"Reverse: {a}, {b}")
 b = sorted(a)  # Возвращает новый отсортированный список
 a.sort()  # Модифицирует исходный список и не возвращает ничего
 print(f"Sort: {a}, {b}")
+a.clear()  # Очистка списка
+```
 
+    [10, 20, 50] [30, 40, 60]
+    Add: [10, 20, 50, 30, 40, 60]
+    Reverse: [60, 40, 30, 50, 20, 10], [10, 20, 50, 30, 40, 60]
+    Sort: [10, 20, 30, 40, 50, 60], [10, 20, 30, 40, 50, 60]
+    
+
+
+```python
 s: str = "A whole string"
 list_of_chars: list = list(s)
 print(list_of_chars)
@@ -80,606 +90,17 @@ print(i)
 list_of_chars.remove("w")  # Удаляет первое вхождение искомого элемента или вызывает исключение ValueError
 e = list_of_chars.pop(9)  # Удаляет и возвращает значение, расположенное по индексу. pop() (без аргумента) удалит и вернет последний элемент списка
 print(list_of_chars, e)
-a.clear()  # Очистка списка
 ```
 
-    [10, 20, 50] [30, 40, 60]
-    Add: [10, 20, 50, 30, 40, 60]
-    Reverse: [60, 40, 30, 50, 20, 10], [10, 20, 50, 30, 40, 60]
-    Sort: [10, 20, 30, 40, 50, 60], [10, 20, 30, 40, 50, 60]
     ['A', ' ', 'w', 'h', 'o', 'l', 'e', ' ', 's', 't', 'r', 'i', 'n', 'g']
     ['A', 'whole', 'string']
     2
     ['A', ' ', 'h', 'o', 'l', 'e', ' ', 's', 't', 'i', 'n', 'g'] r
     
 
-> __Что может быть ключом в словаре?__
->
-> Ключом словаря может быть любой неизменяемый объект — число, строка, datetime или даже функция, т. е., объекты, имеющие метод \_\_hash__, который однозначно сопоставляет объект с некоторым числом.
-
 > __Можно ли применять отрицательный индекс при работе с итеративными типами?__
 >
 > Да, можно. Отрицательный индекс позволяет вести отсчёт от конца структуры данных, например, массива или списка. Финт несколько неоднозначный, может привести к ошибкам, которые будет непросто найти, поэтому, например, в Golang подобный выверт [запретили](https://groups.google.com/g/golang-nuts/c/yn9Q6HhgWi0/m/oqb5s4cL70EJ).
-
-### Кортеж (tuple)  
-Кортеж — тоже список, только неизменяемый (immutable) и хэшируемый (hashable). Кортеж, содержащий те же данные, что и список, занимает меньше места и быстрее работает ([разъяснение](https://stackoverflow.com/questions/68630/are-tuples-more-efficient-than-lists-in-python)):
-
-
-```python
-a = [2, 3, "Boson", "Higgs", 1.56e-22]
-b = (2, 3, "Boson", "Higgs", 1.56e-22)
-
-print(f"List: {a.__sizeof__()} bytes")
-print(f"Tuple: {b.__sizeof__()} bytes")
-```
-
-    List: 104 bytes
-    Tuple: 64 bytes
-    
-
-### Именованный кортеж (named tuple)
-В полном соответствии с названием, имеет именованные поля. Удобно!
-
-
-```python
-from collections import namedtuple
-
-rectangle = namedtuple('rectangle', 'length width')
-r = rectangle(length = 1, width = 2)
-
-print(r)
-print(r.length)
-print(r.width)
-print(r._fields)
-```
-
-    rectangle(length=1, width=2)
-    1
-    2
-    ('length', 'width')
-    
-
-> __Какая разница между списком и кортежем? Как в памяти хранятся списки и кортежи?__
->
->Список — изменяемая коллекция объектов произвольных типов. Внутреннее строение списка — динамический массив указателей.
->
-> Кортеж — тоже список, только неизменяемый. Кортеж, содержащий те же данные, что и список, занимает меньше места.
-
-### Словарь (dict)
-
-Словарь — вторая после списка по частоте использования структура данных в Python. Словарь — реализация хеш-таблицы, поэтому в качестве ключа нельзя брать нехэшируемый объект, например, список (тут-то нам и может пригодиться кортеж). Ключом словаря может быть любой неизменяемый объект: число, строка, datetime и даже функция. Такие объекты имеют метод **\_\_hash__()**, который однозначно сопоставляет объект с некоторым числом. По этому числу словарь ищет значение для ключа.
-
-Списки, словари и множества (которые мы рассмотрим чуть ниже) изменяемы и не имеют метода хеширования, при попытке подставить их в словарь возникнет ошибка.
-
-
-```python
-d = {}  # Создаем пустой словарь
-
-d: dict[str, str] = {"Italy": "Pizza", "US": "Hot-Dog", "China": "Dim Sum"}  # Непосредственное создание словаря
-
-k = ["Italy", "US", "China"]
-v = ["Pizza", "Hot-Dog", "Dim Sum"]
-d = dict(zip(k, v))  # Создание словаря из двух коллекций при помощи zip
-
-k = d.keys()  # Коллекция ключей. Отражает изменения в основном словаре
-v = d.values()  # Коллекция значений. Тоже отражает изменения в основном словаре
-k_v = d.items()  # Кортежи ключ-значение, которые тоже отражают изменения в основном словаре
-
-print(d)
-print(k)
-print(v)
-print(k_v)
-
-print(f"Mapping: {k.mapping['Italy']}")
-
-d.update({"China": "Dumplings"})  # Добавление значение. При совпадении ключа старое значение будет перезаписано
-print(f"Replace item: {d}")
-
-c = d["China"]  # Читаем значение
-print(f"Read item: {c}")
-
-try:
-    v = d.pop("Spain")  # Удаляет значение или вызывает исключение KeyError
-except KeyError:
-    print("Dictionary key doesn't exist")
-
-# Примеры dict comprehension (более подробно comprehension будет рассмотрено позже)
-b = {k: v for k, v in d.items() if "a" in k}  # Вернет новый словарь, отфильтрованный по значению ключа
-print(b)
-
-c = {k: v for k, v in d.items() if len(v) >= 7}  # Вернет новый словарь, отфильтрованный по длине значений
-print(c)
-
-d.clear() # Очистка словаря
-```
-
-    {'Italy': 'Pizza', 'US': 'Hot-Dog', 'China': 'Dim Sum'}
-    dict_keys(['Italy', 'US', 'China'])
-    dict_values(['Pizza', 'Hot-Dog', 'Dim Sum'])
-    dict_items([('Italy', 'Pizza'), ('US', 'Hot-Dog'), ('China', 'Dim Sum')])
-    Mapping: Pizza
-    Replace item: {'Italy': 'Pizza', 'US': 'Hot-Dog', 'China': 'Dumplings'}
-    Read item: Dumplings
-    Dictionary key doesn't exist
-    {'Italy': 'Pizza', 'China': 'Dumplings'}
-    {'US': 'Hot-Dog', 'China': 'Dumplings'}
-    
-
-### Решение проблемы вычисления хеша при работе со словарем
-
-Любая хеш-таблица, в том числе и питоновский словарь, должна уметь решать проблему вычисления хеша. Для этого используются техники **open addressing** или **chaining**. Python [использует](https://stackoverflow.com/questions/9010222/why-can-a-python-dict-have-multiple-keys-with-the-same-hash) open addressing.
-
-Новый словарь инициализируется с 8 пустыми слотами.
-
-Интерпретатор сначала пытается добавить новую запись по адресу, зависящему от хеша ключа.
-
-```python
-addr = hash(key) & mask,
-```
-где
-```python
-mask = PyDictMINSIZE - 1
-```
-
-Если этот адрес занят, то интерпретатор проверяет (при помощи ==) хеш и ключ. Если оба совпадают, то, значит, запись уже существует. Тогда начинается зондирование свободных слотов, которое идет в псевдослучайном порядке (порядок зависит от значения ключа). Новая запись будет добавлена по первому свободному адресу.
-
-Чтение из словаря происходит аналогично, интерпретатор начинает поиск с позиции addr и идет по тому же псевдослучайному пути, пока не прочитает нужную запись.
-
-### Defaultdict
-
-Если попытаться прочитать из обычного словаря значение ключа, которого там нет, то будет выброшено _исключение_ KeyError (исключения будут рассмотрены ниже). Defaultdict позволяет не писать обработчик исключений, а просто воспринимает чтение несуществующего ключа как команду записать в этот ключ и вернуть значение по умолчанию; например, defaultdict(int) вернет 0, потому что значение по умолчанию для типа int равно 0.
-
-
-```python
-from collections import defaultdict
-
-dd = defaultdict(int)
-print(dd[10])  # Печать int, будет выведен ноль, значение по умолчанию
-
-dd = {}  # "Обычный" пустой словарь
-# print(dd[10])  # Вызовет исключение KeyError
-```
-
-    0
-    
-
-### Счетчик (counter)
-
-Счетчик подсчитывает передаваемые ему объекты. Иногда очень удобно просто бухнуть в счетчик какой-нибудь список и сразу получить структуру данных с подсчитанными элементами.
-
-
-```python
-from collections import Counter
-
-shirts_colors = ["red", "white", "blue", "white", "white", "black", "black"]
-c = Counter(shirts_colors)
-print(c)
-
-c["blue"] += 1
-print(f"After shopping: {c}")
-
-```
-
-    Counter({'white': 3, 'black': 2, 'red': 1, 'blue': 1})
-    After shopping: Counter({'white': 3, 'blue': 2, 'black': 2, 'red': 1})
-    
-
-Объяснение работы Counter() при помощи defaultdict():
-
-
-```python
-from collections import defaultdict
-
-shirts_colors = ["red", "white", "blue", "white", "white", "black", "black"]
-
-d = defaultdict(int)
-for shirt in shirts_colors:
-    d[shirt] += 1
-
-print(d)
-```
-
-    defaultdict(<class 'int'>, {'red': 1, 'white': 3, 'blue': 1, 'black': 2})
-    
-
-### Множество (set)
-
-Третья по распространенности питоновская структура данных. Когда-то, когда Python был молод, множества представляли собой несколько редуцированные словари, но со временем их судьбы (и реализации) стали расходиться. Однако, множество всё-таки является хеш-таблицей с соответствующим быстродействием на разных типах операций.
-
-Множество, в отличие от, например, list, не поддерживает повторяющиеся элементы.
-
-
-```python
-big_cities: set["str"] = {"New-York", "Los Angeles", "Ottawa"}
-american_cities: set["str"] = {"Chicago", "New-York", "Los Angeles"}
-
-big_cities |= {"Sydney"}  # Добавить значение (или add())
-american_cities |= {"Salt Lake City", "Seattle"}  # Сложить множества (или update())
-
-print(big_cities, american_cities)
-
-union_cities: set["str"] = big_cities | american_cities  # Или union()
-intersected_cities: set["str"] = big_cities & american_cities  # Или intersection()
-dif_cities: set["str"] = big_cities - american_cities  # Или difference()
-symdif_cities: set["str"] = big_cities ^ american_cities  # Или symmetric_difference()
-
-issub: bool = big_cities <= union_cities  # Или issubset()
-issuper: bool = american_cities >= dif_cities  # Или issuperset()
-
-print(union_cities)
-print(intersected_cities)
-print(dif_cities)
-print(symdif_cities)
-
-print(issub, issuper)
-
-big_cities.add("London")
-
-big_cities.remove("Ottawa")  # Удаляет значение, если оно имеется или выбрасывает KeyError
-big_cities.discard("Los Angeles")  # Удаляет значение без выбрасывания KeyError
-big_cities.pop()  # Возвращает и удаляет случайное значение (порядок в set не определен) или выбрасывает KeyError
-big_cities.clear()  # Очищает множество
-```
-
-    {'New-York', 'Los Angeles', 'Sydney', 'Ottawa'} {'New-York', 'Seattle', 'Chicago', 'Los Angeles', 'Salt Lake City'}
-    {'Ottawa', 'Salt Lake City', 'Chicago', 'New-York', 'Seattle', 'Sydney', 'Los Angeles'}
-    {'New-York', 'Los Angeles'}
-    {'Ottawa', 'Sydney'}
-    {'Seattle', 'Ottawa', 'Chicago', 'Salt Lake City', 'Sydney'}
-    True False
-    
-
-### Иммутабельное множество (frozen set)
-
-Frozen set — тоже множество, только иммутабельное и хэшируемое. Напоминает разницу между списком и кортежем, не правда ли?
-
-
-```python
-a = frozenset({"New-York", "Los Angeles", "Ottawa"})
-```
-
-### Массив (array, bytes, bytearray)
-
-Я перешел на Python с языков, более приближенных к «железу» (C, C#, даже на ассемблере когда-то писал) и сначала немного удивлялся, что обычный массив, в котором всё так удобно лежит на своих местах, используется относительно редко. Массив в Python не является структурой данных, выбираемой по умолчанию и используется только в случаях, когда решающую роль начинают играть размер структуры и скорость её обработки. Но, с другой стороны, если вы смотрите в сторону NumPy и Pandas (немного затронуты ниже), то массивы — ваше всё.
-
-Массив хранит переменные только определенного типа, поэтому, в отличие от списка, не требует создания нового объекта для каждой новой переменной и выигрывает у списка в размерах и скорости доступа. Можно сказать, что это тонкая обёртка над Си-массивами.
-
-Следует различать array («просто» массив), bytes (иммутабельный массив, содержащий только байты, наследие str из Python 2) и bytearray (мутабельный байтовый массив).
-
-
-```python
-from array import array
-
-a1 = array("l", [1, 2, 3, -4])
-a2 = array("b", b"1234567890")
-b = bytes(a2)
-
-print(a1)
-print(a2[0])
-print(b)
-
-print(a1.index(-4))  # Возвращает индекс элементы или выбрасывает ValueError
-```
-
-    array('l', [1, 2, 3, -4])
-    49
-    b'1234567890'
-    3
-    
-
-
-```python
-# Создание иммутабельного массива
-
-b1 = bytes([1, 2, 3, 4])  # Целые числа должны быть в диапазоне от 0 to 255
-b2 = "The String".encode('utf-8')
-b3 = (-1024).to_bytes(4, byteorder='big', signed=True)  # byteorder = "big"/"little"/"sys.byteorder", signed = False/True
-b4 = bytes.fromhex('FEADCA')  # Для большей читаемости hex-значения могут быть разделены пробелами
-b5 = bytes(range(10,30,2))
-
-print(b1, b2, b3, b4, b5)
-
-# Преобразование
-
-c: list = list(b"\xfc\x00\x00\x00\x00\x01")
-s: str = b'The String'.decode("utf-8")
-b: int = int.from_bytes(b"\xfc\x00", byteorder='big', signed=False)  # byteorder = "big"/"little"/"sys.byteorder", signed = False/True
-s2: str = b"\xfc\x00\x00\x00\x00\x01".hex(" ")
-
-print(c, s, b, s2)
-
-with open("1.bin", "wb") as file:  # Байтовая запись в файл
-    file.write(b1)
-
-with open("1.bin", "rb") as file:  # Чтение из файла
-    b6 = file.read()
-
-print(b6)
-```
-
-    b'\x01\x02\x03\x04' b'The String' b'\xff\xff\xfc\x00' b'\xfe\xad\xca' b'\n\x0c\x0e\x10\x12\x14\x16\x18\x1a\x1c'
-    [252, 0, 0, 0, 0, 1] The String 64512 fc 00 00 00 00 01
-    b'\x01\x02\x03\x04'
-    
-
-> __Какие типы данных есть в Python? Какие из них изменяемые, а какие неизменяемые?__
->
-> str, bytes, int, float, complex, bool, None, tuple и frozenset — неизменяемы, list, set, dict, bytearray и memoryview — изменяемы.
-
-### Односвязный список  
-
-[Односвязный список](https://en.wikipedia.org/wiki/Linked_list#Singly_linked_list) представляет набор связанных узлов, каждый из которых хранит собственные данные и ссылку на следующий узел. В практике применим редко, но его любят использовать интервьюеры на собеседованиях, чтобы кандидат мог блеснуть своими алгоритмическими знаниями. В Python встроенной реализации не имеет, можно или использовать deque (в основе которого лежит двусвязный список), или написать свою реализацию.
-
-### Двусвязный список (Deque)
-
-Ссылки в каждом узле [двусвязного списка](https://en.wikipedia.org/wiki/Linked_list#Doubly_linked_list) указывают на предыдущий и на последующий узел в списке. Можно или использовать deque, или написать свою реализацию.
-
-
-```python
-from collections import deque
-d = deque([1, 2, 3, 4], maxlen=1000)
-
-d.append(5)  # Add element to the right side of the deque
-d.appendleft(0)  # Add element to the left side of the deque by appending elements from iterable
-
-d.extend([6, 7])  # Extend the right side of the deque
-d.extendleft([-1, -2])  # Extend the left side of the deque
-print(d)
-
-a = d.pop()  # Remove and return an element from the right side of the deque. Can raise an IndexError
-b = d.popleft()  # Remove and return an element from the left side of the deque. Can raise an IndexError
-print(a, b)
-print(d)
-```
-
-    deque([-2, -1, 0, 1, 2, 3, 4, 5, 6, 7], maxlen=1000)
-    7 -2
-    deque([-1, 0, 1, 2, 3, 4, 5, 6], maxlen=1000)
-    
-
-### Queue
-
-Queue реализует FIFO со множественными поставщиками данных и множественными потребителями. Особенно полезен при многопоточности, позволяя корректно обмениваться информацией между потоками. Также существуют LifoQueue для реализации LIFO и PriorityQueue для реализации очереди с приоритетом.
-
-
-```python
-from queue import Queue
-q = Queue(maxsize=1000)
-
-q.put("eat", block=True, timeout=10)
-q.put("sleep")  # По умолчанию block=True, timeout=None
-q.put("code")
-q.put_nowait("repeat")  # Эквивалент put("repeat", block=False). Если свободный слот не будет предоставлен немедленно, будет вызвано исключение queue.Full
-print(q.queue)
-
-a = q.get(block=True, timeout=10)  # Удалить и возвратить элемент из FIFO
-b = q.get()  # По умолчанию block=True, timeout=None
-c = q.get_nowait()  # Эквивалент get(False)
-print(a, b, c, q.queue)
-```
-
-    deque(['eat', 'sleep', 'code', 'repeat'])
-    eat sleep code deque(['repeat'])
-    
-
-### Бинарное дерево (binary tree)
-
-Иерархическая структура данных, в которой каждый узел имеет не более двух потомков. Встроенной реализации не имеет, нужно писать свою. Как правило, используются деревья с дополнительными свойствами, рассмотренные ниже.
-
-### Куча (heap)
-
-Бинарное дерево, удовлетворяющее свойство кучи: если B является узлом-потомком узла A, то ключ(A) ≥ ключ(B). Куча является максимально эффективной реализацией абстрактного типа данных, который называется очередью с приоритетом и поддерживающего две обязательные операции — добавить элемент и извлечь минимум (или максимум, в зависимости от реализации).
-
-В Python min-куча (у которой наименьшее значение всегда лежит в корне) реализована на базе списка при помощи встроенного модуля heapq. Если вам нужна max-куча, с максимальным значением в корне, можете воспользоваться [советами](https://stackoverflow.com/questions/2501457/what-do-i-use-for-a-max-heap-implementation-in-python) со Stackoverflow.
-
-
-```python
-import heapq
-
-h = [211, 1, 43, 79, 12, 5, -10, 0]
-heapq.heapify(h)  # Превращаем список в кучу
-print(h)
-
-heapq.heappush(h, 2)  # Добавляем элемент
-print(h)
-
-m = heapq.heappop(h)  # Извлекаем минимальный элемент
-print(h, m)
-
-```
-
-    [-10, 0, 5, 1, 12, 211, 43, 79]
-    [-10, 0, 5, 1, 12, 211, 43, 79, 2]
-    [0, 1, 5, 2, 12, 211, 43, 79] -10
-    
-
-Пробежимся коротенько по остальным структурам данных, которые в Python не имеют встроенной реализации, но, тем не менее, могут весьма пригодиться в реальном проекте.
-
-### Би-дерево (B-tree)
-
-Сбалансированное дерево, оптимизированное для доступа к относительно медленным элементам памяти (например, дисковым структурам или индексам баз данных); как ветви, так и листья представляют собой списки (для того, чтобы можно было считать такой список в один проход для дальнейшего быстрого разбора в ОЗУ). Нужно писать свою реализацию. Либо — воспользоваться встроенной в Python поддержкой базы данных sqlite3, эта БД как раз реализована на би-дереве.
-
-### Красно-черное дерево
-
-Самобалансирующееся двоичное дерево поиска, позволяющее быстро выполнять основные операции: добавление, удаление и поиск узла. Сбалансированность достигается за счёт введения дополнительного признака узла дерева — «цвета». Этот атрибут может принимать одно из двух возможных значений — «чёрный» или «красный». Листовые узлы КЧ деревьев не содержат данных, поэтому не требуют выделения памяти — достаточно просто записать в узле-предке нулевой указатель на потомка.
-
-Возможно, вы читали о том, что на серьёзных алгоритмических собеседовании в FAANG претендентов «заставляют крутить красно-черное дерево на доске». Это «кружение» и есть балансировка, после операции вставки или удаления элемента дерево нужно отбалансировать, с примерным объемом необходимого кода вы можете ознакомиться [здесь](https://blog.boot.dev/python/red-black-tree-python/) или [здесь](https://codereview.stackexchange.com/questions/244971/red-black-tree-implementation-in-python).
-
-### АВЛ-дерево
-
-В АВЛ-деревьях операции вставки и удаления работают медленнее, чем в красно-черных деревьях (при том же количестве листьев красно-чёрное дерево может быть выше АВЛ-дерева, но не более чем в 1,388 раза). Поиск же в АВЛ-дереве выполняется быстрее (максимальная разница в скорости поиска составляет 39 %).
-
-### Префиксное дерево  
-
-[Префиксное дерево](https://en.wikipedia.org/wiki/Trie) (или trie) — структура данных, позволяющая хранить ассоциативный массив, ключами которого являются строки. Используется для алгоритмов типа [T9](https://en.wikipedia.org/wiki/T9_(predictive_text)), [Ахо–Корасик](https://en.wikipedia.org/wiki/Aho%E2%80%93Corasick_algorithm) или [LZW](https://en.wikipedia.org/wiki/Lempel%E2%80%93Ziv%E2%80%93Welch).
-
-### Таблица выбора структуры данных
-
-В квадратных скобках показан худший случай.
-
-| Структура | Реализация | Применение | Индексация | Поиск | Вставка | Удаление | Память |
-| :- | :- | :- | :-: | :-: | :-: | :-: | :-: |
-| Динамический массив | list |  | 1 | n | n | n | n |
-| Хэш таблица | dict, set |  |  | 1<br> [n] | 1<br> [n] | 1<br> [n] | n |
-| Массив | array, bytes, bytearray | Для хранения однотипных данных | 1 | n | n | n | n |
-| Односвязный список | - (~deque)|  | n | n | 1 | 1 | n |
-| Двусвязный список | deque| FIFO, LIFO | n | n | 1 | 1 | n |
-| Бинарное дерево | - |  | logn<br> [n] | logn<br> [n] | logn<br> [n] | logn<br> [n] | n |
-| Куча | heapq | Очередь с приоритетом |   | 1<br>(find min) | logn | logn<br>(del min) | n |
-| Би-дерево (B-tree) | ~sqlite | Для памяти с медленным доступом | logn | logn | logn | logn | n |
-| КЧ дерево | - |   | logn | logn | logn | logn | n |
-| АВЛ дерево | - |  | logn | logn | logn | logn | n |
-| Префиксное дерево (trie) | - | T9,<br> Ахо–Корасик,<br> LZW |  | key | key | key |  |
-
-### Перечисление (Enum, IntEnum)
-
-Удобные конструкции для определения заранее известных перечислений.
-
-
-```python
-from enum import Enum, auto
-import random
-
-class Currency(Enum):
-    euro = 1
-    us_dollar = 2
-    yuan = auto()
-
-local_currency = Currency.us_dollar
-print(local_currency)
-
-local_currency = Currency["us_dollar"]  # Может вызвать исключение KeyError
-print(local_currency)
-
-local_currency = Currency(2)  # Может вызвать исключение ValueError
-print(local_currency)
-
-print(local_currency.name)
-print(local_currency.value)
-
-list_of_members = list(Currency)
-member_names    = [e.name for e in Currency]
-member_values   = [e.value for e in Currency]
-random_member   = random.choice(list(Currency))
-
-print(list_of_members, "\n",
-      member_names, "\n",
-      member_values, "\n",
-      random_member)
-```
-
-    Currency.us_dollar
-    Currency.us_dollar
-    Currency.us_dollar
-    us_dollar
-    2
-    [<Currency.euro: 1>, <Currency.us_dollar: 2>, <Currency.yuan: 3>] 
-     ['euro', 'us_dollar', 'yuan'] 
-     [1, 2, 3] 
-     Currency.euro
-    
-
-### Целочисленный диапазон (range)
-
-range() возвращает иммутабельную последовательность чисел, которая часто используется как задатчик диапазона для цикла for.
-
-
-```python
-
-r1: range = range(11)  # Возвращает последовательность чисел от 0 до 10
-r2: range = range(5, 21) # Возвращает последовательность чисел от 5 до 20
-r3: range = range(20, 9, -2)  # Возвращает последовательность чисел от 20 до 10 с шагом 2
-
-print("To exclusive: ", end="")
-for i in r1:
-  print(f"{i} ", end="")
-
-print("\nFrom inclusive to exclusive: ", end="")
-for i in r2:
-  print(f"{i} ", end="")
-
-print("\nFrom inclusive to exclusive with step: ", end="")
-for i in r3:
-  print(f"{i} ", end="")
-
-print(f"\nFrom = {r3.start}")
-print(f"To = {r3.stop}")
-```
-
-    To exclusive: 0 1 2 3 4 5 6 7 8 9 10 
-    From inclusive to exclusive: 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 
-    From inclusive to exclusive with step: 20 18 16 14 12 10 
-    From = 20
-    To = 9
-    
-
-### Классы данных (dataclass)
-
-Dataclass — *декоратор* (подробнее про декораторы мы поговорим позже), автоматически создающий методы init(), repr() и eq(). Нужен для создания классов, главной задачей которых является хранение данных. Аннотации типов обязательны.
-
-Существует более продвинутая альтернатива под названием [attrs](https://pypi.org/project/attrs/), но [Глиф Лефковиц](https://en.wikipedia.org/wiki/Glyph_Lefkowitz) дополнил свою статью «[The One Python Library Everyone Needs](https://glyph.twistedmatrix.com/2016/08/attrs.html)», написанную в 2016, замечанием о том, что за прошедшие годы dataclass значительно возмужал (во многом благодаря влиянию attrs) и теперь можно обойтись без attrs, а просто использовать dataclass.
-
-
-```python
-from dataclasses import dataclass
-from decimal import *
-from datetime import datetime
-
-@dataclass
-class Transaction:
-    value: Decimal
-    issuer: str = "Default Bank"
-    dt: datetime = datetime.now()
-
-t1 = Transaction(value=1000_000, issuer="Deutsche Bank", dt = datetime(2022, 1, 1, 12))
-t2 = Transaction(1000)
-
-print(t1)
-print(t2)
-```
-
-    Transaction(value=1000000, issuer='Deutsche Bank', dt=datetime.datetime(2022, 1, 1, 12, 0))
-    Transaction(value=1000, issuer='Default Bank', dt=datetime.datetime(2022, 9, 6, 17, 50, 36, 162897))
-    
-
-Dataclass может быть сделан иммутабельным при помощи директивы _frozen=True_.
-
-
-```python
-from dataclasses import dataclass
-
-@dataclass(frozen=True)
-class User:
-    name: str
-    account: int
-```
-
-### Бинарная запаковка (struct)
-
-Запаковка (и распаковка, разумеется) данных в байтовые последовательности с предопределенными размерами каждого элемента данных, их порядка в структуре, а также порядка байт для многобайтовых типов данных. Нужна для [взаимодействия](https://docs.python.org/3/extending/extending.html) Python-программы с кодом на C или C++ и позволяет превращать Python-овский int в, например, «сишный» short int или long int ([подробности](https://ru.wikipedia.org/wiki/%D0%A1%D0%B8%D1%81%D1%82%D0%B5%D0%BC%D0%B0_%D1%82%D0%B8%D0%BF%D0%BE%D0%B2_%D0%A1%D0%B8) про систему типов языка Си).  
-При работе со структурами вам нужно будет ориентироваться в том, что такое [little-endian](https://en.wikipedia.org/wiki/Endianness) и big-endian, а также не забывать, что размер типа данных в Си бывает разным.
-
-
-```python
-from struct import pack, unpack, iter_unpack
-
-b = pack(">hhll", 1, 2, 3, 4)
-print(b)
-
-t = unpack(">hhll", b)
-print(t)
-
-i = pack("ii", 1, 2) * 5
-print(i)
-
-print(list(iter_unpack('ii', i)))
-```
-
-    b'\x00\x01\x00\x02\x00\x00\x00\x03\x00\x00\x00\x04'
-    (1, 2, 3, 4)
-    b'\x01\x00\x00\x00\x02\x00\x00\x00\x01\x00\x00\x00\x02\x00\x00\x00\x01\x00\x00\x00\x02\x00\x00\x00\x01\x00\x00\x00\x02\x00\x00\x00\x01\x00\x00\x00\x02\x00\x00\x00'
-    [(1, 2), (1, 2), (1, 2), (1, 2), (1, 2)]
-    
 
 ### Строка (string)
 
@@ -689,12 +110,12 @@ print(list(iter_unpack('ii', i)))
 ```python
 se: str = ""  # Пустая строка
 si: str = str(12345)  # Создает строку из числа
-sj: str = " ".join(["Follow", "the", "white", "rabbit"])  # Собирает строку из кусочков, используя указанный сепаратор
+sj: str = " ".join(["Follow", "the", "white", "rabbit"])  # Собирает строку из кусочков, используя указанный разделитель
 print(f"Joined string: {sj}")
 
 is_contains: bool = "rabbit" in sj  # Проверка наличия подстроки
 is_startswith = sj.startswith("Foll")
-is_endswith = sj.endswith("bbit")
+is_endswith = sj.endswith("bat")
 print(f"is_contains = {is_contains}, is_startswith = {is_startswith}, is_endswith = {is_endswith}")
 
 sr: str  = sj.replace("rabbit", "sheep")  # Замена подстроки. Можно указать количество замен: sr: str  = sj.replace("rabbit", "sheep", times)
@@ -713,7 +134,7 @@ print(f"Reverse string: {sr}")
 ```
 
     Joined string: Follow the white rabbit
-    is_contains = True, is_startswith = True, is_endswith = True
+    is_contains = True, is_startswith = True, is_endswith = False
     After replace: Follow the white sheep
     Start index of 'rabbit' is -1, start index of 'sheep' is 17
     Translate string: xyz
@@ -803,6 +224,654 @@ print (f"{tz1}\n {tz2}\n {tz3}\n {tz4}\n {local_dt}\n {utc_dt}")
      2024-03-06 15:30:35.706820
      2024-03-06 10:30:35.706820+00:00
     
+
+### Кортеж (tuple)  
+Кортеж — тоже список, только неизменяемый (immutable) и хэшируемый (hashable). Кортеж, содержащий те же данные, что и список, занимает меньше места и быстрее работает ([разъяснение](https://stackoverflow.com/questions/68630/are-tuples-more-efficient-than-lists-in-python)):
+
+
+```python
+a = [2, 3, "Boson", "Higgs", 1.56e-22]
+b = (2, 3, "Boson", "Higgs", 1.56e-22)
+
+print(f"List: {a.__sizeof__()} bytes")
+print(f"Tuple: {b.__sizeof__()} bytes")
+```
+
+    List: 104 bytes
+    Tuple: 64 bytes
+    
+
+Сам кортеж неизменяем, но если внутри кортежа находятся изменяемые элементы, например списки или словари, то их значения можно изменить.
+
+### Именованный кортеж (named tuple)
+В полном соответствии с названием, имеет именованные поля. Удобно!
+
+
+```python
+from collections import namedtuple
+
+rectangle = namedtuple('rectangle', 'length width')
+r = rectangle(length = 1, width = 2)
+
+print(r)
+print(r.length)
+print(r.width)
+print(r._fields)
+```
+
+    rectangle(length=1, width=2)
+    1
+    2
+    ('length', 'width')
+    
+
+> __Какая разница между списком и кортежем? Как в памяти хранятся списки и кортежи?__
+>
+>Список — изменяемая коллекция объектов произвольных типов. Внутреннее строение списка — динамический массив указателей.
+>
+> Кортеж — тоже список, только неизменяемый. Кортеж, содержащий те же данные, что и список, занимает меньше места.
+
+### Словарь (dict)
+
+Словарь — следующая по частоте использования структура данных в Python. Словарь — реализация хеш-таблицы, поэтому в качестве ключа нельзя брать нехэшируемый объект, например, список (тут-то нам и может пригодиться кортеж). Ключом словаря может быть любой неизменяемый объект: число, строка, datetime и даже функция. Такие объекты имеют метод **\_\_hash__()**, который однозначно сопоставляет объект с некоторым числом. По этому числу словарь ищет значение для ключа.
+
+Списки, словари и множества (которые мы рассмотрим чуть ниже) изменяемы и не имеют метода хеширования, при попытке подставить их в словарь возникнет ошибка.
+
+
+```python
+d = {}  # Создаем пустой словарь
+
+d: dict[str, str] = {"Italy": "Pizza", "US": "Hot-Dog", "China": "Dim Sum"}  # Непосредственное создание словаря
+
+k = ["Italy", "US", "China"]
+v = ["Pizza", "Hot-Dog", "Dim Sum"]
+d = dict(zip(k, v))  # Создание словаря из двух коллекций при помощи zip
+
+k = d.keys()  # Коллекция ключей. Отражает изменения в основном словаре
+v = d.values()  # Коллекция значений. Тоже отражает изменения в основном словаре
+k_v = d.items()  # Кортежи ключ-значение, которые тоже отражают изменения в основном словаре
+
+print(d)
+print(k)
+print(v)
+print(k_v)
+
+print(f"Mapping: {k.mapping['Italy']}")
+
+d.update({"China": "Dumplings"})  # Добавление значение. При совпадении ключа старое значение будет перезаписано
+print(f"Replace item: {d}")
+
+c = d["China"]  # Читаем значение
+print(f"Read item: {c}")
+
+try:
+    v = d.pop("Spain")  # Удаляет значение или вызывает исключение KeyError
+except KeyError:
+    print("Dictionary key doesn't exist")
+
+# Примеры dict comprehension (более подробно comprehension будет рассмотрено позже)
+b = {k: v for k, v in d.items() if "a" in k}  # Вернет новый словарь, отфильтрованный по значению ключа
+print(b)
+
+c = {k: v for k, v in d.items() if len(v) >= 7}  # Вернет новый словарь, отфильтрованный по длине значений
+print(c)
+
+d.clear() # Очистка словаря
+```
+
+    {'Italy': 'Pizza', 'US': 'Hot-Dog', 'China': 'Dim Sum'}
+    dict_keys(['Italy', 'US', 'China'])
+    dict_values(['Pizza', 'Hot-Dog', 'Dim Sum'])
+    dict_items([('Italy', 'Pizza'), ('US', 'Hot-Dog'), ('China', 'Dim Sum')])
+    Mapping: Pizza
+    Replace item: {'Italy': 'Pizza', 'US': 'Hot-Dog', 'China': 'Dumplings'}
+    Read item: Dumplings
+    Dictionary key doesn't exist
+    {'Italy': 'Pizza', 'China': 'Dumplings'}
+    {'US': 'Hot-Dog', 'China': 'Dumplings'}
+    
+
+> __Что может быть ключом в словаре?__
+>
+> Ключом словаря может быть любой хэшируемый объект — число, строка, datetime или даже функция, т. е., объекты, имеющие метод \_\_hash__, который однозначно сопоставляет объект с некоторым числом.
+
+### Решение проблемы вычисления хеша при работе со словарем
+
+Любая хеш-таблица, в том числе и питоновский словарь, должна уметь решать проблему вычисления хеша. Для этого используются техники **open addressing** или **chaining**. Python [использует](https://stackoverflow.com/questions/9010222/why-can-a-python-dict-have-multiple-keys-with-the-same-hash) open addressing.
+
+Новый словарь инициализируется с 8 пустыми слотами.
+
+Интерпретатор сначала пытается добавить новую запись по адресу, зависящему от хеша ключа.
+
+```python
+addr = hash(key) & mask,
+```
+где
+```python
+mask = PyDictMINSIZE - 1
+```
+
+Если этот адрес занят, то интерпретатор проверяет (при помощи ==) хеш и ключ. Если оба совпадают, то это означает, запись уже существует. Тогда начинается зондирование свободных слотов, которое идет в псевдослучайном порядке (порядок зависит от значения ключа). Новая запись будет добавлена по первому свободному адресу.
+
+Чтение из словаря происходит аналогично, интерпретатор начинает поиск с позиции addr и идет по тому же псевдослучайному пути, пока не прочитает нужную запись.
+
+### Defaultdict
+
+Если попытаться прочитать из обычного словаря значение ключа, которого там нет, то будет выброшено _исключение_ KeyError (исключения будут рассмотрены ниже). Defaultdict позволяет не писать обработчик исключений, а просто воспринимает чтение несуществующего ключа как команду записать в этот ключ и вернуть значение по умолчанию; например, defaultdict(int) вернет 0, потому что значение по умолчанию для типа int равно 0.
+
+
+```python
+from collections import defaultdict
+
+dd = defaultdict(int)
+print(dd[10])  # Печать int, будет выведен ноль, значение по умолчанию
+
+dd = {}  # "Обычный" пустой словарь
+# print(dd[10])  # Вызовет исключение KeyError
+```
+
+    0
+    
+
+### Счетчик (counter)
+
+Счетчик подсчитывает передаваемые ему объекты. Иногда очень удобно просто бухнуть в счетчик какой-нибудь список и сразу получить структуру данных с подсчитанными элементами.
+
+
+```python
+from collections import Counter
+
+shirts_colors = ["red", "white", "blue", "white", "white", "black", "black"]
+c = Counter(shirts_colors)
+print(c)
+
+c["blue"] += 1
+print(f"After shopping: {c}")
+
+```
+
+    Counter({'white': 3, 'black': 2, 'red': 1, 'blue': 1})
+    After shopping: Counter({'white': 3, 'blue': 2, 'black': 2, 'red': 1})
+    
+
+Объяснение работы Counter() при помощи defaultdict():
+
+
+```python
+from collections import defaultdict
+
+shirts_colors = ["red", "white", "blue", "white", "white", "black", "black"]
+
+d = defaultdict(int)
+for shirt in shirts_colors:
+    d[shirt] += 1
+
+print(d)
+```
+
+    defaultdict(<class 'int'>, {'red': 1, 'white': 3, 'blue': 1, 'black': 2})
+    
+
+### Множество (set)
+
+Тоже очень распространённая питоновская структура данных. Когда-то, когда Python был молод, множества представляли собой несколько редуцированные словари, но со временем их судьбы (и реализации) стали расходиться. Однако, множество всё-таки является хеш-таблицей с соответствующим быстродействием на разных типах операций.
+
+Множество, в отличие от, например, list, не поддерживает повторяющиеся элементы.
+
+
+```python
+big_cities: set["str"] = {"New-York", "Los Angeles", "Ottawa"}
+american_cities: set["str"] = {"Chicago", "New-York", "Los Angeles"}
+
+big_cities |= {"Sydney"}  # Добавить значение (или add())
+american_cities |= {"Salt Lake City", "Seattle"}  # Сложить множества (или update())
+
+print(big_cities, american_cities)
+
+union_cities: set["str"] = big_cities | american_cities  # Или union()
+intersected_cities: set["str"] = big_cities & american_cities  # Или intersection()
+dif_cities: set["str"] = big_cities - american_cities  # Или difference()
+symdif_cities: set["str"] = big_cities ^ american_cities  # Или symmetric_difference()
+
+issub: bool = big_cities <= union_cities  # Или issubset()
+issuper: bool = american_cities >= dif_cities  # Или issuperset()
+
+print(union_cities)
+print(intersected_cities)
+print(dif_cities)
+print(symdif_cities)
+
+print(issub, issuper)
+
+big_cities.add("London")
+
+big_cities.remove("Ottawa")  # Удаляет значение, если оно имеется или выбрасывает KeyError
+big_cities.discard("Los Angeles")  # Удаляет значение без выбрасывания KeyError
+big_cities.pop()  # Возвращает и удаляет случайное значение (порядок в set не определен) или выбрасывает KeyError
+big_cities.clear()  # Очищает множество
+```
+
+    {'New-York', 'Los Angeles', 'Sydney', 'Ottawa'} {'New-York', 'Seattle', 'Chicago', 'Los Angeles', 'Salt Lake City'}
+    {'Ottawa', 'Salt Lake City', 'Chicago', 'New-York', 'Seattle', 'Sydney', 'Los Angeles'}
+    {'New-York', 'Los Angeles'}
+    {'Ottawa', 'Sydney'}
+    {'Seattle', 'Ottawa', 'Chicago', 'Salt Lake City', 'Sydney'}
+    True False
+    
+
+### Иммутабельное множество (frozenset)
+
+Frozenset — тоже множество, только иммутабельное и хэшируемое. Напоминает разницу между списком и кортежем, не правда ли? Frozenset не имеет никаких преимуществ перед set ни по объёму занимаемой памяти, ни по скорости работы, хэшируемость (и как следствие - возможность применения в качестве ключа в словаре) - единственный плюс frozenset.
+
+
+```python
+a = set({"New-York", "Los Angeles", "Ottawa"})
+b = frozenset({"New-York", "Los Angeles", "Ottawa"})
+
+print(f"Set: {a.__sizeof__()} bytes")
+print(f"Frozenset: {b.__sizeof__()} bytes")
+```
+
+    Set: 200 bytes
+    Frozenset: 200 bytes
+    
+
+### Массив (array, bytes, bytearray)
+
+Я перешел на Python с языков, более приближенных к «железу» (C, C#, даже на ассемблере когда-то программировал) и сначала немного удивлялся, что обычный массив, в котором всё так удобно лежит на своих местах, используется относительно редко. Массив в Python не является структурой данных, выбираемой по умолчанию и используется только в случаях, когда решающую роль начинают играть размер структуры и скорость её обработки. Но, с другой стороны, если вы смотрите в сторону NumPy и Pandas (немного затронуты ниже), хотите быстро работать с данными, то массивы — ваше всё.
+
+Массив хранит переменные только определенного типа, поэтому, в отличие от списка, не требует создания нового объекта для каждой новой переменной и выигрывает у списка в размерах и скорости доступа. Можно сказать, что это тонкая обёртка над Си-массивами.
+
+Следует различать array («просто» массив, мутабелен), bytes (иммутабельный массив, содержащий только байты, наследие str из Python 2) и bytearray (мутабельный байтовый массив).
+
+
+```python
+from array import array
+
+a1 = array("l", [1, 2, 3, -4])
+a2 = array("b", b"1234567890")
+b = bytes(a2)
+
+print(a1)
+print(a2[0])
+print(b)
+
+print(a1.index(-4))  # Возвращает индекс элементы или выбрасывает ValueError
+```
+
+    array('l', [1, 2, 3, -4])
+    49
+    b'1234567890'
+    3
+    
+
+
+```python
+# Создание иммутабельного массива
+
+b1 = bytes([1, 2, 3, 4])  # Целые числа должны быть в диапазоне от 0 to 255
+b2 = "The String".encode('utf-8')
+b3 = (-1024).to_bytes(4, byteorder='big', signed=True)  # byteorder = "big"/"little"/"sys.byteorder", signed = False/True
+b4 = bytes.fromhex('FEADCA')  # Для большей читаемости hex-значения могут быть разделены пробелами
+b5 = bytes(range(10,30,2))
+
+print(b1, b2, b3, b4, b5)
+
+# Преобразование
+
+c: list = list(b"\xfc\x00\x00\x00\x00\x01")
+s: str = b'The String'.decode("utf-8")
+b: int = int.from_bytes(b"\xfc\x00", byteorder='big', signed=False)  # byteorder = "big"/"little"/"sys.byteorder", signed = False/True
+s2: str = b"\xfc\x00\x00\x00\x00\x01".hex(" ")
+
+print(c, s, b, s2)
+
+with open("1.bin", "wb") as file:  # Байтовая запись в файл
+    file.write(b1)
+
+with open("1.bin", "rb") as file:  # Чтение из файла
+    b6 = file.read()
+
+print(b6)
+```
+
+    b'\x01\x02\x03\x04' b'The String' b'\xff\xff\xfc\x00' b'\xfe\xad\xca' b'\n\x0c\x0e\x10\x12\x14\x16\x18\x1a\x1c'
+    [252, 0, 0, 0, 0, 1] The String 64512 fc 00 00 00 00 01
+    b'\x01\x02\x03\x04'
+    
+
+> __Какие типы данных есть в Python? Какие из них изменяемы, а какие нет?__
+>
+> str, bytes, int, float, complex, bool, None, tuple и frozenset — неизменяемы, list, set, dict, bytearray и memoryview — изменяемы.
+
+### Двусвязный список (deque)
+
+Ссылки в каждом узле [двусвязного списка](https://en.wikipedia.org/wiki/Linked_list#Doubly_linked_list) указывают на предыдущий и на последующий узел в списке. Можно или использовать deque, или написать свою реализацию.
+
+
+```python
+from collections import deque
+d = deque([1, 2, 3, 4], maxlen=1000)  # Лучше всегда сами выбирайте длину списка при помощи аргумента maxlen, это поможет избежать неприятных сюрпризов
+
+d.append(5)  # Добавить элемент в список справа
+d.appendleft(0)  # Добавить элемент в список слева
+
+d.extend([6, 7])  # Расширить список справа
+d.extendleft([-1, -2])  # Расширить список слева
+print(d)
+
+a = d.pop()  # Вернуть и удалить элемент справа. Может выбросить IndexError
+b = d.popleft()  # Вернуть и удалить элемент слева. Может выбросить IndexError
+
+print(a)
+print(b)
+print(d)
+```
+
+    deque([-2, -1, 0, 1, 2, 3, 4, 5, 6, 7], maxlen=1000)
+    7
+    -2
+    deque([-1, 0, 1, 2, 3, 4, 5, 6], maxlen=1000)
+    
+
+### Queue
+
+Queue реализует FIFO со множественными поставщиками данных и множественными потребителями. Особенно полезен при многопоточности, позволяя корректно обмениваться информацией между потоками. Также существуют LifoQueue для реализации LIFO и PriorityQueue для реализации очереди с приоритетом.
+
+
+```python
+from queue import Queue
+q = Queue(maxsize=1000)
+
+q.put("eat", block=True, timeout=10)
+q.put("sleep")  # По умолчанию block=True, timeout=None
+q.put("code")
+q.put_nowait("repeat")  # Эквивалент put("repeat", block=False). Если свободный слот не будет предоставлен немедленно, будет выброшено исключение queue.Full
+print(q.queue)
+
+a = q.get(block=True, timeout=10)  # Удалить и возвратить элемент из FIFO
+b = q.get()  # По умолчанию block=True, timeout=None
+c = q.get_nowait()  # Эквивалент get(False)
+print(a, b, c, q.queue)
+```
+
+    deque(['eat', 'sleep', 'code', 'repeat'])
+    eat sleep code deque(['repeat'])
+    
+
+### Односвязный список  
+
+[Односвязный список](https://en.wikipedia.org/wiki/Linked_list#Singly_linked_list) представляет набор связанных узлов, каждый из которых хранит собственные данные и ссылку на следующий узел. В практике применим редко, но его любят использовать интервьюеры на собеседованиях, чтобы кандидат мог блеснуть своими алгоритмическими познаниями. В Python встроенной реализации не имеет, можно или использовать deque (в основе которого лежит двусвязный список), или написать свою реализацию.
+
+### Граф
+
+Граф как математическая абстракция есть совокупность двух множеств — множества самих объектов, называемого множеством вершин, и множества их парных связей, называемого множеством рёбер.
+
+### Матрица смежности (adjacency matrix)
+
+Квадратная целочисленная матрица размера V*V, в которой значение элемента a{i, j} равно числу рёбер из i-й вершины в j-ю вершину.  
+Матрица смежности простого графа (не содержащего петель и кратных рёбер) является бинарной матрицей и содержит нули на главной диагонали.
+
+### Матрица инцидентности (incidence matrix)
+
+Способ представления графа, в которой указываются связи между инцидентными элементами графа (ребрами и вершинами). Столбцы матрицы соответствуют ребрам, строки — вершинам. Ненулевое значение в ячейке матрицы указывает связь между вершиной и ребром (их инцидентность). Если связи между вершиной и ребром нет, то в соответствующую ячейку ставится «0».  
+В случае ориентированного графа каждой дуге ставится в соответствующем столбце: 1 в строке вершины x и -1 в строке вершины y.  
+
+### Список смежности (adjacency list)
+
+Самый распространенный формат хранения графа. Способ представления графа в виде коллекции списков вершин. Каждой вершине графа соответствует список, состоящий из «соседей» этой вершины.  
+Варианты:  
+• использование хеш-таблицы для ассоциации каждой вершины со списком смежных вершин;
+• вершины представлены числовым индексом в массиве, каждая ячейка массива ссылается на однонаправленный связанный список соседних вершин;  
+• специальные классы вершин и рёбер, каждый объект вершины содержит ссылку на коллекцию рёбер, каждый объект ребра содержит ссылки на исходящую и входящую вершины.
+
+### Список инцидентности (incidence list)
+
+Список инцидентности похож на список смежности, только с той разницей, что в i-ой строке записываются номера ребер, инцидентных данной i-ой вершине.
+
+### Сравнение структур представления графов
+
+| Метод | Память | Добавить V | Добавить E | Удалить V | Удалить E | Проверка смежн. V |
+| :- | :-: | :-: | :-: | :-: | :-: | :-: |
+| Матрица смежности<br>(Adjacency matrix) | V^2 | V^2 | 1 | V^2 | 1 | 1 |
+| Матрица инцидентности<br>(Incidence matrix) | V*E | V*E | V*E | V*E | V*E | E |
+| Список смежности<br>(Adjacency list) | V+E | 1 | 1 | V+E | E | V |
+| Список инцидентности<br>(Incidence list) | V+E | 1 | 1 | E | E | E |
+
+### Дерево (tree)
+
+Дерево — одна из наиболее распространённых структур данных, эмулирующая древовидную структуру в виде набора связанных узлов. Является связным графом, не содержащим циклы.
+
+### Бинарное дерево (binary tree)
+
+Иерархическая структура данных, в которой каждый узел имеет не более двух потомков. Встроенной реализации не имеет, нужно писать свою. Как правило, используются деревья с дополнительными свойствами, рассмотренные ниже.
+
+### Куча (heap)
+
+Бинарное дерево, удовлетворяющее свойство кучи: если B является узлом-потомком узла A, то ключ(A) ≥ ключ(B). Куча является максимально эффективной реализацией абстрактного типа данных, который называется очередью с приоритетом и поддерживающего две обязательные операции — добавить элемент и извлечь минимум (или максимум, в зависимости от реализации).
+
+В Python min-куча (у которой наименьшее значение всегда лежит в корне) реализована на базе списка при помощи встроенного модуля heapq. Если вам нужна max-куча, с максимальным значением в корне, можете воспользоваться [советами](https://stackoverflow.com/questions/2501457/what-do-i-use-for-a-max-heap-implementation-in-python) со Stackoverflow.
+
+
+```python
+import heapq
+
+h = [211, 1, 43, 79, 12, 5, -10, 0]
+heapq.heapify(h)  # Превращаем список в кучу
+print(h)
+
+heapq.heappush(h, 2)  # Добавляем элемент
+print(h)
+
+m = heapq.heappop(h)  # Извлекаем минимальный элемент
+print(h, m)
+
+```
+
+    [-10, 0, 5, 1, 12, 211, 43, 79]
+    [-10, 0, 5, 1, 12, 211, 43, 79, 2]
+    [0, 1, 5, 2, 12, 211, 43, 79] -10
+    
+
+Пробежимся коротенько по остальным структурам данных, которые в Python не имеют встроенной реализации, но, тем не менее, могут весьма пригодиться в реальном проекте.
+
+### Би-дерево (B-tree)
+
+Сбалансированное дерево, оптимизированное для доступа к относительно медленным элементам памяти (например, дисковым структурам или индексам баз данных); как ветви, так и листья представляют собой списки (для того, чтобы можно было считать такой список в один проход для дальнейшего быстрого разбора в ОЗУ). Нужно писать свою реализацию. Либо — воспользоваться встроенной в Python поддержкой базы данных sqlite3, эта БД как раз реализована на би-дереве.
+
+### Красно-черное дерево (red-black tree)
+
+Самобалансирующееся двоичное дерево поиска, позволяющее быстро выполнять основные операции: добавление, удаление и поиск узла. Сбалансированность достигается за счёт введения дополнительного признака узла дерева — «цвета». Этот атрибут может принимать одно из двух возможных значений — «чёрный» или «красный». Листовые узлы КЧ деревьев не содержат данных, поэтому не требуют выделения памяти — достаточно просто записать в узле-предке нулевой указатель на потомка.
+
+Очень быстрая, полезная и практичная структура данных. Например, контейнер std::map в C++ реализован на базе красно-чёрного дерева.
+
+Возможно, вы читали о том, что на серьёзных алгоритмических собеседовании в FAANG претендентов «заставляют крутить красно-черное дерево на доске». Это «кружение» и есть балансировка, после операции вставки или удаления элемента дерево нужно отбалансировать, с примерным объемом необходимого кода вы можете ознакомиться [здесь](https://blog.boot.dev/python/red-black-tree-python/) или [здесь](https://codereview.stackexchange.com/questions/244971/red-black-tree-implementation-in-python).
+
+### АВЛ-дерево (AVL tree)
+
+В АВЛ-деревьях операции вставки и удаления работают медленнее, чем в красно-черных деревьях (при том же количестве листьев красно-чёрное дерево может быть выше АВЛ-дерева, но не более чем в 1,388 раза). Поиск же в АВЛ-дереве выполняется быстрее (максимальная разница в скорости поиска составляет 39 %).
+
+### Префиксное дерево  
+
+[Префиксное дерево](https://en.wikipedia.org/wiki/Trie) (или trie) — структура данных, позволяющая хранить ассоциативный массив, ключами которого являются строки. Используется для алгоритмов типа [T9](https://en.wikipedia.org/wiki/T9_(predictive_text)), [Ахо–Корасик](https://en.wikipedia.org/wiki/Aho%E2%80%93Corasick_algorithm) или [LZW](https://en.wikipedia.org/wiki/Lempel%E2%80%93Ziv%E2%80%93Welch).
+
+### Таблица выбора структуры данных
+
+В квадратных скобках показан худший случай.
+
+| Структура | Реализация | Применение | Индексация | Поиск | Вставка | Удаление | Память |
+| :- | :- | :- | :-: | :-: | :-: | :-: | :-: |
+| Динамический массив | list |  | 1 | n | n | n | n |
+| Хэш-таблица | dict, set |  |  | 1<br> [n] | 1<br> [n] | 1<br> [n] | n |
+| Массив | array, bytes, bytearray | Для хранения однотипных данных | 1 | n | n | n | n |
+| Односвязный список | - (~deque)|  | n | n | 1 | 1 | n |
+| Двусвязный список | deque| FIFO, LIFO | n | n | 1 | 1 | n |
+| Бинарное дерево | - |  | logn<br> [n] | logn<br> [n] | logn<br> [n] | logn<br> [n] | n |
+| Куча | heapq | Очередь с приоритетом |   | 1<br>(find min) | logn | logn<br>(del min) | n |
+| Би-дерево (B-tree) | ~sqlite | Память с медленным доступом | logn | logn | logn | logn | n |
+| КЧ дерево | - |   | logn | logn | logn | logn | n |
+| АВЛ дерево | - |  | logn | logn | logn | logn | n |
+| Префиксное дерево (trie) | - | T9,<br> Ахо–Корасик,<br> LZW |  | key | key | key |  |
+
+### Целочисленный диапазон (range)
+
+range() возвращает иммутабельную последовательность чисел, которая часто используется как задатчик диапазона для цикла for.
+
+
+```python
+r1: range = range(11)  # Возвращает последовательность чисел от 0 до 10
+r2: range = range(5, 21) # Возвращает последовательность чисел от 5 до 20
+r3: range = range(20, 9, -2)  # Возвращает последовательность чисел от 20 до 10 с шагом 2
+
+print("To exclusive: ", end="")
+for i in r1:
+  print(f"{i} ", end="")
+
+print("\nFrom inclusive to exclusive: ", end="")
+for i in r2:
+  print(f"{i} ", end="")
+
+print("\nFrom inclusive to exclusive with step: ", end="")
+for i in r3:
+  print(f"{i} ", end="")
+
+print(f"\nFrom = {r3.start}")
+print(f"To = {r3.stop}")
+```
+
+    To exclusive: 0 1 2 3 4 5 6 7 8 9 10 
+    From inclusive to exclusive: 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 
+    From inclusive to exclusive with step: 20 18 16 14 12 10 
+    From = 20
+    To = 9
+    
+
+### Перечисление (Enum, IntEnum)
+
+Удобные конструкции для определения заранее известных перечислений.
+
+
+```python
+from enum import Enum, auto
+import random
+
+class Currency(Enum):
+    euro = 1
+    us_dollar = 2
+    yuan = auto()
+
+local_currency = Currency.us_dollar
+print(local_currency)
+
+local_currency = Currency["yuan"]  # Может вызвать исключение KeyError
+print(local_currency)
+
+local_currency = Currency(1)  # Может вызвать исключение ValueError
+print(local_currency)
+
+print(local_currency.name)
+print(local_currency.value)
+
+list_of_members = list(Currency)
+member_names    = [e.name for e in Currency]
+member_values   = [e.value for e in Currency]
+random_member   = random.choice(list(Currency))
+
+print(list_of_members, "\n",
+      member_names, "\n",
+      member_values, "\n",
+      random_member)
+```
+
+    Currency.us_dollar
+    Currency.yuan
+    Currency.euro
+    euro
+    1
+    [<Currency.euro: 1>, <Currency.us_dollar: 2>, <Currency.yuan: 3>] 
+     ['euro', 'us_dollar', 'yuan'] 
+     [1, 2, 3] 
+     Currency.yuan
+    
+
+### Классы данных (dataclass)
+
+Dataclass — *декоратор* (подробнее про декораторы мы поговорим позже), автоматически создающий методы init(), repr() и eq(). Нужен для создания классов, главной задачей которых является хранение данных. Аннотации типов обязательны.
+
+Существует более продвинутая альтернатива под названием [attrs](https://pypi.org/project/attrs/), но [Глиф Лефковиц](https://en.wikipedia.org/wiki/Glyph_Lefkowitz) дополнил свою статью «[The One Python Library Everyone Needs](https://glyph.twistedmatrix.com/2016/08/attrs.html)», написанную в 2016, замечанием о том, что за прошедшие годы dataclass значительно возмужал (во многом благодаря влиянию attrs) и теперь вполне можно обойтись без attrs, просто используя dataclass.
+
+
+```python
+from dataclasses import dataclass
+from decimal import *
+from datetime import datetime
+
+@dataclass
+class Transaction:
+    value: Decimal
+    issuer: str = "Default Bank"
+    dt: datetime = datetime.now()
+
+t1 = Transaction(value=1000_000, issuer="Deutsche Bank", dt = datetime(2022, 1, 1, 12))
+t2 = Transaction(1000)
+
+print(t1)
+print(t2)
+```
+
+    Transaction(value=1000000, issuer='Deutsche Bank', dt=datetime.datetime(2022, 1, 1, 12, 0))
+    Transaction(value=1000, issuer='Default Bank', dt=datetime.datetime(2022, 9, 6, 17, 50, 36, 162897))
+    
+
+Dataclass может быть сделан иммутабельным при помощи директивы _frozen=True_.
+
+
+```python
+from dataclasses import dataclass
+
+@dataclass(frozen=True)
+class User:
+    name: str
+    account: int
+```
+
+### Бинарная запаковка (struct)
+
+Запаковка (и распаковка, разумеется) данных в байтовые последовательности с предопределенными размерами каждого элемента данных, их порядка в структуре, а также порядка байт для многобайтовых типов данных. Нужна для [взаимодействия](https://docs.python.org/3/extending/extending.html) Python-программы с кодом на C или C++ и позволяет превращать Python-овский int в, например, «сишный» short int или long int ([подробности](https://ru.wikipedia.org/wiki/%D0%A1%D0%B8%D1%81%D1%82%D0%B5%D0%BC%D0%B0_%D1%82%D0%B8%D0%BF%D0%BE%D0%B2_%D0%A1%D0%B8) про систему типов языка Си).  
+При работе со структурами вам нужно будет ориентироваться в том, что такое [little-endian](https://en.wikipedia.org/wiki/Endianness) и big-endian, а также не забывать, что размер типа данных в Си бывает разным.
+
+
+```python
+from struct import pack, unpack, iter_unpack
+
+b = pack(">hhll", 1, 2, 3, 4)
+print(b)
+
+t = unpack(">hhll", b)
+print(t)
+
+i = pack("ii", 1, 2) * 5
+print(i)
+
+print(list(iter_unpack('ii', i)))
+```
+
+    b'\x00\x01\x00\x02\x00\x00\x00\x03\x00\x00\x00\x04'
+    (1, 2, 3, 4)
+    b'\x01\x00\x00\x00\x02\x00\x00\x00\x01\x00\x00\x00\x02\x00\x00\x00\x01\x00\x00\x00\x02\x00\x00\x00\x01\x00\x00\x00\x02\x00\x00\x00\x01\x00\x00\x00\x02\x00\x00\x00'
+    [(1, 2), (1, 2), (1, 2), (1, 2), (1, 2)]
+    
+
+### memoryview
+
+Memoryview — механизм, позволяющий получить доступ к данным объектов без предварительного копирования. Memoryview позволяет работать не со всеми объектами, а только с теми, которые поддерживают buffer protocol (мы познакомимся с ним сильно позже, в последней главе, посвященной взаимодействию Python и C кода); к таковым относятся bytes, bytearray, memoryview (да, можно взять memoryview от memoryview), массивы NumPy и изображения в библиотеке Pillow.  
+
+У Memoryview есть несколько основных применений:  
+обработка больших массивов информации;  
+быстрая обработка данных;  
+манипуляция данными на низком уровне.  
+
+Подробнее про memoryview можно почитать вот [здесь](https://medium.com/@AlexanderObregon/how-pythons-memoryview-and-buffers-work-23c489fbbabb).
 ## 2. Обработка данных
 
 ![Data management](https://raw.githubusercontent.com/amaargiru/pycore/main/pics/02_Data_Management.png)  
