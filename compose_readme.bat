@@ -11,12 +11,13 @@ jupyter nbconvert --to markdown 09_database.ipynb --output 09_database.md
 jupyter nbconvert --to markdown 10_net.ipynb --output 10_net.md
 jupyter nbconvert --to markdown 11_architecture.ipynb --output 11_architecture.md
 jupyter nbconvert --to markdown 12_admin_devops.ipynb --output 12_admin_devops.md
-jupyter nbconvert --to markdown 13_outro.ipynb --output 13_outro.md
-jupyter nbconvert --to markdown 14_annex_1_interview_questions.ipynb --output 14_annex_1_interview_questions.md
-jupyter nbconvert --to markdown 15_annex_2_leetcode_questions.ipynb --output 15_annex_2_leetcode_questions.md
+jupyter nbconvert --to markdown 13_data_science.ipynb --output 13_data_science.md
+jupyter nbconvert --to markdown 15_outro.ipynb --output 15_outro.md
+jupyter nbconvert --to markdown 16_annex_1_interview_questions.ipynb --output 16_annex_1_interview_questions.md
+jupyter nbconvert --to markdown 17_annex_2_leetcode_questions.ipynb --output 17_annex_2_leetcode_questions.md
 
 
-copy 00_intro.md + 01_data_structures.md + 02_data_management.md + 03_data_flows.md + 04_oop.md + 05_language_skeleton.md + 06_multithreading_multiprocessing.md + 07_common_practice.md + 08_algorithms.md + 09_database.md + 10_net.md + 11_architecture.md + 12_admin_devops.md + 13_outro.md  + 14_annex_1_interview_questions.md + 15_annex_2_leetcode_questions.md readme.md
+copy 00_intro.md + 01_data_structures.md + 02_data_management.md + 03_data_flows.md + 04_oop.md + 05_language_skeleton.md + 06_multithreading_multiprocessing.md + 07_common_practice.md + 08_algorithms.md + 09_database.md + 10_net.md + 11_architecture.md + 12_admin_devops.md + 13_data_science.md + 15_outro.md + 16_annex_1_interview_questions.md + 17_annex_2_leetcode_questions.md readme.md
 
 
 del 00_intro.md
@@ -32,9 +33,10 @@ del 09_database.md
 del 10_net.md
 del 11_architecture.md
 del 12_admin_devops.md
-del 13_outro.md
-del 14_annex_1_interview_questions.md
-del 15_annex_2_leetcode_questions.md
+del 13_data_science.md
+del 15_outro.md
+del 16_annex_1_interview_questions.md
+del 17_annex_2_leetcode_questions.md
 
 rem Delete file from "Context manager" chapter
 del test_context_connect.db
