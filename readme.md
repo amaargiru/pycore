@@ -4061,7 +4061,46 @@ obj = ChildSlotsClass()
 
 Множественное же наследование классов с _непустыми_ \_\_slots\_\_ невозможно.
 
-### Метапрограммирование
+### Abstract Base Classes
+
+Перед тем, как перейти к собственно к метапрограммированию, давайте напишем вот простенькую программу с использованием ABC (Abstract Base Classes). Мы это уже сделали чуть раньше, с @abstractmethod, просто повторим этот подход, чтобы взглянуть на этот код немного под другим углом. Что такое абстрактный класс, мы уже знаем, так что подняться еще на ступеньку выше будет нетрудно. 
+
+
+```python
+from abc import ABC, abstractmethod
+
+# Определяем абстрактный класс
+class Animal(ABC):
+    
+    @abstractmethod
+    def sound(self):
+        pass  # Абстрактный метод без конкретного наполнения
+
+# Класс на базе абстрактного класса
+class Cat(Animal):
+    
+    def sound(self):
+        return "Meow!"  # Конкретное действие
+
+cat = Cat()
+print(cat.sound())
+```
+
+    Meow!
+    
+
+Поздравляю! Теперь вы владеете метапрограммированием! Ведь на самом деле ABC — это просто удобный класс, помогающий сделать код менее запутанным для тех, кто не очень хорошо знаком с идеей метапрограммирования.
+
+Как указано в [документации](https://docs.python.org/3/library/abc.html): "abc.ABC - a helper class that has ABCMeta as its metaclass. With this class, an abstract base class can be created by simply deriving from ABC avoiding sometimes confusing metaclass usage".
+
+И даже [исходный код](https://github.com/python/cpython/blob/main/Lib/abc.py#L184) этого класса выглядит вот так:
+~~~python
+class ABC(metaclass=ABCMeta):
+    """Helper class that provides a standard way to create an ABC using inheritance."""
+    __slots__ = ()
+~~~
+
+### Метаклассы
 
 Что такое класс? Это, в принципе, просто кусок кода, описывающий, как создать объект. Но в Python класс — это нечто большее, классы также являются объектами; как только используется ключевое слово class, Python исполняет команду и создаёт объект:
 
@@ -4119,7 +4158,7 @@ class Person(models.Model):
 ```
 код
 ```python
-keanu = Person(name="Keanu Reeves", age=58)
+keanu = Person(name="Keanu Reeves", age=60)
 print(keanu.age)
 ```
 распечатает число, взятое из БД, потому что models.Model определяет \_\_metaclass\_\_, который сотворит некоторую магию и превратит класс Person, определённый достаточно простым выражением, в сложную привязку к базе данных.
