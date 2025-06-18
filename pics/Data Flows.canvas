@@ -41,7 +41,7 @@
 		{"id":"43d41799b9f912ce","type":"text","text":"...","x":1920,"y":340,"width":240,"height":60,"color":"1"},
 		{"id":"419bd932119ca36a","type":"text","text":"@cache","x":1920,"y":-60,"width":240,"height":60,"color":"3"},
 		{"id":"c69ccaaf6911080f","type":"text","text":"Сlosure","x":1560,"y":-160,"width":240,"height":60,"color":"4"},
-		{"id":"f7d01bac88dd0019","type":"text","text":"decorator","x":1560,"y":-20,"width":240,"height":60,"color":"4"},
+		{"id":"f7d01bac88dd0019","type":"text","text":"Decorator","x":1560,"y":-20,"width":240,"height":60,"color":"4"},
 		{"id":"f75d6ebf7481e387","type":"text","text":"Parameterized decorator","x":1560,"y":80,"width":240,"height":60,"color":"3"},
 		{"id":"2e558fbd538cb237","type":"text","text":" functools.wraps","x":1560,"y":170,"width":240,"height":60,"color":"3"}
 	],
